@@ -8,7 +8,7 @@ import ClassifiersPage from './pages/ClassifiersPage.jsx';
 import NumbersPage from './pages/NumbersPage.jsx';
 import ClassRushPage from './pages/ClassRushPage.jsx';
 import ReadingPassagesPage from './pages/ReadingPassagesPage.jsx';
-import ConsonantsPage from './pages/ConsonantsPage.jsx';
+import MonthsPage from './pages/MonthsPage.jsx';
 
 const GROUP_MAP = {
   cards: 'study',
@@ -17,9 +17,9 @@ const GROUP_MAP = {
   passages: 'study',
   grammar: 'reference',
   pronunciation: 'reference',
+  months: 'reference',
   classifiers: 'reference',
   numbers: 'reference',
-  consonants: 'reference',
 };
 
 function App() {
@@ -43,41 +43,32 @@ function App() {
     localStorage.setItem('thai-study-starred', JSON.stringify([...starred]));
   }, [starred]);
 
-  const toggleTheme = () => {
-    setTheme(t => t === 'light' ? 'dark' : 'light');
-  };
+  const toggleTheme = () => setTheme(t => t === 'light' ? 'dark' : 'light');
 
   const toggleStar = (thai) => {
     setStarred(prev => {
       const next = new Set(prev);
-      if (next.has(thai)) {
-        next.delete(thai);
-      } else {
-        next.add(thai);
-      }
+      if (next.has(thai)) next.delete(thai);
+      else next.add(thai);
       return next;
     });
-  };
-
-  const showPage = (page) => {
-    setActivePage(page);
   };
 
   const activeGroup = GROUP_MAP[activePage] || 'study';
 
   return (
     <div className="min-h-screen bg-background text-foreground" data-theme={theme === 'dark' ? 'dark' : undefined}>
-      <Nav activePage={activePage} activeGroup={activeGroup} showPage={showPage} toggleTheme={toggleTheme} theme={theme} />
+      <Nav activePage={activePage} activeGroup={activeGroup} showPage={setActivePage} toggleTheme={toggleTheme} theme={theme} />
 
-      {activePage === 'cards' && <FlashcardsPage starred={starred} toggleStar={toggleStar} />}
-      {activePage === 'grammar' && <GrammarPage />}
+      {activePage === 'cards'      && <FlashcardsPage starred={starred} toggleStar={toggleStar} />}
+      {activePage === 'grammar'    && <GrammarPage />}
       {activePage === 'pronunciation' && <PronunciationPage />}
-      {activePage === 'quiz' && <QuizPage starred={starred} />}
+      {activePage === 'quiz'       && <QuizPage starred={starred} />}
       {activePage === 'classifiers' && <ClassifiersPage />}
-      {activePage === 'numbers' && <NumbersPage />}
-      {activePage === 'rush' && <ClassRushPage />}
-      {activePage === 'passages' && <ReadingPassagesPage />}
-      {activePage === 'consonants' && <ConsonantsPage />}
+      {activePage === 'numbers'    && <NumbersPage />}
+      {activePage === 'rush'       && <ClassRushPage />}
+      {activePage === 'passages'   && <ReadingPassagesPage />}
+      {activePage === 'months'     && <MonthsPage />}
     </div>
   );
 }

@@ -221,7 +221,7 @@ export default function ClassRushPage() {
 
   if (screen === 'intro') {
     return (
-      <div className="max-w-3xl mx-auto px-5 py-8">
+      <div className="max-w-[1200px] mx-auto px-5 py-8">
         <h1 className="text-3xl font-serif font-normal mb-1">
           Class <em className="text-primary not-italic font-medium">Rush</em>
         </h1>
@@ -276,7 +276,7 @@ export default function ClassRushPage() {
 
   if (screen === 'results') {
     return (
-      <div className="max-w-3xl mx-auto px-5 py-8">
+      <div className="max-w-[1200px] mx-auto px-5 py-8">
         <h1 className="text-3xl font-serif font-normal mb-1">
           Class <em className="text-primary not-italic font-medium">Rush</em>
         </h1>
@@ -325,7 +325,7 @@ export default function ClassRushPage() {
 
   // Game screen
   return (
-    <div className="max-w-3xl mx-auto px-5 py-8">
+    <div className="max-w-[1200px] mx-auto px-5 py-8">
       <h1 className="text-3xl font-serif font-normal mb-1">
         Class <em className="text-primary not-italic font-medium">Rush</em>
       </h1>

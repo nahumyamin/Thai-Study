@@ -148,7 +148,7 @@ export default function QuizPage({ starred }) {
 
   if (screen === 'setup') {
     return (
-      <div className="max-w-3xl mx-auto px-5 py-8">
+      <div className="max-w-[1200px] mx-auto px-5 py-8">
         <h1 className="text-3xl font-serif font-normal mb-1">
           Thai <em className="text-primary not-italic font-medium">Quiz</em>
         </h1>
@@ -208,7 +208,7 @@ export default function QuizPage({ starred }) {
 
   if (screen === 'results') {
     return (
-      <div className="max-w-3xl mx-auto px-5 py-8">
+      <div className="max-w-[1200px] mx-auto px-5 py-8">
         <h1 className="text-3xl font-serif font-normal mb-1">
           Thai <em className="text-primary not-italic font-medium">Quiz</em>
         </h1>
@@ -249,7 +249,7 @@ export default function QuizPage({ starred }) {
   const progress = (qIdx / questions.length) * 100;
 
   return (
-    <div className="max-w-3xl mx-auto px-5 py-8">
+    <div className="max-w-[1200px] mx-auto px-5 py-8">
       <h1 className="text-3xl font-serif font-normal mb-1">
         Thai <em className="text-primary not-italic font-medium">Quiz</em>
       </h1>

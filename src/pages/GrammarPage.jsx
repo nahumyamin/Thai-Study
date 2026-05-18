@@ -73,7 +73,7 @@ function GrRule({ rule }) {
 
 export default function GrammarPage() {
   return (
-    <div className="max-w-3xl mx-auto px-5 py-8">
+    <div className="max-w-[1200px] mx-auto px-5 py-8">
       <h1 className="text-3xl font-serif font-normal mb-1">
         Thai <em className="text-primary not-italic font-medium">Grammar</em>
       </h1>

@@ -91,7 +91,7 @@ export default function ReadingPassagesPage() {
 
   return (
     <div
-      className="max-w-3xl mx-auto px-5 py-8"
+      className="max-w-[1200px] mx-auto px-5 py-8"
       onClick={(e) => {
         if (popup && !e.target.closest('[data-word]')) closePopup();
       }}
