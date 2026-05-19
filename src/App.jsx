@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import Nav from './components/Nav.jsx';
+import HomePage from './pages/HomePage.jsx';
 import FlashcardsPage from './pages/FlashcardsPage.jsx';
 import GrammarPage from './pages/GrammarPage.jsx';
 import PronunciationPage from './pages/PronunciationPage.jsx';
@@ -11,6 +12,7 @@ import ReadingPassagesPage from './pages/ReadingPassagesPage.jsx';
 import MonthsPage from './pages/MonthsPage.jsx';
 
 const GROUP_MAP = {
+  home: null,
   cards: 'study',
   quiz: 'study',
   rush: 'study',
@@ -23,7 +25,7 @@ const GROUP_MAP = {
 };
 
 function App() {
-  const [activePage, setActivePage] = useState('cards');
+  const [activePage, setActivePage] = useState('home');
   const [theme, setTheme] = useState(() => {
     return localStorage.getItem('thai-study-theme') || 'light';
   });
@@ -69,6 +71,7 @@ function App() {
         {theme === 'dark' ? '☀️' : '🌙'}
       </button>
 
+      {activePage === 'home'       && <HomePage showPage={setActivePage} />}
       {activePage === 'cards'      && <FlashcardsPage starred={starred} toggleStar={toggleStar} />}
       {activePage === 'grammar'    && <GrammarPage />}
       {activePage === 'pronunciation' && <PronunciationPage />}

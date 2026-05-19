@@ -86,6 +86,23 @@
   }
 }
 
+/* Hero tile floating animations */
+@keyframes tile-1 {
+  0%, 100% { transform: translateY(0px) rotate(-1deg); }
+  50% { transform: translateY(-12px) rotate(2deg); }
+}
+@keyframes tile-2 {
+  0%, 100% { transform: translateY(-4px) rotate(2deg); }
+  50% { transform: translateY(8px) rotate(-1deg); }
+}
+@keyframes tile-3 {
+  0%, 100% { transform: translateY(2px) rotate(0deg); }
+  50% { transform: translateY(-8px) rotate(-2deg); }
+}
+@utility animate-tile-1 { animation: tile-1 4s ease-in-out infinite; }
+@utility animate-tile-2 { animation: tile-2 5.5s ease-in-out infinite 0.7s; }
+@utility animate-tile-3 { animation: tile-3 3.8s ease-in-out infinite 1.4s; }
+
 /* Accordion animations */
 @keyframes accordion-down {
   from { height: 0; }

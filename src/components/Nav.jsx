@@ -50,12 +50,15 @@ export default function Nav({ activePage, activeGroup, showPage }) {
     <nav className="bg-zinc-900 text-white sticky top-0 z-50 border-b border-white/10">
       {/* Row 1: brand + group tabs + theme toggle */}
       <div className="flex items-center px-5 border-b border-white/[0.08]">
-        <span className="font-serif text-sm text-white/90 pr-4 mr-2 border-r border-white/15 whitespace-nowrap shrink-0">
+        <button
+          onClick={() => handleNav('home')}
+          className="font-serif text-sm text-white/90 pr-4 mr-2 border-r border-white/15 whitespace-nowrap shrink-0 bg-transparent cursor-pointer hover:text-white transition-colors"
+        >
           Thai <em className="text-amber-400 not-italic">Study</em>
-        </span>
+        </button>
 
         {/* Desktop group tabs */}
-        <div className="hidden sm:flex items-center">
+        <div className={cn('items-center', activePage === 'home' ? 'hidden' : 'hidden sm:flex')}>
           <button className={groupTabClass('study')} onClick={() => handleNav('cards')}>
             Study
           </button>
@@ -129,8 +132,8 @@ export default function Nav({ activePage, activeGroup, showPage }) {
         </div>
       </div>
 
-      {/* Row 2: sub-tabs (desktop only) */}
-      <div className="hidden sm:flex items-center px-5 bg-black/[0.18] overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+      {/* Row 2: sub-tabs (desktop only, hidden on home) */}
+      <div className={cn('items-center px-5 bg-black/[0.18] overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden', activePage === 'home' ? 'hidden' : 'hidden sm:flex')}>
         {subPages.map(p => (
           <button key={p.id} className={subTabClass(p.id)} onClick={() => handleNav(p.id)}>
             {p.label}
