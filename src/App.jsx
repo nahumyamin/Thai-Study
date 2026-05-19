@@ -8,6 +8,7 @@ import QuizPage from './pages/QuizPage.jsx';
 import ClassifiersPage from './pages/ClassifiersPage.jsx';
 import NumbersPage from './pages/NumbersPage.jsx';
 import ClassRushPage from './pages/ClassRushPage.jsx';
+import ScramblePage from './pages/ScramblePage.jsx';
 import ReadingPassagesPage from './pages/ReadingPassagesPage.jsx';
 import MonthsPage from './pages/MonthsPage.jsx';
 
@@ -16,6 +17,7 @@ const GROUP_MAP = {
   cards: 'study',
   quiz: 'study',
   rush: 'study',
+  scramble: 'study',
   passages: 'study',
   grammar: 'reference',
   pronunciation: 'reference',
@@ -97,6 +99,7 @@ function App() {
       {activePage === 'classifiers' && <ClassifiersPage />}
       {activePage === 'numbers'    && <NumbersPage />}
       {activePage === 'rush'       && <ClassRushPage />}
+      {activePage === 'scramble'   && <ScramblePage />}
       {activePage === 'passages'   && <ReadingPassagesPage />}
       {activePage === 'months'     && <MonthsPage />}
     </div>

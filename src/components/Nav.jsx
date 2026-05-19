@@ -11,6 +11,7 @@ const STUDY_PAGES = [
   { id: 'cards', label: 'Flashcards' },
   { id: 'quiz', label: 'Quiz' },
   { id: 'rush', label: 'Class Rush' },
+  { id: 'scramble', label: 'Scramble' },
   { id: 'passages', label: 'Passages' },
 ];
 
