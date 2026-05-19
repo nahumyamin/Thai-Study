@@ -52,7 +52,7 @@ export default function Nav({ activePage, activeGroup, showPage }) {
       <div className="flex items-center px-5 border-b border-white/[0.08]">
         <button
           onClick={() => handleNav('home')}
-          className="font-serif text-sm text-white/90 pr-4 mr-2 border-r border-white/15 whitespace-nowrap shrink-0 bg-transparent cursor-pointer hover:text-white transition-colors"
+          className="font-serif text-sm text-white/90 py-3 whitespace-nowrap shrink-0 bg-transparent cursor-pointer hover:text-white transition-colors pr-4 mr-2 border-r border-white/15"
         >
           Thai <em className="text-amber-400 not-italic">Study</em>
         </button>
