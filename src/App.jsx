@@ -24,8 +24,15 @@ const GROUP_MAP = {
   numbers: 'reference',
 };
 
+const VALID_PAGES = new Set(Object.keys(GROUP_MAP));
+
+function pageFromHash() {
+  const hash = window.location.hash.slice(1);
+  return VALID_PAGES.has(hash) ? hash : 'home';
+}
+
 function App() {
-  const [activePage, setActivePage] = useState('home');
+  const [activePage, setActivePage] = useState(pageFromHash);
   const [theme, setTheme] = useState(() => {
     return localStorage.getItem('thai-study-theme') || 'light';
   });
@@ -36,6 +43,17 @@ function App() {
       return new Set();
     }
   });
+
+  const showPage = (page) => {
+    setActivePage(page);
+    window.location.hash = page === 'home' ? '' : page;
+  };
+
+  useEffect(() => {
+    const onHashChange = () => setActivePage(pageFromHash());
+    window.addEventListener('hashchange', onHashChange);
+    return () => window.removeEventListener('hashchange', onHashChange);
+  }, []);
 
   useEffect(() => {
     localStorage.setItem('thai-study-theme', theme);
@@ -60,7 +78,7 @@ function App() {
 
   return (
     <div className="min-h-screen bg-background text-foreground" data-theme={theme === 'dark' ? 'dark' : undefined}>
-      <Nav activePage={activePage} activeGroup={activeGroup} showPage={setActivePage} />
+      <Nav activePage={activePage} activeGroup={activeGroup} showPage={showPage} />
 
       {/* Floating theme toggle */}
       <button
@@ -71,7 +89,7 @@ function App() {
         {theme === 'dark' ? '☀️' : '🌙'}
       </button>
 
-      {activePage === 'home'       && <HomePage showPage={setActivePage} />}
+      {activePage === 'home'       && <HomePage showPage={showPage} />}
       {activePage === 'cards'      && <FlashcardsPage starred={starred} toggleStar={toggleStar} />}
       {activePage === 'grammar'    && <GrammarPage />}
       {activePage === 'pronunciation' && <PronunciationPage />}
