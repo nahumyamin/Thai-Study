@@ -47,12 +47,45 @@ export default function FlashcardsPage({ starred, toggleStar }) {
     setStudyOpen(true);
   };
 
+  const myListBtn = (extraClass = '') => (
+    <Button
+      size="sm"
+      variant="outline"
+      onClick={() => setShowStarred(s => !s)}
+      className={cn(extraClass, showStarred ? 'bg-amber-500 border-amber-500 text-white hover:bg-amber-500' : '')}
+    >
+      ★ My List
+      <span className="ml-1 inline-flex items-center justify-center rounded-full bg-amber-500 text-white text-[0.65rem] font-bold px-1.5 min-w-[1.1rem] leading-[1.4]">
+        {starred.size}
+      </span>
+    </Button>
+  );
+
+  const studyBtn = (extraClass = '') => (
+    <Button size="sm" variant="outline" className={extraClass} onClick={() => openStudyMode(0)}>
+      ▶ Study Mode
+    </Button>
+  );
+
   return (
     <div className="max-w-[1200px] mx-auto px-5 py-8">
-      <h1 className="text-3xl font-serif font-normal mb-1">
-        Thai <em className="text-primary not-italic font-medium">Flashcards</em>
-      </h1>
-      <p className="text-sm text-muted-foreground mb-6">{filtered.length} words</p>
+      {/* Title row — buttons on right on desktop */}
+      <div className="flex items-start justify-between gap-4 mb-1">
+        <h1 className="text-3xl font-serif font-normal">
+          Thai <em className="text-primary not-italic font-medium">Flashcards</em>
+        </h1>
+        <div className="hidden md:flex items-center gap-2 mt-1 shrink-0">
+          {myListBtn()}
+          {studyBtn()}
+        </div>
+      </div>
+      <p className="text-sm text-muted-foreground mb-4">{filtered.length} words</p>
+
+      {/* Mobile: full-width half/half buttons below title */}
+      <div className="flex gap-2 md:hidden mb-5">
+        {myListBtn('flex-1 justify-center')}
+        {studyBtn('flex-1')}
+      </div>
 
       {/* Search row */}
       <div className="flex gap-2 mb-3">
@@ -67,7 +100,7 @@ export default function FlashcardsPage({ starred, toggleStar }) {
       </div>
 
       {/* Filter pills */}
-      <div className="flex flex-wrap gap-1.5 mb-3">
+      <div className="flex flex-wrap gap-1.5 mb-4">
         <Button
           size="sm"
           variant={activeTopic === 'all' ? 'default' : 'outline'}
@@ -86,24 +119,6 @@ export default function FlashcardsPage({ starred, toggleStar }) {
             {val.label}
           </Button>
         ))}
-      </div>
-
-      {/* My List + Study Mode row */}
-      <div className="flex items-center gap-2 mb-3">
-        <Button
-          size="sm"
-          variant="outline"
-          onClick={() => setShowStarred(s => !s)}
-          className={showStarred ? 'bg-amber-500 border-amber-500 text-white hover:bg-amber-500' : ''}
-        >
-          ★ My List
-          <span className="ml-1 inline-flex items-center justify-center rounded-full bg-amber-500 text-white text-[0.65rem] font-bold px-1.5 min-w-[1.1rem] leading-[1.4]">
-            {starred.size}
-          </span>
-        </Button>
-        <Button size="sm" variant="outline" onClick={() => openStudyMode(0)}>
-          ▶ Study Mode
-        </Button>
       </div>
 
       <p className="text-xs text-muted-foreground text-center mb-2">Tap any card to reveal translation &amp; pronunciation</p>
