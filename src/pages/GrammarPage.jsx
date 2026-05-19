@@ -78,11 +78,11 @@ export default function GrammarPage() {
         {GRAMMAR_RULES.map((rule, idx) => (
           <AccordionItem key={rule.num} value={`rule-${rule.num}`} className={idx === 0 ? 'border-t-0' : ''}>
             <AccordionTrigger className="px-4 hover:bg-muted/40 hover:no-underline">
-              <div className="flex items-center gap-3 flex-1 min-w-0 pr-2">
-                <span className="font-serif text-2xl italic text-primary shrink-0 leading-none">{rule.num}</span>
-                <div className="flex-1 min-w-0">
-                  <div className="font-serif text-base font-normal text-foreground leading-snug">{rule.title}</div>
-                  <div className="font-mono text-[0.72rem] text-muted-foreground mt-1 px-1.5 py-0.5 border border-border bg-background inline-block whitespace-nowrap">
+              <div className="flex items-center gap-2 md:gap-3 flex-1 min-w-0 pr-2">
+                <span className="font-serif text-base md:text-2xl italic text-primary shrink-0 leading-none w-5 md:w-auto text-right">{rule.num}</span>
+                <div className="flex-1 min-w-0 overflow-hidden">
+                  <div className="font-serif text-sm md:text-base font-normal text-foreground leading-snug line-clamp-1 md:line-clamp-none">{rule.title}</div>
+                  <div className="font-mono text-[0.65rem] md:text-[0.72rem] text-muted-foreground mt-1 px-1.5 py-0.5 border border-border bg-background block truncate md:inline-block md:whitespace-nowrap md:max-w-full">
                     {rule.pattern}
                   </div>
                 </div>

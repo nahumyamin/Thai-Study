@@ -22,7 +22,7 @@ const REFERENCE_PAGES = [
   { id: 'numbers', label: 'Numbers' },
 ];
 
-export default function Nav({ activePage, activeGroup, showPage, toggleTheme, theme }) {
+export default function Nav({ activePage, activeGroup, showPage }) {
   const [menuOpen, setMenuOpen] = useState(false);
 
   const handleNav = (page) => {
@@ -64,17 +64,8 @@ export default function Nav({ activePage, activeGroup, showPage, toggleTheme, th
           </button>
         </div>
 
-        {/* Theme toggle — top right */}
-        <button
-          onClick={toggleTheme}
-          className="w-9 h-9 rounded-full bg-zinc-700 hover:bg-zinc-600 text-white flex items-center justify-center text-base transition-colors ml-auto shrink-0"
-          aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
-        >
-          {theme === 'dark' ? '☀️' : '🌙'}
-        </button>
-
         {/* Mobile hamburger */}
-        <div className="sm:hidden ml-2">
+        <div className="sm:hidden ml-auto">
           <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
             <SheetTrigger asChild>
               <button

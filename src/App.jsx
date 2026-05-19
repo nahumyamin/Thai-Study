@@ -58,7 +58,16 @@ function App() {
 
   return (
     <div className="min-h-screen bg-background text-foreground" data-theme={theme === 'dark' ? 'dark' : undefined}>
-      <Nav activePage={activePage} activeGroup={activeGroup} showPage={setActivePage} toggleTheme={toggleTheme} theme={theme} />
+      <Nav activePage={activePage} activeGroup={activeGroup} showPage={setActivePage} />
+
+      {/* Floating theme toggle */}
+      <button
+        onClick={toggleTheme}
+        className="fixed bottom-5 right-5 z-50 w-12 h-12 rounded-full bg-zinc-800 hover:bg-zinc-700 text-white shadow-lg flex items-center justify-center text-xl transition-colors"
+        aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+      >
+        {theme === 'dark' ? '☀️' : '🌙'}
+      </button>
 
       {activePage === 'cards'      && <FlashcardsPage starred={starred} toggleStar={toggleStar} />}
       {activePage === 'grammar'    && <GrammarPage />}
