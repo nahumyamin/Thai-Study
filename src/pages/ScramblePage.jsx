@@ -221,16 +221,14 @@ function PlayScreen({ sentences, mode, onFinish }) {
       {/* Feedback */}
       {checked && (
         <div className={cn(
-          'rounded-xl border p-4 mb-4 text-sm',
-          checked.ok
-            ? 'bg-green-50 border-green-200 text-green-800 dark:bg-green-950/20 dark:border-green-900 dark:text-green-300'
-            : 'bg-red-50 border-red-200 text-red-800 dark:bg-red-950/20 dark:border-red-900 dark:text-red-300',
+          'rounded-xl border border-border bg-card p-4 mb-4 text-sm border-l-4',
+          checked.ok ? 'border-l-green-500' : 'border-l-red-500',
         )}>
           {checked.ok ? (
-            <span className="font-semibold">✓ Correct!</span>
+            <span className="font-semibold text-green-600 dark:text-green-400">✓ Correct!</span>
           ) : (
             <>
-              <div className="font-semibold mb-2">✗ Not quite</div>
+              <div className="font-semibold text-red-600 dark:text-red-400 mb-2">✗ Not quite</div>
               <div className="text-muted-foreground text-xs mb-0.5">Correct answer:</div>
               <div className="font-medium text-base text-foreground">{checked.correct}</div>
             </>
@@ -279,22 +277,20 @@ function ResultsScreen({ sentences, scores, onPlayAgain }) {
             <div
               key={i}
               className={cn(
-                'p-4 rounded-xl border',
-                sc.ok
-                  ? 'bg-green-50 border-green-200 dark:bg-green-950/20 dark:border-green-900'
-                  : 'bg-red-50 border-red-200 dark:bg-red-950/20 dark:border-red-900',
+                'p-4 rounded-xl border border-border bg-card border-l-4',
+                sc.ok ? 'border-l-green-500' : 'border-l-red-500',
               )}
             >
               <div className="flex items-start gap-3">
-                <span className={cn('font-bold text-base shrink-0 mt-0.5', sc.ok ? 'text-green-600' : 'text-red-500')}>
+                <span className={cn('font-bold text-base shrink-0 mt-0.5', sc.ok ? 'text-green-600 dark:text-green-400' : 'text-red-500 dark:text-red-400')}>
                   {sc.ok ? '✓' : '✗'}
                 </span>
                 <div className="flex-1 min-w-0">
                   <div className="text-xs text-muted-foreground mb-1">{s.en}</div>
                   <div className="text-base font-medium text-foreground">{s.thai}</div>
                   {!sc.ok && sc.answer && (
-                    <div className="mt-1.5 text-sm text-red-600 dark:text-red-400">
-                      Your answer: <span className="font-medium">{sc.answer}</span>
+                    <div className="mt-1.5 text-sm text-muted-foreground">
+                      Your answer: <span className="font-medium text-foreground">{sc.answer}</span>
                     </div>
                   )}
                 </div>
