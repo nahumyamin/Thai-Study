@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import Nav from './components/Nav.jsx';
+import SearchOverlay from './components/SearchOverlay.jsx';
 import HomePage from './pages/HomePage.jsx';
 import FlashcardsPage from './pages/FlashcardsPage.jsx';
 import GrammarPage from './pages/GrammarPage.jsx';
@@ -35,6 +36,7 @@ function pageFromHash() {
 
 function App() {
   const [activePage, setActivePage] = useState(pageFromHash);
+  const [searchOpen, setSearchOpen] = useState(false);
   const [theme, setTheme] = useState(() => {
     return localStorage.getItem('thai-study-theme') || 'light';
   });
@@ -56,6 +58,17 @@ function App() {
     window.addEventListener('hashchange', onHashChange);
     return () => window.removeEventListener('hashchange', onHashChange);
   }, []);
+
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key === '/' && !searchOpen && e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+        e.preventDefault();
+        setSearchOpen(true);
+      }
+    };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [searchOpen]);
 
   useEffect(() => {
     localStorage.setItem('thai-study-theme', theme);
@@ -80,7 +93,8 @@ function App() {
 
   return (
     <div className="min-h-screen bg-background text-foreground" data-theme={theme === 'dark' ? 'dark' : undefined}>
-      <Nav activePage={activePage} activeGroup={activeGroup} showPage={showPage} />
+      <Nav activePage={activePage} activeGroup={activeGroup} showPage={showPage} onSearch={() => setSearchOpen(true)} />
+      <SearchOverlay open={searchOpen} onClose={() => setSearchOpen(false)} showPage={showPage} />
 
       {/* Floating theme toggle */}
       <button

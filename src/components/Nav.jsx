@@ -23,7 +23,16 @@ const REFERENCE_PAGES = [
   { id: 'numbers', label: 'Numbers' },
 ];
 
-export default function Nav({ activePage, activeGroup, showPage }) {
+function SearchIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+      <circle cx="6.5" cy="6.5" r="4.5" stroke="currentColor" strokeWidth="1.5" />
+      <path d="M10 10L14 14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+export default function Nav({ activePage, activeGroup, showPage, onSearch }) {
   const [menuOpen, setMenuOpen] = useState(false);
 
   const handleNav = (page) => {
@@ -68,8 +77,16 @@ export default function Nav({ activePage, activeGroup, showPage }) {
           </button>
         </div>
 
-        {/* Mobile hamburger */}
-        <div className="sm:hidden ml-auto">
+        {/* Search + mobile hamburger */}
+        <div className="ml-auto flex items-center gap-1">
+          <button
+            onClick={onSearch}
+            className="p-2 text-white/50 hover:text-white transition-colors"
+            aria-label="Search"
+          >
+            <SearchIcon />
+          </button>
+          <div className="sm:hidden">
           <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
             <SheetTrigger asChild>
               <button
@@ -130,6 +147,7 @@ export default function Nav({ activePage, activeGroup, showPage }) {
               </div>
             </SheetContent>
           </Sheet>
+          </div>
         </div>
       </div>
 
