@@ -4,7 +4,7 @@ import { cn } from '@/lib/utils';
 
 function SpeakerIcon({ active }) {
   return (
-    <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+    <svg width="18" height="18" viewBox="0 0 14 14" fill="none">
       <path d="M2 5H4.5L8 2V12L4.5 9H2V5Z" fill={active ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round" />
       <path d="M10 4.5C10.8 5.3 11.3 6.1 11.3 7C11.3 7.9 10.8 8.7 10 9.5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
     </svg>
@@ -56,7 +56,7 @@ export default function FlashCard({ word, starred, onToggleStar, onOpen }) {
           <button
             onClick={handleStar}
             className={cn(
-              'absolute top-2 left-2 text-sm leading-none p-0.5 z-[2] transition-all bg-transparent border-none cursor-pointer',
+              'absolute top-2 left-2 text-xl leading-none p-1 z-[2] transition-all bg-transparent border-none cursor-pointer',
               starred ? 'text-amber-500' : 'text-muted-foreground hover:text-amber-500'
             )}
             aria-label={starred ? 'Unstar' : 'Star'}
@@ -69,7 +69,7 @@ export default function FlashCard({ word, starred, onToggleStar, onOpen }) {
           <button
             onClick={handleSpeak}
             className={cn(
-              'absolute bottom-2 right-2 p-0.5 z-[2] bg-transparent border-none cursor-pointer transition-colors',
+              'absolute bottom-1.5 right-1.5 p-1.5 z-[2] bg-transparent border-none cursor-pointer transition-colors',
               speaking ? 'text-primary' : 'text-muted-foreground hover:text-foreground'
             )}
             aria-label="Pronounce"
@@ -89,7 +89,7 @@ export default function FlashCard({ word, starred, onToggleStar, onOpen }) {
           <button
             onClick={handleSpeak}
             className={cn(
-              'absolute bottom-2 right-2 p-0.5 z-[2] bg-transparent border-none cursor-pointer transition-colors',
+              'absolute bottom-1.5 right-1.5 p-1.5 z-[2] bg-transparent border-none cursor-pointer transition-colors',
               speaking ? 'opacity-100' : 'opacity-50 hover:opacity-80'
             )}
             aria-label="Pronounce"

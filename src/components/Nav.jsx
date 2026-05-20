@@ -26,7 +26,7 @@ const REFERENCE_PAGES = [
 
 function SearchIcon() {
   return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+    <svg width="20" height="20" viewBox="0 0 16 16" fill="none">
       <circle cx="6.5" cy="6.5" r="4.5" stroke="currentColor" strokeWidth="1.5" />
       <path d="M10 10L14 14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
     </svg>
@@ -82,7 +82,7 @@ export default function Nav({ activePage, activeGroup, showPage, onSearch }) {
         <div className="ml-auto flex items-center gap-1">
           <button
             onClick={onSearch}
-            className="p-2 text-white/50 hover:text-white transition-colors"
+            className="p-2.5 text-white/60 hover:text-white transition-colors"
             aria-label="Search"
           >
             <SearchIcon />

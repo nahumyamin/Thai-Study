@@ -78,7 +78,8 @@ export default function ReadingPassagesPage() {
 
   const handleWordClick = useCallback((tok, e) => {
     const rect = e.target.getBoundingClientRect();
-    const x = Math.min(rect.left, window.innerWidth - 230);
+    const popupWidth = 220;
+    const x = Math.max(8, Math.min(rect.left, window.innerWidth - popupWidth - 8));
     const y = rect.bottom + 8;
     setActiveWord(tok.text);
     setPopup({ word: tok.def, x, y });
@@ -91,7 +92,7 @@ export default function ReadingPassagesPage() {
 
   return (
     <div
-      className="max-w-[1200px] mx-auto px-5 py-8"
+      className="max-w-[1200px] mx-auto px-5 py-8 overflow-x-hidden"
       onClick={(e) => {
         if (popup && !e.target.closest('[data-word]')) closePopup();
       }}
@@ -121,8 +122,8 @@ export default function ReadingPassagesPage() {
       </div>
 
       {/* Passage text */}
-      <Card className="mb-6 rounded-none shadow-none">
-        <CardContent className="p-6 text-base leading-[2.2] text-foreground">
+      <Card className="mb-6 rounded-none shadow-none overflow-hidden">
+        <CardContent className="p-6 text-base leading-[2.2] text-foreground [overflow-wrap:break-word] [word-break:break-word] min-w-0">
           <PassageText
             text={passage.text}
             onWordClick={handleWordClick}
