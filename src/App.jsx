@@ -12,6 +12,7 @@ import ClassRushPage from './pages/ClassRushPage.jsx';
 import ScramblePage from './pages/ScramblePage.jsx';
 import ReadingPassagesPage from './pages/ReadingPassagesPage.jsx';
 import MonthsPage from './pages/MonthsPage.jsx';
+import ToneAnalyzerPage from './pages/ToneAnalyzerPage.jsx';
 
 const GROUP_MAP = {
   home: null,
@@ -25,6 +26,7 @@ const GROUP_MAP = {
   months: 'reference',
   classifiers: 'reference',
   numbers: 'reference',
+  tones: 'reference',
 };
 
 const VALID_PAGES = new Set(Object.keys(GROUP_MAP));
@@ -116,6 +118,7 @@ function App() {
       {activePage === 'scramble'   && <ScramblePage />}
       {activePage === 'passages'   && <ReadingPassagesPage />}
       {activePage === 'months'     && <MonthsPage />}
+      {activePage === 'tones'      && <ToneAnalyzerPage />}
     </div>
   );
 }

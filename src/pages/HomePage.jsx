@@ -134,6 +134,22 @@ function IcoScramble() {
     </svg>
   );
 }
+function IcoTones() {
+  return (
+    <svg width="42" height="42" viewBox="0 0 42 42" fill="none">
+      {/* staff lines */}
+      <line x1="4" y1="12" x2="38" y2="12" stroke="#e2e8f0" strokeWidth="1.2"/>
+      <line x1="4" y1="21" x2="38" y2="21" stroke="#e2e8f0" strokeWidth="1.2"/>
+      <line x1="4" y1="30" x2="38" y2="30" stroke="#e2e8f0" strokeWidth="1.2"/>
+      {/* mid tone — flat blue */}
+      <path d="M5,21 L15,21" stroke="#3b82f6" strokeWidth="2" strokeLinecap="round"/>
+      {/* falling tone — red */}
+      <path d="M17,13 C20,14 23,22 26,28" stroke="#ef4444" strokeWidth="2" strokeLinecap="round" fill="none"/>
+      {/* rising tone — green */}
+      <path d="M28,27 C30,22 33,16 37,13" stroke="#22c55e" strokeWidth="2" strokeLinecap="round" fill="none"/>
+    </svg>
+  );
+}
 function IcoClassifiers() {
   return (
     <svg width="42" height="42" viewBox="0 0 42 42" fill="none">
@@ -154,6 +170,7 @@ const FEATURES = [
   { id: 'months',        label: 'Months',             desc: 'All 12 Thai months with a built-in quiz',             Ico: IcoMonths },
   { id: 'pronunciation', label: 'Pronunciation',      desc: 'Tones, vowels, and consonant classes',                Ico: IcoPronunciation },
   { id: 'classifiers',   label: 'Classifiers',        desc: 'Noun classifiers and Thai numerals reference',        Ico: IcoClassifiers },
+  { id: 'tones',         label: 'Tone Analyzer',      desc: 'Type a Thai word to see its tones explained live',    Ico: IcoTones },
 ];
 
 export default function HomePage({ showPage }) {
