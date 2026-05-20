@@ -60,6 +60,10 @@ function App() {
   }, []);
 
   useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }, [activePage]);
+
+  useEffect(() => {
     const onKey = (e) => {
       if (e.key === '/' && !searchOpen && e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
         e.preventDefault();
