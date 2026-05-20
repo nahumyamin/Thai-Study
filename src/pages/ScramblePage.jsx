@@ -79,21 +79,26 @@ function SetupScreen({ count, setCount, mode, setMode, onStart }) {
 
       <div className="mb-8">
         <div className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-3">
-          Number of sentences
+          Words to unscramble
         </div>
-        <div className="flex gap-2">
-          {[5, 10, 15].map(n => (
+        <div className="flex gap-2 flex-wrap">
+          {[
+            { n: 5,  label: '~5 words',  sub: 'Easy' },
+            { n: 10, label: '~10 words', sub: 'Medium' },
+            { n: 15, label: '~15 words', sub: 'Hard' },
+          ].map(({ n, label, sub }) => (
             <button
               key={n}
               onClick={() => setCount(n)}
               className={cn(
-                'px-7 py-2.5 rounded-lg border text-sm font-medium transition-all',
+                'px-5 py-2.5 rounded-lg border text-sm font-medium transition-all flex flex-col items-center gap-0.5 min-w-[90px]',
                 count === n
                   ? 'bg-primary text-primary-foreground border-primary'
                   : 'border-border bg-card hover:border-primary/40',
               )}
             >
-              {n}
+              <span>{label}</span>
+              <span className={cn('text-[0.65rem] font-normal', count === n ? 'text-primary-foreground/70' : 'text-muted-foreground')}>{sub}</span>
             </button>
           ))}
         </div>
@@ -313,9 +318,10 @@ export default function ScramblePage() {
   const [finalScores, setFinalScores] = useState([]);
 
   const handleStart = () => {
-    const picked = [...SCRAMBLE_SENTENCES]
+    const pool = SCRAMBLE_SENTENCES.filter(s => s.difficulty === count);
+    const picked = [...pool]
       .sort(() => Math.random() - 0.5)
-      .slice(0, count)
+      .slice(0, 5)
       .map(s => {
         const tokens = s.thai.split(' ');
         return { ...s, tokens, scrambled: shuffle(tokens) };
