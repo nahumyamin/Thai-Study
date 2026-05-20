@@ -39,7 +39,7 @@
     --secondary: hsl(240 4.8% 95.9%);
     --secondary-foreground: hsl(240 5.9% 10%);
     --muted: hsl(240 4.8% 95.9%);
-    --muted-foreground: hsl(240 3.8% 46.1%);
+    --muted-foreground: hsl(240 4% 40%);
     --accent: hsl(240 4.8% 95.9%);
     --accent-foreground: hsl(240 5.9% 10%);
     --destructive: hsl(0 84.2% 60.2%);
@@ -102,6 +102,15 @@
 @utility animate-tile-1 { animation: tile-1 4s ease-in-out infinite; }
 @utility animate-tile-2 { animation: tile-2 5.5s ease-in-out infinite 0.7s; }
 @utility animate-tile-3 { animation: tile-3 3.8s ease-in-out infinite 1.4s; }
+
+/* Page transition */
+@keyframes page-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@utility animate-page-in {
+  animation: page-in 0.18s ease-out both;
+}
 
 /* Accordion animations */
 @keyframes accordion-down {

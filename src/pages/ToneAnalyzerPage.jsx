@@ -55,7 +55,7 @@ function SyllableCard({ syl, analysis, index }) {
       <div className="px-5 py-4 flex flex-col gap-2">
         {steps.map((step, i) => (
           <div key={i} className="text-xs leading-snug">
-            <span className="text-[0.6rem] font-bold uppercase tracking-widest text-muted-foreground block mb-0.5">
+            <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground block mb-0.5">
               {step.label}
             </span>
             <span className="text-foreground">{step.detail}</span>
