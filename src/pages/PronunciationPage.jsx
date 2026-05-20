@@ -22,7 +22,7 @@ export default function PronunciationPage() {
         <p className="text-sm text-muted-foreground leading-relaxed mb-4">
           Every syllable in Thai has one of five tones. Changing the tone changes the meaning entirely.
         </p>
-        <div className="grid grid-cols-[repeat(5,1fr)] gap-2 sm:grid-cols-5">
+        <div className="grid grid-cols-3 gap-2 sm:grid-cols-5">
           {TONES.map(tone => (
             <Card key={tone.name} className="rounded-none shadow-none">
               <CardContent className="flex flex-col items-center text-center gap-1 p-2">

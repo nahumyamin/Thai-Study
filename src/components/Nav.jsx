@@ -11,6 +11,7 @@ const STUDY_PAGES = [
   { id: 'cards', label: 'Flashcards' },
   { id: 'quiz', label: 'Quiz' },
   { id: 'rush', label: 'Class Rush' },
+  { id: 'scramble', label: 'Scramble' },
   { id: 'passages', label: 'Passages' },
 ];
 
@@ -22,7 +23,16 @@ const REFERENCE_PAGES = [
   { id: 'numbers', label: 'Numbers' },
 ];
 
-export default function Nav({ activePage, activeGroup, showPage, toggleTheme, theme }) {
+function SearchIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+      <circle cx="6.5" cy="6.5" r="4.5" stroke="currentColor" strokeWidth="1.5" />
+      <path d="M10 10L14 14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+export default function Nav({ activePage, activeGroup, showPage, onSearch }) {
   const [menuOpen, setMenuOpen] = useState(false);
 
   const handleNav = (page) => {
@@ -50,12 +60,15 @@ export default function Nav({ activePage, activeGroup, showPage, toggleTheme, th
     <nav className="bg-zinc-900 text-white sticky top-0 z-50 border-b border-white/10">
       {/* Row 1: brand + group tabs + theme toggle */}
       <div className="flex items-center px-5 border-b border-white/[0.08]">
-        <span className="font-serif text-sm text-white/90 pr-4 mr-2 border-r border-white/15 whitespace-nowrap shrink-0">
+        <button
+          onClick={() => handleNav('home')}
+          className="font-serif text-sm text-white/90 py-3 whitespace-nowrap shrink-0 bg-transparent cursor-pointer hover:text-white transition-colors pr-4 mr-2 border-r border-white/15"
+        >
           Thai <em className="text-amber-400 not-italic">Study</em>
-        </span>
+        </button>
 
         {/* Desktop group tabs */}
-        <div className="hidden sm:flex items-center">
+        <div className={cn('items-center', activePage === 'home' ? 'hidden' : 'hidden sm:flex')}>
           <button className={groupTabClass('study')} onClick={() => handleNav('cards')}>
             Study
           </button>
@@ -64,17 +77,16 @@ export default function Nav({ activePage, activeGroup, showPage, toggleTheme, th
           </button>
         </div>
 
-        {/* Theme toggle — top right */}
-        <button
-          onClick={toggleTheme}
-          className="w-9 h-9 rounded-full bg-zinc-700 hover:bg-zinc-600 text-white flex items-center justify-center text-base transition-colors ml-auto shrink-0"
-          aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
-        >
-          {theme === 'dark' ? '☀️' : '🌙'}
-        </button>
-
-        {/* Mobile hamburger */}
-        <div className="sm:hidden ml-2">
+        {/* Search + mobile hamburger */}
+        <div className="ml-auto flex items-center gap-1">
+          <button
+            onClick={onSearch}
+            className="p-2 text-white/50 hover:text-white transition-colors"
+            aria-label="Search"
+          >
+            <SearchIcon />
+          </button>
+          <div className="sm:hidden">
           <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
             <SheetTrigger asChild>
               <button
@@ -135,11 +147,12 @@ export default function Nav({ activePage, activeGroup, showPage, toggleTheme, th
               </div>
             </SheetContent>
           </Sheet>
+          </div>
         </div>
       </div>
 
-      {/* Row 2: sub-tabs (desktop only) */}
-      <div className="hidden sm:flex items-center px-5 bg-black/[0.18] overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+      {/* Row 2: sub-tabs (desktop only, hidden on home) */}
+      <div className={cn('items-center px-5 bg-black/[0.18] overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden', activePage === 'home' ? 'hidden' : 'hidden sm:flex')}>
         {subPages.map(p => (
           <button key={p.id} className={subTabClass(p.id)} onClick={() => handleNav(p.id)}>
             {p.label}

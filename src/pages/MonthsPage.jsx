@@ -15,7 +15,7 @@ function shuffle(arr) {
   return a;
 }
 
-function buildQuestions(mode) {
+function buildQuestions() {
   return shuffle(MONTHS).map(month => {
     const distractors = shuffle(MONTHS.filter(m => m.thai !== month.thai)).slice(0, 3);
     const choices = shuffle([month, ...distractors]);
@@ -23,7 +23,22 @@ function buildQuestions(mode) {
   });
 }
 
-// ── Reference table ──────────────────────────────────────────────
+// ── Mobile month card ─────────────────────────────────────────────
+function MonthCard({ month }) {
+  return (
+    <Card className="rounded-lg">
+      <CardContent className="p-3">
+        <div className="text-muted-foreground text-xs mb-1">{month.number}</div>
+        <div className="text-2xl font-medium leading-tight">{month.thai}</div>
+        <div className="text-xs italic text-muted-foreground mt-0.5">{month.rom}</div>
+        <div className="font-medium mt-2">{month.en}</div>
+        <div className="text-xs text-muted-foreground">{month.abbr}</div>
+      </CardContent>
+    </Card>
+  );
+}
+
+// ── Desktop reference table ───────────────────────────────────────
 function MonthTable() {
   return (
     <div className="overflow-x-auto">
@@ -55,7 +70,7 @@ function MonthTable() {
 
 // ── Quiz ─────────────────────────────────────────────────────────
 function MonthQuiz() {
-  const [mode, setMode] = useState('en-to-thai'); // 'en-to-thai' | 'thai-to-en'
+  const [mode, setMode] = useState('en-to-thai');
   const [questions, setQuestions] = useState(null);
   const [current, setCurrent] = useState(0);
   const [selected, setSelected] = useState(null);
@@ -64,7 +79,7 @@ function MonthQuiz() {
 
   const start = useCallback((m) => {
     setMode(m);
-    setQuestions(buildQuestions(m));
+    setQuestions(buildQuestions());
     setCurrent(0);
     setSelected(null);
     setScore(0);
@@ -88,7 +103,6 @@ function MonthQuiz() {
     }
   };
 
-  // Setup screen
   if (!questions) {
     return (
       <Card>
@@ -112,7 +126,6 @@ function MonthQuiz() {
     );
   }
 
-  // Results screen
   if (done) {
     const pct = Math.round((score / questions.length) * 100);
     return (
@@ -121,7 +134,7 @@ function MonthQuiz() {
           <div className="text-6xl font-bold">{pct}%</div>
           <p className="text-muted-foreground">{score} / {questions.length} correct</p>
           <p className="text-lg font-medium">
-            {pct === 100 ? '🎉 Perfect score!' : pct >= 75 ? 'Great work!' : pct >= 50 ? 'Keep practicing!' : 'Keep going, you\'ll get there!'}
+            {pct === 100 ? '🎉 Perfect score!' : pct >= 75 ? 'Great work!' : pct >= 50 ? 'Keep practicing!' : "Keep going, you'll get there!"}
           </p>
           <div className="flex gap-3 justify-center pt-2">
             <Button onClick={() => start(mode)}>Try Again</Button>
@@ -138,7 +151,6 @@ function MonthQuiz() {
   return (
     <Card>
       <CardContent className="pt-6 space-y-5">
-        {/* Progress */}
         <div className="space-y-1.5">
           <div className="flex justify-between text-sm text-muted-foreground">
             <span>{current + 1} / {questions.length}</span>
@@ -147,7 +159,6 @@ function MonthQuiz() {
           <Progress value={progress} className="h-1.5" />
         </div>
 
-        {/* Prompt */}
         <div className="text-center py-6">
           <p className="text-sm text-muted-foreground mb-2 uppercase tracking-wider">
             {mode === 'en-to-thai' ? 'Which Thai month is…' : 'Which English month is…'}
@@ -160,12 +171,10 @@ function MonthQuiz() {
           )}
         </div>
 
-        {/* Choices */}
         <div className="grid grid-cols-2 gap-2">
           {q.choices.map((choice) => {
             const isCorrect = choice.thai === q.month.thai;
             const isSelected = selected?.thai === choice.thai;
-            let variant = 'outline';
             let extra = '';
             if (selected) {
               if (isCorrect) extra = 'border-green-500 bg-green-50 text-green-800 dark:bg-green-950 dark:text-green-200';
@@ -211,38 +220,46 @@ export default function MonthsPage() {
       <h1 className="text-4xl font-serif font-normal mb-1">Thai <em className="not-italic font-medium text-primary">Months</em></h1>
       <p className="text-muted-foreground mb-8">เดือน (duean) — the twelve months of the year</p>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Left: reference table + tips */}
-        <div className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-xl">All 12 Months</CardTitle>
-            </CardHeader>
-            <CardContent className="p-0 pb-2">
-              <MonthTable />
-            </CardContent>
-          </Card>
+      {/* Quiz — always at top */}
+      <div className="mb-8">
+        <MonthQuiz />
+      </div>
 
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-xl">Patterns & Tips</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {MONTH_TIPS.map((tip, i) => (
-                <div key={i}>
-                  {i > 0 && <Separator className="mb-4" />}
-                  <p className="font-semibold text-base mb-1">{tip.title}</p>
-                  <p className="text-muted-foreground">{tip.body}</p>
-                </div>
-              ))}
-            </CardContent>
-          </Card>
+      {/* Reference — table on desktop, cards on mobile */}
+      <div className="space-y-6">
+        {/* Desktop table */}
+        <Card className="hidden md:block">
+          <CardHeader>
+            <CardTitle className="text-xl">All 12 Months</CardTitle>
+          </CardHeader>
+          <CardContent className="p-0 pb-2">
+            <MonthTable />
+          </CardContent>
+        </Card>
+
+        {/* Mobile cards — 2 columns */}
+        <div className="md:hidden">
+          <h2 className="text-lg font-semibold mb-3">All 12 Months</h2>
+          <div className="grid grid-cols-2 gap-3">
+            {MONTHS.map(m => <MonthCard key={m.thai} month={m} />)}
+          </div>
         </div>
 
-        {/* Right: quiz */}
-        <div>
-          <MonthQuiz />
-        </div>
+        {/* Tips */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-xl">Patterns & Tips</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {MONTH_TIPS.map((tip, i) => (
+              <div key={i}>
+                {i > 0 && <Separator className="mb-4" />}
+                <p className="font-semibold text-base mb-1">{tip.title}</p>
+                <p className="text-muted-foreground">{tip.body}</p>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

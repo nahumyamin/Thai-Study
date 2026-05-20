@@ -2,8 +2,18 @@ import { useState } from 'react';
 import { topics } from '../data/vocab.js';
 import { cn } from '@/lib/utils';
 
+function SpeakerIcon({ active }) {
+  return (
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+      <path d="M2 5H4.5L8 2V12L4.5 9H2V5Z" fill={active ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round" />
+      <path d="M10 4.5C10.8 5.3 11.3 6.1 11.3 7C11.3 7.9 10.8 8.7 10 9.5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
+    </svg>
+  );
+}
+
 export default function FlashCard({ word, starred, onToggleStar, onOpen }) {
   const [flipped, setFlipped] = useState(false);
+  const [speaking, setSpeaking] = useState(false);
   const color = topics[word.topic]?.color || '#888';
 
   const handleClick = () => {
@@ -17,6 +27,19 @@ export default function FlashCard({ word, starred, onToggleStar, onOpen }) {
   const handleStar = (e) => {
     e.stopPropagation();
     onToggleStar(word.thai);
+  };
+
+  const handleSpeak = (e) => {
+    e.stopPropagation();
+    if (!('speechSynthesis' in window)) return;
+    window.speechSynthesis.cancel();
+    const utt = new SpeechSynthesisUtterance(word.thai);
+    utt.lang = 'th-TH';
+    utt.rate = 0.85;
+    utt.onstart = () => setSpeaking(true);
+    utt.onend = () => setSpeaking(false);
+    utt.onerror = () => setSpeaking(false);
+    window.speechSynthesis.speak(utt);
   };
 
   return (
@@ -43,6 +66,16 @@ export default function FlashCard({ word, starred, onToggleStar, onOpen }) {
           <span className="absolute top-2 right-2 w-2 h-2 rounded-full" style={{ background: color }} />
           <div className="text-[1.75rem] font-light text-foreground text-center leading-snug">{word.thai}</div>
           <div className="absolute bottom-2 text-[0.7rem] text-muted-foreground tracking-wider uppercase">tap to flip</div>
+          <button
+            onClick={handleSpeak}
+            className={cn(
+              'absolute bottom-2 right-2 p-0.5 z-[2] bg-transparent border-none cursor-pointer transition-colors',
+              speaking ? 'text-primary' : 'text-muted-foreground hover:text-foreground'
+            )}
+            aria-label="Pronounce"
+          >
+            <SpeakerIcon active={speaking} />
+          </button>
         </div>
 
         {/* Back */}
@@ -53,6 +86,16 @@ export default function FlashCard({ word, starred, onToggleStar, onOpen }) {
           <div className="absolute bottom-2 text-[0.7rem] tracking-widest uppercase opacity-50">
             {topics[word.topic]?.label || word.topic}
           </div>
+          <button
+            onClick={handleSpeak}
+            className={cn(
+              'absolute bottom-2 right-2 p-0.5 z-[2] bg-transparent border-none cursor-pointer transition-colors',
+              speaking ? 'opacity-100' : 'opacity-50 hover:opacity-80'
+            )}
+            aria-label="Pronounce"
+          >
+            <SpeakerIcon active={speaking} />
+          </button>
         </div>
       </div>
     </div>

@@ -226,30 +226,12 @@ export default function ClassRushPage() {
           Class <em className="text-primary not-italic font-medium">Rush</em>
         </h1>
         <Separator className="mb-6" />
-        <div className="max-w-[480px]">
+
+        {/* Quiz controls — always at top */}
+        <div className="max-w-[480px] mb-8">
           <p className="text-sm text-muted-foreground leading-relaxed mb-6">
             A consonant flashes on screen. Tap its class — Low, Mid, or High — as fast as you can. Miss three and it's game over.
           </p>
-
-          <div className="grid grid-cols-3 gap-2 mb-6">
-            <Card className="text-center p-3 rounded-none shadow-none">
-              <div className="text-[0.7rem] font-bold tracking-widest uppercase text-green-700 mb-2">Low (24)</div>
-              <div className="text-lg leading-relaxed tracking-wide">{LOW_LETTERS}</div>
-            </Card>
-            <Card className="text-center p-3 rounded-none shadow-none">
-              <div className="text-[0.7rem] font-bold tracking-widest uppercase text-blue-800 mb-2">Mid (9)</div>
-              <div className="text-lg leading-relaxed tracking-wide">{MID_LETTERS}</div>
-            </Card>
-            <Card className="text-center p-3 rounded-none shadow-none">
-              <div className="text-[0.7rem] font-bold tracking-widest uppercase text-red-900 mb-2">High (11)</div>
-              <div className="text-lg leading-relaxed tracking-wide">{HIGH_LETTERS}</div>
-            </Card>
-          </div>
-
-          <p className="text-xs text-muted-foreground italic mb-4">
-            Tip: keep this legend in view until the classes feel natural.
-          </p>
-
           <div className="mb-6">
             <span className="block text-[0.75rem] font-semibold tracking-widest uppercase text-muted-foreground mb-3">
               Difficulty
@@ -267,9 +249,27 @@ export default function ClassRushPage() {
               ))}
             </div>
           </div>
-
           <Button className="w-full" onClick={startGame}>Start →</Button>
         </div>
+
+        {/* Reference cards — full width on desktop, compact on mobile */}
+        <div className="grid grid-cols-3 gap-2 md:gap-4 mb-3">
+          <Card className="text-center p-3 md:p-6 rounded-none shadow-none">
+            <div className="text-[0.7rem] md:text-sm font-bold tracking-widest uppercase text-green-700 mb-2 md:mb-3">Low (24)</div>
+            <div className="text-lg md:text-2xl leading-relaxed tracking-wide">{LOW_LETTERS}</div>
+          </Card>
+          <Card className="text-center p-3 md:p-6 rounded-none shadow-none">
+            <div className="text-[0.7rem] md:text-sm font-bold tracking-widest uppercase text-blue-800 mb-2 md:mb-3">Mid (9)</div>
+            <div className="text-lg md:text-2xl leading-relaxed tracking-wide">{MID_LETTERS}</div>
+          </Card>
+          <Card className="text-center p-3 md:p-6 rounded-none shadow-none">
+            <div className="text-[0.7rem] md:text-sm font-bold tracking-widest uppercase text-red-900 mb-2 md:mb-3">High (11)</div>
+            <div className="text-lg md:text-2xl leading-relaxed tracking-wide">{HIGH_LETTERS}</div>
+          </Card>
+        </div>
+        <p className="text-xs text-muted-foreground italic">
+          Tip: keep this legend in view until the classes feel natural.
+        </p>
       </div>
     );
   }

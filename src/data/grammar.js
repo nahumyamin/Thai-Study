@@ -1,4 +1,4 @@
-export const GRAMMAR_INTRO = `Thai grammar is remarkably different from English. There are no verb conjugations, no plural endings, and no articles. Word order and a small set of particles carry most of the grammatical meaning. These ten patterns cover the structures you will encounter most frequently.`;
+export const GRAMMAR_INTRO = `Thai grammar is remarkably different from English. There are no verb conjugations, no plural endings, and no articles. Word order and a small set of particles carry most of the grammatical meaning. These twenty patterns cover the structures you will encounter most frequently.`;
 
 export const GRAMMAR_RULES = [
   {
@@ -184,5 +184,136 @@ export const GRAMMAR_RULES = [
       '⑤ tell/ask/invite + <strong>ให้</strong> + verb → <em>told/asked/invited to do X</em>',
     ],
     examples: [],
+  },
+  {
+    num: 12,
+    title: 'คือ vs เป็น — the two "to be" verbs',
+    pattern: 'A + คือ + B (identity) | A + เป็น + B (role/state)',
+    desc: `Thai has two main linking verbs that both translate as "is/are" but are not interchangeable. <strong>คือ</strong> (khue) equates two things — it defines, identifies, or clarifies. Think of it as "=". <strong>เป็น</strong> (pen) describes a role, profession, nationality, category, or state. Think of it as "functions as" or "is classified as". A useful test: if you can say "X is defined as Y", use คือ; if you are describing what X is like or what role X plays, use เป็น.`,
+    subSections: [
+      {
+        label: 'คือ — identity, definition, clarification',
+        desc: 'Use คือ to equate or define. It is often used to explain what something <em>is</em> (as in a dictionary entry), to answer "what is X?", or to add a clarifying appositive.',
+        key: 'highlighted = คือ',
+        examples: [
+          { thai: 'ปัญหานี้<mark>คือ</mark>ปัญหาระดับชาติ', rom: 'pan ha ni <mark>khue</mark> pan ha ra dap chat', en: 'This problem <mark>is</mark> a national-level problem. (= is defined as)' },
+          { thai: 'นี่<mark>คือ</mark>เหตุผลที่เขาลาออก', rom: 'ni <mark>khue</mark> het phon thi khao la ok', en: 'This <mark>is</mark> the reason he resigned.' },
+          { thai: 'หวยใต้ดิน<mark>คือ</mark>การพนันผิดกฎหมาย', rom: 'huai tai din <mark>khue</mark> kan phan phit kot mai', en: 'Underground lottery <mark>is</mark> illegal gambling.' },
+        ],
+      },
+      {
+        label: 'เป็น — role, profession, nationality, state',
+        desc: 'Use เป็น to describe what role, category, or state something or someone is in. It is used for professions, nationalities, relationship roles, and temporary or permanent states.',
+        key: 'highlighted = เป็น',
+        examples: [
+          { thai: 'เขา<mark>เป็น</mark>ทหาร', rom: 'khao <mark>pen</mark> tha han', en: 'He <mark>is</mark> a soldier. (role/profession)' },
+          { thai: 'ฉัน<mark>เป็น</mark>คนไทย', rom: 'chan <mark>pen</mark> khon thai', en: 'I <mark>am</mark> Thai. (nationality/category)' },
+          { thai: 'ผัดไทย<mark>เป็น</mark>อาหารที่มีชื่อเสียง', rom: 'phat thai <mark>pen</mark> ahan thi mi chue siang', en: 'Pad Thai <mark>is</mark> a famous dish. (category/quality)' },
+        ],
+      },
+    ],
+    quickRef: [
+      '<strong>คือ</strong> → defines, equates, identifies ("X is [=] Y")',
+      '<strong>เป็น</strong> → role, profession, nationality, state ("X is [acts as] Y")',
+      'กลาย<strong>เป็น</strong> = "to become" (always เป็น, never คือ)',
+      'นี่<strong>คือ</strong>... = "this is..." (pointing/introducing)',
+    ],
+    examples: [],
+  },
+  {
+    num: 13,
+    title: 'Yes/no questions: ไหม / ใช่ไหม / หรือเปล่า',
+    pattern: 'statement + ไหม | statement + ใช่ไหม | statement + หรือเปล่า',
+    desc: `Thai forms yes/no questions by adding a particle at the end of a statement — the word order does not change. <strong>ไหม</strong> (mai, rising tone) is the neutral question marker. <strong>ใช่ไหม</strong> is a tag question: "isn't it? / right?". <strong>หรือเปล่า</strong> is more casual: "or not?". To answer, repeat the key verb affirmatively, or say <strong>ไม่</strong> + verb for "no".`,
+    key: 'highlighted = question particle',
+    examples: [
+      { thai: 'คุณชอบอาหารไทย<mark>ไหม</mark>', rom: 'khun chop ahan thai <mark>mai</mark>', en: 'Do you like Thai food?' },
+      { thai: 'เขาเป็นทหาร<mark>ใช่ไหม</mark>', rom: 'khao pen tha han <mark>chai mai</mark>', en: "He's a soldier, <mark>isn't he</mark>?" },
+      { thai: 'ไป<mark>หรือเปล่า</mark>', rom: 'pai <mark>rue plao</mark>', en: 'Are you going <mark>or not</mark>?' },
+    ],
+  },
+  {
+    num: 14,
+    title: 'Question words: ใคร / อะไร / ที่ไหน / เมื่อไร / ทำไม / อย่างไร',
+    pattern: 'question word takes the position of the unknown',
+    desc: `Thai question words slot into the position of the information being asked — the word order mirrors the answer. <strong>ใคร</strong> = who, <strong>อะไร</strong> = what, <strong>ที่ไหน</strong> = where, <strong>เมื่อไร/เมื่อไหร่</strong> = when, <strong>ทำไม</strong> = why (always sentence-final or initial), <strong>อย่างไร</strong> = how. <strong>กี่</strong> = how many (+ classifier).`,
+    key: 'highlighted = question word',
+    examples: [
+      { thai: '<mark>ใคร</mark>เป็นคนจ่ายเงิน', rom: '<mark>khrai</mark> pen khon chai ngoen', en: '<mark>Who</mark> is paying?' },
+      { thai: 'คุณกิน<mark>อะไร</mark>', rom: 'khun gin <mark>a rai</mark>', en: 'What are you eating?' },
+      { thai: 'ราคา<mark>เท่าไร</mark> / ทำ<mark>อย่างไร</mark>', rom: 'ra kha <mark>thao rai</mark> / tham <mark>yang rai</mark>', en: 'How much is it? / How do you do it?' },
+    ],
+  },
+  {
+    num: 15,
+    title: 'Classifiers: counting and specifying nouns',
+    pattern: 'noun + number + classifier | noun + นี้/นั้น + classifier',
+    desc: `Thai requires a <em>classifier</em> (เลขนาม) whenever a noun is counted or specified with "this/that/which". The classifier follows the number and matches the category of noun. Common ones: <strong>คน</strong> (people), <strong>คัน</strong> (vehicles), <strong>ใบ</strong> (flat objects, documents), <strong>ตัว</strong> (animals, letters, items of clothing), <strong>เล่ม</strong> (books), <strong>อัน</strong> (small general objects), <strong>แห่ง</strong> (places/institutions).`,
+    key: 'highlighted = classifier',
+    examples: [
+      { thai: 'คน ๒ <mark>คน</mark> / รถ ๓ <mark>คัน</mark>', rom: 'khon song <mark>khon</mark> / rot sam <mark>khan</mark>', en: 'two people / three vehicles' },
+      { thai: 'ใบอนุญาต ๑ <mark>ใบ</mark>', rom: 'bai a nu yat neung <mark>bai</mark>', en: 'one licence (document)' },
+      { thai: 'หนังสือเล่มนี้ / สัตว์ตัวนั้น', rom: 'nang sue <mark>lem</mark> ni / sat <mark>tua</mark> nan', en: 'this book / that animal' },
+    ],
+  },
+  {
+    num: 16,
+    title: 'Passive with ถูก (adversative) and ได้รับ (neutral)',
+    pattern: 'subject + ถูก + verb | subject + ได้รับ + noun',
+    desc: `Thai does not have a true grammatical passive, but two structures serve the function. <strong>ถูก</strong> (thuk) before a verb creates an adversative passive — the subject is acted upon, often with a negative or undesirable result. <strong>ได้รับ</strong> (dai rap, "to receive") is neutral and used for receiving benefits, rights, or treatment. The colloquial <strong>โดน</strong> is interchangeable with ถูก in spoken Thai.`,
+    key: 'highlighted = passive marker',
+    examples: [
+      { thai: 'เขา<mark>ถูก</mark>ไล่ออกจากงาน', rom: 'khao <mark>thuk</mark> lai ok chak ngan', en: 'He <mark>was</mark> fired from his job.' },
+      { thai: 'บ้าน<mark>ถูก</mark>น้ำท่วม', rom: 'ban <mark>thuk</mark> nam thuam', en: 'The house <mark>was</mark> flooded.' },
+      { thai: 'ผู้พิการ<mark>ได้รับ</mark>สิทธิ์ในการเดินทาง', rom: 'phu phi kan <mark>dai rap</mark> sit nai kan doen thang', en: 'Disabled people <mark>receive</mark> travel rights.' },
+    ],
+  },
+  {
+    num: 17,
+    title: 'Directional verbs ไป / มา after main verbs',
+    pattern: 'verb + ไป (away) | verb + มา (toward speaker)',
+    desc: `<strong>ไป</strong> (pai) and <strong>มา</strong> (ma) follow a main verb to show direction relative to the speaker. ไป means movement away; มา means movement toward. They also appear in compound verbs: <strong>เอา…ไป</strong> = take away, <strong>เอา…มา</strong> = bring here. Many verbs combine with both to describe complete movements: <strong>กลับมา</strong> = come back, <strong>ออกไป</strong> = go out.`,
+    key: 'highlighted = directional',
+    examples: [
+      { thai: 'เอาเงิน<mark>ไป</mark>ฝากธนาคาร', rom: 'ao ngoen <mark>pai</mark> fak tha na khan', en: 'Take the money <mark>away to</mark> deposit at the bank.' },
+      { thai: 'เอาของ<mark>มา</mark>ให้ฉันดู', rom: 'ao khong <mark>ma</mark> hai chan du', en: 'Bring the thing here <mark>for</mark> me to see.' },
+      { thai: 'เขาเดินออก<mark>ไป</mark>ข้างนอก', rom: 'khao doen ok <mark>pai</mark> khang nok', en: 'He walked out <mark>outside</mark>.' },
+    ],
+  },
+  {
+    num: 18,
+    title: 'โดย — by / via / through / in a manner',
+    pattern: 'โดย + noun/verb phrase',
+    desc: `<strong>โดย</strong> (doi) is a versatile preposition indicating means, method, agent, or manner. It appears in many fixed adverbial phrases: <strong>โดยตรง</strong> = directly, <strong>โดยทั่วไป</strong> = generally, <strong>โดยรวม</strong> = overall, <strong>โดยอัตโนมัติ</strong> = automatically. In formal writing it can introduce the agent of a passive action (like English "by"), though ถูก is more common for that purpose.`,
+    key: 'highlighted = โดย',
+    examples: [
+      { thai: 'เดินทาง<mark>โดย</mark>รถไฟ', rom: 'doen thang <mark>doi</mark> rot fai', en: 'Travel <mark>by</mark> train.' },
+      { thai: '<mark>โดยทั่วไป</mark>คนไทยนิยมอาหารรสเผ็ด', rom: '<mark>doi thua pai</mark> khon thai ni yom ahan rot phet', en: '<mark>Generally</mark>, Thais prefer spicy food.' },
+      { thai: 'ปัญหานี้แก้ไขได้<mark>โดยตรง</mark>', rom: 'pan ha ni kae khai dai <mark>doi trong</mark>', en: 'This problem can be solved <mark>directly</mark>.' },
+    ],
+  },
+  {
+    num: 19,
+    title: 'อยู่ — ongoing state and location',
+    pattern: 'verb + อยู่ (continuous) | noun + อยู่ที่ + place (location)',
+    desc: `<strong>อยู่</strong> (yu) after a verb signals that an action or state is ongoing or stable — similar to the English progressive "-ing" but also used for lasting states. Combined with <strong>กำลัง</strong> it reinforces the present progressive. As a standalone verb, อยู่ means "to be located at / to live". It also appears in <strong>อาศัยอยู่</strong> (to reside) and <strong>ยังคงอยู่</strong> (still remains).`,
+    key: 'highlighted = อยู่',
+    examples: [
+      { thai: 'เขาอาศัย<mark>อยู่</mark>ในกรุงเทพ', rom: 'khao a sai <mark>yu</mark> nai krung thep', en: 'He lives / resides <mark>in</mark> Bangkok.' },
+      { thai: 'กำลังทำงาน<mark>อยู่</mark>', rom: 'kam lang tham ngan <mark>yu</mark>', en: '<mark>Is</mark> currently working.' },
+      { thai: 'ปัญหายังคง<mark>อยู่</mark>', rom: 'pan ha yang khong <mark>yu</mark>', en: 'The problem still <mark>remains</mark>.' },
+    ],
+  },
+  {
+    num: 20,
+    title: 'Time connectors: ก่อน / หลัง / ระหว่าง / ตั้งแต่…จนถึง',
+    pattern: 'ก่อน(ที่จะ) · หลัง(จาก) · ระหว่าง · ตั้งแต่…จนถึง',
+    desc: `Four high-frequency time connectors for ordering events. <strong>ก่อน</strong> = before; with a following verb, use <strong>ก่อนที่จะ</strong>. <strong>หลัง / หลังจาก</strong> = after; with a verb clause, use <strong>หลังจากที่</strong>. <strong>ระหว่าง</strong> = during / between. <strong>ตั้งแต่</strong> = since / from (a point in time); <strong>จนถึง / จนกว่า</strong> = until. These connectors work with both nouns and verb clauses.`,
+    key: 'highlighted = time connector',
+    examples: [
+      { thai: '<mark>ก่อนที่จะ</mark>ออกไป ต้องล็อคประตู', rom: '<mark>kon thi cha</mark> ok pai tong lok pra tu', en: '<mark>Before</mark> going out, [you] must lock the door.' },
+      { thai: '<mark>หลังจากที่</mark>เขาเสียชีวิต ครอบครัวจัดงานศพ', rom: '<mark>lang chak thi</mark> khao sia chi wit khrob khruea chat ngan sop', en: '<mark>After</mark> he died, the family held a funeral.' },
+      { thai: '<mark>ตั้งแต่</mark>เช้า<mark>จนถึง</mark>เย็น', rom: '<mark>tang tae</mark> chao <mark>chon thueng</mark> yen', en: '<mark>From</mark> morning <mark>until</mark> evening.' },
+    ],
   },
 ];
