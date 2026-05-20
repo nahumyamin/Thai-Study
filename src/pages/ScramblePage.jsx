@@ -72,7 +72,7 @@ function SetupScreen({ count, setCount, mode, setMode, onStart }) {
         Thai <em className="text-primary not-italic font-medium">Scramble</em>
       </h1>
       <Separator className="mb-4" />
-      <p className="text-sm text-muted-foreground leading-relaxed mb-10">
+      <p className="text-sm text-muted-foreground leading-relaxed mb-8">
         Rearrange scrambled Thai words into the correct sentence order. Choose drag mode
         to reorder chips, or type the sentence out yourself.
       </p>
@@ -98,7 +98,7 @@ function SetupScreen({ count, setCount, mode, setMode, onStart }) {
               )}
             >
               <span>{label}</span>
-              <span className={cn('text-[0.65rem] font-normal', count === n ? 'text-primary-foreground/70' : 'text-muted-foreground')}>{sub}</span>
+              <span className={cn('text-xs font-normal', count === n ? 'text-primary-foreground/70' : 'text-muted-foreground')}>{sub}</span>
             </button>
           ))}
         </div>
@@ -191,7 +191,7 @@ function PlayScreen({ sentences, mode, onFinish }) {
 
       {/* Card */}
       <div className="border border-border rounded-xl p-5 md:p-6 bg-card mb-4">
-        <div className="text-[0.68rem] font-semibold uppercase tracking-widest text-muted-foreground mb-4">
+        <div className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-4">
           {mode === 'drag' ? 'Drag the words into the correct order' : 'Type the sentence in Thai'}
         </div>
 
@@ -211,7 +211,7 @@ function PlayScreen({ sentences, mode, onFinish }) {
         )}
 
         <div className="mt-5 pt-4 border-t border-border flex gap-2 items-baseline">
-          <span className="text-[0.65rem] font-bold uppercase tracking-widest text-muted-foreground shrink-0">
+          <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground shrink-0">
             EN
           </span>
           <span className="text-sm text-muted-foreground">{sentence.en}</span>

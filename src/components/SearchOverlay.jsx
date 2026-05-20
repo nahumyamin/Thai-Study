@@ -36,7 +36,7 @@ function runSearch(query) {
 // ── Section header ────────────────────────────────────────────────
 function SectionLabel({ label }) {
   return (
-    <div className="px-4 pt-3 pb-1 text-[0.62rem] font-bold uppercase tracking-widest text-muted-foreground">
+    <div className="px-4 pt-3 pb-1 text-xs font-bold uppercase tracking-widest text-muted-foreground">
       {label}
     </div>
   );

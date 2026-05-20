@@ -152,7 +152,7 @@ export default function QuizPage({ starred }) {
         <h1 className="text-3xl font-serif font-normal mb-1">
           Thai <em className="text-primary not-italic font-medium">Quiz</em>
         </h1>
-        <Separator className="mb-6" />
+        <Separator className="mb-4" />
         <div className="max-w-[520px]">
           <p className="text-sm text-muted-foreground mb-6 leading-relaxed">
             Test yourself on vocabulary. Choose a topic, how many questions, and your preferred mode — then hit Start.
@@ -212,7 +212,7 @@ export default function QuizPage({ starred }) {
         <h1 className="text-3xl font-serif font-normal mb-1">
           Thai <em className="text-primary not-italic font-medium">Quiz</em>
         </h1>
-        <Separator className="mb-6" />
+        <Separator className="mb-4" />
         <div className="text-center max-w-[520px] mx-auto">
           <div className="font-serif text-6xl italic text-primary my-4 leading-none">{score}/{questions.length}</div>
           <div className="text-sm text-muted-foreground mb-4">{pct}% correct</div>

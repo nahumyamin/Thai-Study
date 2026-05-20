@@ -93,29 +93,29 @@ function App() {
 
   return (
     <div className="min-h-screen bg-background text-foreground" data-theme={theme === 'dark' ? 'dark' : undefined}>
-      <Nav activePage={activePage} activeGroup={activeGroup} showPage={showPage} onSearch={() => setSearchOpen(true)} />
+      <Nav
+        activePage={activePage}
+        activeGroup={activeGroup}
+        showPage={showPage}
+        onSearch={() => setSearchOpen(true)}
+        theme={theme}
+        onToggleTheme={toggleTheme}
+      />
       <SearchOverlay open={searchOpen} onClose={() => setSearchOpen(false)} showPage={showPage} />
 
-      {/* Floating theme toggle */}
-      <button
-        onClick={toggleTheme}
-        className="fixed bottom-5 right-5 z-50 w-12 h-12 rounded-full bg-zinc-800 hover:bg-zinc-700 text-white shadow-lg flex items-center justify-center text-xl transition-colors"
-        aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
-      >
-        {theme === 'dark' ? '☀️' : '🌙'}
-      </button>
-
-      {activePage === 'home'       && <HomePage showPage={showPage} />}
-      {activePage === 'cards'      && <FlashcardsPage starred={starred} toggleStar={toggleStar} />}
-      {activePage === 'grammar'    && <GrammarPage />}
-      {activePage === 'pronunciation' && <PronunciationPage />}
-      {activePage === 'quiz'       && <QuizPage starred={starred} />}
-      {activePage === 'classifiers' && <ClassifiersPage />}
-      {activePage === 'numbers'    && <NumbersPage />}
-      {activePage === 'rush'       && <ClassRushPage />}
-      {activePage === 'scramble'   && <ScramblePage />}
-      {activePage === 'passages'   && <ReadingPassagesPage />}
-      {activePage === 'months'     && <MonthsPage />}
+      <div key={activePage} className="animate-page-in">
+        {activePage === 'home'          && <HomePage showPage={showPage} />}
+        {activePage === 'cards'         && <FlashcardsPage starred={starred} toggleStar={toggleStar} />}
+        {activePage === 'grammar'       && <GrammarPage />}
+        {activePage === 'pronunciation' && <PronunciationPage />}
+        {activePage === 'quiz'          && <QuizPage starred={starred} />}
+        {activePage === 'classifiers'   && <ClassifiersPage />}
+        {activePage === 'numbers'       && <NumbersPage />}
+        {activePage === 'rush'          && <ClassRushPage />}
+        {activePage === 'scramble'      && <ScramblePage />}
+        {activePage === 'passages'      && <ReadingPassagesPage />}
+        {activePage === 'months'        && <MonthsPage />}
+      </div>
     </div>
   );
 }

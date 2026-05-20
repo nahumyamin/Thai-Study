@@ -217,8 +217,9 @@ function MonthQuiz() {
 export default function MonthsPage() {
   return (
     <div className="max-w-[1200px] mx-auto px-5 py-8">
-      <h1 className="text-4xl font-serif font-normal mb-1">Thai <em className="not-italic font-medium text-primary">Months</em></h1>
-      <p className="text-muted-foreground mb-8">เดือน (duean) — the twelve months of the year</p>
+      <h1 className="text-3xl font-serif font-normal mb-1">Thai <em className="not-italic font-medium text-primary">Months</em></h1>
+      <Separator className="mb-4" />
+      <p className="text-sm text-muted-foreground leading-relaxed mb-8">เดือน (duean) — the twelve months of the year</p>
 
       {/* Quiz — always at top */}
       <div className="mb-8">
@@ -255,7 +256,7 @@ export default function MonthsPage() {
               <div key={i}>
                 {i > 0 && <Separator className="mb-4" />}
                 <p className="font-semibold text-base mb-1">{tip.title}</p>
-                <p className="text-muted-foreground">{tip.body}</p>
+                <p className="text-sm text-muted-foreground leading-relaxed">{tip.body}</p>
               </div>
             ))}
           </CardContent>
