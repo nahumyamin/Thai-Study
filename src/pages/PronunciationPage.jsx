@@ -1,9 +1,19 @@
+import { useState } from 'react';
 import { PRONUNCIATION_INTRO, TONES, TONE_TABLE, CORE_VOWELS, COMPOUND_VOWELS, TIPS } from '../data/pronunciation.js';
 import { CONSONANTS } from '../data/consonants.js';
+import { ToneAnalyzerPanel } from './ToneAnalyzerPage.jsx';
 import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
+import { cn } from '@/lib/utils';
+
+const TABS = [
+  { id: 'overview',  label: 'Overview' },
+  { id: 'analyzer',  label: 'Tone Analyzer' },
+];
 
 export default function PronunciationPage() {
+  const [tab, setTab] = useState('overview');
+
   const midClass = CONSONANTS.filter(c => c.cls === 'mid');
   const highClass = CONSONANTS.filter(c => c.cls === 'high');
   const lowClass = CONSONANTS.filter(c => c.cls === 'low');
@@ -14,6 +24,28 @@ export default function PronunciationPage() {
         Thai <em className="text-primary not-italic font-medium">Pronunciation</em>
       </h1>
       <Separator className="mb-4" />
+
+      {/* Tab bar */}
+      <div className="flex gap-1 mb-8 border-b border-border">
+        {TABS.map(t => (
+          <button
+            key={t.id}
+            onClick={() => setTab(t.id)}
+            className={cn(
+              'px-4 py-2 text-sm font-medium border-b-2 -mb-px transition-colors',
+              tab === t.id
+                ? 'border-primary text-foreground'
+                : 'border-transparent text-muted-foreground hover:text-foreground'
+            )}
+          >
+            {t.label}
+          </button>
+        ))}
+      </div>
+
+      {tab === 'analyzer' && <ToneAnalyzerPanel />}
+
+      {tab === 'overview' && <>
       <p className="text-sm text-muted-foreground leading-relaxed mb-8">{PRONUNCIATION_INTRO}</p>
 
       {/* Tones section */}
@@ -176,6 +208,7 @@ export default function PronunciationPage() {
           ))}
         </div>
       </section>
+      </>}
     </div>
   );
 }

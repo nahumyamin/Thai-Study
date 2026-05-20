@@ -21,7 +21,6 @@ const REFERENCE_PAGES = [
   { id: 'months', label: 'Months' },
   { id: 'classifiers', label: 'Classifiers' },
   { id: 'numbers', label: 'Numbers' },
-  { id: 'tones',   label: 'Tones' },
 ];
 
 function SearchIcon() {

@@ -170,7 +170,6 @@ const FEATURES = [
   { id: 'months',        label: 'Months',             desc: 'All 12 Thai months with a built-in quiz',             Ico: IcoMonths },
   { id: 'pronunciation', label: 'Pronunciation',      desc: 'Tones, vowels, and consonant classes',                Ico: IcoPronunciation },
   { id: 'classifiers',   label: 'Classifiers',        desc: 'Noun classifiers and Thai numerals reference',        Ico: IcoClassifiers },
-  { id: 'tones',         label: 'Tone Analyzer',      desc: 'Type a Thai word to see its tones explained live',    Ico: IcoTones },
 ];
 
 export default function HomePage({ showPage }) {
