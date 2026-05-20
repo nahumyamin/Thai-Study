@@ -133,8 +133,8 @@ function ToneReferenceTable() {
   );
 }
 
-// ── Main page ─────────────────────────────────────────────────────
-export default function ToneAnalyzerPage() {
+// ── Embeddable panel (no outer wrapper or heading) ────────────────
+export function ToneAnalyzerPanel() {
   const [input, setInput] = useState('');
 
   const syllables = useMemo(() => {
@@ -150,11 +150,7 @@ export default function ToneAnalyzerPage() {
   const EXAMPLES = ['กา', 'ขา', 'น้ำ', 'หมา', 'สวัสดี', 'ภาษาไทย'];
 
   return (
-    <div className="max-w-[900px] mx-auto px-5 py-8">
-      <h1 className="text-3xl font-serif font-normal mb-1">
-        Tone <em className="text-primary not-italic font-medium">Analyzer</em>
-      </h1>
-      <Separator className="mb-4" />
+    <>
       <p className="text-sm text-muted-foreground leading-relaxed mb-6 max-w-[560px]">
         Type a Thai word to see a live tone breakdown — consonant class, syllable type,
         tone mark, and the rule that determines each tone.
@@ -168,7 +164,6 @@ export default function ToneAnalyzerPage() {
           onChange={e => setInput(e.target.value)}
           placeholder="พิมพ์คำภาษาไทย…"
           className="w-full text-2xl px-4 py-3 rounded-xl border border-border bg-card focus:outline-none focus:ring-2 focus:ring-primary/30 font-light text-foreground placeholder:text-muted-foreground/40"
-          autoFocus
         />
         {input && (
           <button
@@ -232,6 +227,19 @@ export default function ToneAnalyzerPage() {
 
       {/* Reference table */}
       <ToneReferenceTable />
+    </>
+  );
+}
+
+// ── Standalone page (kept for compatibility) ──────────────────────
+export default function ToneAnalyzerPage() {
+  return (
+    <div className="max-w-[900px] mx-auto px-5 py-8">
+      <h1 className="text-3xl font-serif font-normal mb-1">
+        Tone <em className="text-primary not-italic font-medium">Analyzer</em>
+      </h1>
+      <Separator className="mb-4" />
+      <ToneAnalyzerPanel />
     </div>
   );
 }
