@@ -1,5 +1,10 @@
 @import "tailwindcss";
 
+/* Tie Tailwind's dark: variant to the app's data-theme toggle,
+   not the OS media query — prevents dark utilities firing on
+   a light-mode page just because the OS is in dark mode. */
+@variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
