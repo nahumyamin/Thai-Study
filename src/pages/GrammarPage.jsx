@@ -110,7 +110,7 @@ export default function GrammarPage() {
       <p className="text-sm text-muted-foreground leading-relaxed mb-6">{GRAMMAR_INTRO}</p>
 
       {/* ── Category tab bar ──────────────────────────────────────── */}
-      <div className="flex gap-0 mb-8 border-b border-border overflow-x-auto">
+      <div className="flex gap-0 mb-8 border-b border-border overflow-x-auto overflow-y-hidden">
         {GRAMMAR_CATEGORIES.map(cat => {
           const count = GRAMMAR_RULES.filter(r => r.category === cat.id).length;
           return (
