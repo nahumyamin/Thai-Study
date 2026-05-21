@@ -324,7 +324,7 @@ export default function QuizPage({ starred }) {
                   >
                     <Button
                       variant="outline"
-                      className={cn('w-full rounded-none h-auto py-3 text-base text-foreground', variantClass)}
+                      className={cn('w-full rounded-none h-auto py-3 text-base text-foreground font-thai-display', variantClass)}
                       onClick={() => handleMcAnswer(choice)}
                       disabled={answered}
                     >

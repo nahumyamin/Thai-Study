@@ -174,17 +174,19 @@ const FEATURES = [
 
 export default function HomePage({ showPage }) {
   return (
-    <div className="max-w-[1200px] mx-auto px-5 pt-14 pb-20">
+    <div className="relative max-w-[1200px] mx-auto px-5 pt-14 pb-20">
+      {/* radial glow behind hero */}
+      <div className="pointer-events-none absolute inset-x-0 -top-8 h-[520px] -z-10 hero-glow" />
 
       {/* ── Hero ── */}
-      <div className="flex flex-col md:flex-row items-center gap-14 mb-24">
+      <div className="flex flex-col md:flex-row items-center gap-14 mb-16">
         <div className="flex-1 text-center md:text-left">
           <p className="text-[0.68rem] font-bold tracking-[0.2em] uppercase text-muted-foreground mb-5">
             Thai language reference
           </p>
           <h1 className="text-5xl md:text-6xl font-serif font-normal mb-5 leading-tight">
             Learn Thai,<br/>
-            <em className="text-amber-500 not-italic font-medium">word by word.</em>
+            <em className="text-primary not-italic font-medium">word by word.</em>
           </h1>
           <p className="text-base text-muted-foreground mb-8 max-w-[420px] mx-auto md:mx-0 leading-relaxed">
             Vocabulary cards, grammar patterns, reading passages, and games —
@@ -199,6 +201,13 @@ export default function HomePage({ showPage }) {
         <div className="hidden md:block animate-tile-3">
           <HeroIllustration />
         </div>
+      </div>
+
+      {/* ── Ornament divider ── */}
+      <div className="flex items-center gap-5 mb-10 select-none" aria-hidden="true">
+        <div className="flex-1 h-px bg-border" />
+        <span className="text-[0.9rem] tracking-[0.55em] text-muted-foreground/40 font-light pr-[0.55em]">ก ข ค ง</span>
+        <div className="flex-1 h-px bg-border" />
       </div>
 
       {/* ── Features ── */}
