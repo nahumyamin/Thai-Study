@@ -109,28 +109,26 @@ export default function GrammarPage() {
       <Separator className="mb-4" />
       <p className="text-sm text-muted-foreground leading-relaxed mb-6">{GRAMMAR_INTRO}</p>
 
-      {/* ── Category tab bar ──────────────────────────────────────── */}
-      <div className="flex gap-0 mb-8 border-b border-border overflow-x-auto overflow-y-hidden">
+      {/* ── Category pill bar — wraps on small screens ───────────── */}
+      <div className="flex flex-wrap gap-2 mb-8">
         {GRAMMAR_CATEGORIES.map(cat => {
           const count = GRAMMAR_RULES.filter(r => r.category === cat.id).length;
+          const active = activeTab === cat.id;
           return (
             <button
               key={cat.id}
               onClick={() => setActiveTab(cat.id)}
               className={cn(
-                'px-4 py-2.5 text-sm font-medium border-b-2 -mb-px transition-colors whitespace-nowrap flex items-center gap-1.5 shrink-0',
-                activeTab === cat.id
-                  ? 'border-primary text-foreground'
-                  : 'border-transparent text-muted-foreground hover:text-foreground hover:border-border'
+                'flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-sm font-medium transition-colors border',
+                active
+                  ? 'bg-primary/10 border-primary/40 text-foreground'
+                  : 'bg-transparent border-border text-muted-foreground hover:text-foreground hover:bg-muted/50'
               )}
             >
-              <span className="hidden sm:inline">{cat.label}</span>
-              <span className="sm:hidden">{cat.short}</span>
+              {cat.label}
               <span className={cn(
-                'text-[0.65rem] font-mono rounded-full px-1.5 py-0 leading-5 min-w-[1.25rem] text-center tabular-nums',
-                activeTab === cat.id
-                  ? 'bg-primary/15 text-primary'
-                  : 'bg-muted text-muted-foreground'
+                'text-[0.65rem] font-mono rounded-full px-1.5 leading-5 min-w-[1.25rem] text-center tabular-nums',
+                active ? 'bg-primary/20 text-primary' : 'bg-muted text-muted-foreground'
               )}>
                 {count}
               </span>
