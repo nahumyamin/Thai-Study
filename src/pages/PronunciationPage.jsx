@@ -94,9 +94,9 @@ export default function PronunciationPage() {
               {TONE_TABLE.rows.map(row => (
                 <tr key={row.cls}>
                   <td className={`border border-border px-3 py-2 text-center font-semibold text-[0.8rem] tracking-wider uppercase ${
-                    row.clsClass === 'mid-cls'  ? 'bg-blue-100  text-blue-700  dark:bg-blue-900/40  dark:text-blue-200'  :
-                    row.clsClass === 'high-cls' ? 'bg-red-100   text-red-700   dark:bg-red-900/40   dark:text-red-200'   :
-                                                  'bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-200'
+                    row.clsClass === 'mid-cls'  ? 'bg-blue-100  text-slate-800 dark:bg-blue-900/40  dark:text-blue-200'  :
+                    row.clsClass === 'high-cls' ? 'bg-red-100   text-slate-800 dark:bg-red-900/40   dark:text-red-200'   :
+                                                  'bg-green-100 text-slate-800 dark:bg-green-900/40 dark:text-green-200'
                   }`}>
                     {row.cls}
                   </td>

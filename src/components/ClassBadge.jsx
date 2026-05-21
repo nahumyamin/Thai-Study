@@ -7,10 +7,12 @@ import { cn } from '@/lib/utils';
  * Light:  bg-*-100 / text-*-900  → ~8-9:1 contrast
  * Dark:   bg-*-900/40 / text-*-200 → ~11-14:1 contrast
  */
+// Light: dark neutral text on tinted bg → 12-13:1 contrast, no same-hue washout
+// Dark:  light tinted text on dark tinted bg → 11-14:1 contrast
 const STYLES = {
-  mid:  'bg-blue-100  text-blue-700  border-blue-300  dark:bg-blue-900/40  dark:text-blue-200  dark:border-blue-800',
-  high: 'bg-red-100   text-red-700   border-red-300   dark:bg-red-900/40   dark:text-red-200   dark:border-red-800',
-  low:  'bg-green-100 text-green-700 border-green-300 dark:bg-green-900/40 dark:text-green-200 dark:border-green-800',
+  mid:  'bg-blue-100  text-slate-800 border-blue-300  dark:bg-blue-900/40  dark:text-blue-200  dark:border-blue-800',
+  high: 'bg-red-100   text-slate-800 border-red-300   dark:bg-red-900/40   dark:text-red-200   dark:border-red-800',
+  low:  'bg-green-100 text-slate-800 border-green-300 dark:bg-green-900/40 dark:text-green-200 dark:border-green-800',
 };
 
 /**
