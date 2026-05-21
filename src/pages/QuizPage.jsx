@@ -36,6 +36,8 @@ export default function QuizPage({ starred }) {
   const [typeVal, setTypeVal] = useState('');
   const [typeState, setTypeState] = useState(null);
   const [feedback, setFeedback] = useState('');
+  const [streak, setStreak] = useState(0);
+  const [streakToast, setStreakToast] = useState(null);
 
   const inputRef = useRef();
 
@@ -66,6 +68,8 @@ export default function QuizPage({ starred }) {
     setTypeVal('');
     setTypeState(null);
     setFeedback('');
+    setStreak(0);
+    setStreakToast(null);
     setScreen('quiz');
   };
 
@@ -78,9 +82,17 @@ export default function QuizPage({ starred }) {
     if (isCorrect) {
       setScore(s => s + 1);
       setFeedback('Correct!');
+      const newStreak = streak + 1;
+      setStreak(newStreak);
+      const STREAK_MSGS = { 5: '5 in a row 🔥', 10: '10 in a row! 🔥🔥', 20: '20 in a row!! 🏆' };
+      if (STREAK_MSGS[newStreak]) {
+        setStreakToast(STREAK_MSGS[newStreak]);
+        setTimeout(() => setStreakToast(null), 2000);
+      }
     } else {
       setMissed(m => [...m, correct]);
       setFeedback('');
+      setStreak(0);
     }
   };
 
@@ -96,9 +108,17 @@ export default function QuizPage({ starred }) {
     if (isCorrect) {
       setScore(s => s + 1);
       setFeedback('Correct!');
+      const newStreak = streak + 1;
+      setStreak(newStreak);
+      const STREAK_MSGS = { 5: '5 in a row 🔥', 10: '10 in a row! 🔥🔥', 20: '20 in a row!! 🏆' };
+      if (STREAK_MSGS[newStreak]) {
+        setStreakToast(STREAK_MSGS[newStreak]);
+        setTimeout(() => setStreakToast(null), 2000);
+      }
     } else {
       setMissed(m => [...m, correct]);
       setFeedback(`Answer: ${correct.thai} (${correct.rom}) — ${correct.en}`);
+      setStreak(0);
     }
   };
 
@@ -120,6 +140,7 @@ export default function QuizPage({ starred }) {
     setMissed(m => [...m, questions[qIdx].word]);
     setAnswered(true);
     setFeedback(`Answer: ${questions[qIdx].word.thai} (${questions[qIdx].word.rom}) — ${questions[qIdx].word.en}`);
+    setStreak(0);
   };
 
   const retryMissed = () => {
@@ -137,6 +158,8 @@ export default function QuizPage({ starred }) {
     setTypeVal('');
     setTypeState(null);
     setFeedback('');
+    setStreak(0);
+    setStreakToast(null);
     setScreen('quiz');
   };
 
@@ -250,6 +273,14 @@ export default function QuizPage({ starred }) {
 
   return (
     <div className="max-w-[1200px] mx-auto px-5 py-8">
+      {/* Streak milestone toast */}
+      {streakToast && (
+        <div className="fixed top-20 left-0 right-0 flex justify-center z-[300] pointer-events-none">
+          <div className="animate-streak-toast px-5 py-2.5 rounded-2xl bg-foreground text-background font-semibold text-sm shadow-xl">
+            {streakToast}
+          </div>
+        </div>
+      )}
       <h1 className="text-3xl font-serif font-normal mb-1">
         Thai <em className="text-primary not-italic font-medium">Quiz</em>
       </h1>
@@ -275,21 +306,31 @@ export default function QuizPage({ starred }) {
             <div className="grid grid-cols-2 gap-2 mb-3">
               {q.choices.map((choice, i) => {
                 let variantClass = '';
+                const isCorrectChoice = choice.thai === q.word.thai;
+                const isWrongSelected = answered && choice.thai === selectedChoice && !isCorrectChoice;
                 if (answered) {
-                  if (choice.thai === q.word.thai) variantClass = 'bg-green-100 border-green-600 text-green-900 hover:bg-green-100';
-                  else if (choice.thai === selectedChoice) variantClass = 'bg-red-100 border-red-600 text-red-900 hover:bg-red-100';
+                  if (isCorrectChoice) variantClass = 'bg-green-100 border-green-600 text-green-900 hover:bg-green-100';
+                  else if (isWrongSelected) variantClass = 'bg-red-100 border-red-600 text-red-900 hover:bg-red-100';
                   else variantClass = 'bg-green-100/40 border-green-400 text-green-800 opacity-70 hover:bg-green-100/40';
                 }
                 return (
-                  <Button
+                  <div
                     key={i}
-                    variant="outline"
-                    className={cn('rounded-none h-auto py-3 text-base text-foreground', variantClass)}
-                    onClick={() => handleMcAnswer(choice)}
-                    disabled={answered}
+                    className={cn(
+                      'quiz-choice',
+                      answered && isCorrectChoice && 'quiz-choice--correct',
+                      isWrongSelected && 'quiz-choice--wrong',
+                    )}
                   >
-                    {choice.thai}
-                  </Button>
+                    <Button
+                      variant="outline"
+                      className={cn('w-full rounded-none h-auto py-3 text-base text-foreground', variantClass)}
+                      onClick={() => handleMcAnswer(choice)}
+                      disabled={answered}
+                    >
+                      {choice.thai}
+                    </Button>
+                  </div>
                 );
               })}
             </div>

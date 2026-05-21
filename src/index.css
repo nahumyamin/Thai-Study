@@ -139,7 +139,7 @@
   height: 100%;
   position: relative;
   transform-style: preserve-3d;
-  transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 .card-wrapper.flipped .card-inner {
   transform: rotateY(180deg);
@@ -153,6 +153,121 @@
 }
 .card-back {
   transform: rotateY(180deg);
+}
+
+/* ── Syllable card stagger entrance ─────────────────────────────── */
+@keyframes card-enter {
+  from { opacity: 0; transform: translateY(10px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0)    scale(1);    }
+}
+@utility animate-card-enter {
+  animation: card-enter 0.28s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+/* ── Tone Analyzer empty-state breathing ก ───────────────────────── */
+@keyframes breathe {
+  0%, 100% { transform: scale(1);    }
+  50%       { transform: scale(1.04); }
+}
+@utility animate-breathe {
+  animation: breathe 3s ease-in-out infinite;
+}
+
+/* ── Speaker ripple ──────────────────────────────────────────────── */
+@keyframes speaker-ripple {
+  0%   { transform: scale(1);   opacity: 0.55; }
+  100% { transform: scale(2.6); opacity: 0;    }
+}
+@utility animate-speaker-ripple {
+  animation: speaker-ripple 1.2s ease-out infinite;
+}
+
+/* ── Quiz: wrong-answer shake ────────────────────────────────────── */
+@keyframes shake {
+  0%, 100% { transform: translateX(0);    }
+  15%       { transform: translateX(-5px); }
+  30%       { transform: translateX(5px);  }
+  50%       { transform: translateX(-4px); }
+  70%       { transform: translateX(4px);  }
+  85%       { transform: translateX(-2px); }
+}
+
+/* ── Quiz: correct-answer burst ──────────────────────────────────── */
+@keyframes burst-scale {
+  0%   { transform: scale(1);    }
+  40%  { transform: scale(1.07); }
+  70%  { transform: scale(0.97); }
+  100% { transform: scale(1);    }
+}
+@keyframes burst-particles-a {
+  0%   {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 0 0 #4ade80, 0 0 0 0 #a3e635,
+                0 0 0 0 #4ade80, 0 0 0 0 #a3e635,
+                0 0 0 0 #4ade80, 0 0 0 0 #a3e635;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%);
+    box-shadow: -22px -18px 0 0 #4ade80,  22px -14px 0 0 #a3e635,
+                 18px  22px 0 0 #4ade80, -18px  22px 0 0 #a3e635,
+                 28px   2px 0 0 #4ade80, -26px   4px 0 0 #a3e635;
+  }
+}
+@keyframes burst-particles-b {
+  0%   {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 0 0 #86efac, 0 0 0 0 #4ade80,
+                0 0 0 0 #86efac, 0 0 0 0 #4ade80,
+                0 0 0 0 #86efac, 0 0 0 0 #4ade80;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%);
+    box-shadow: -10px -26px 0 0 #86efac,  12px -28px 0 0 #4ade80,
+                 26px  12px 0 0 #86efac, -24px  14px 0 0 #4ade80,
+                  -4px 26px 0 0 #86efac,    6px 28px 0 0 #4ade80;
+  }
+}
+
+.quiz-choice {
+  position: relative;
+  overflow: visible;
+}
+.quiz-choice--correct {
+  animation: burst-scale 0.42s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+.quiz-choice--correct::before,
+.quiz-choice--correct::after {
+  content: '';
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 10;
+}
+.quiz-choice--correct::before {
+  animation: burst-particles-a 0.55s ease-out forwards;
+}
+.quiz-choice--correct::after {
+  animation: burst-particles-b 0.55s ease-out 0.05s forwards;
+}
+.quiz-choice--wrong {
+  animation: shake 0.4s ease-in-out both;
+}
+
+/* ── Streak milestone toast ──────────────────────────────────────── */
+@keyframes streak-toast {
+  0%   { opacity: 0; transform: translateY(-14px) scale(0.88); }
+  18%  { opacity: 1; transform: translateY(0)     scale(1.06); }
+  80%  { opacity: 1; transform: translateY(0)     scale(1);    }
+  100% { opacity: 0; transform: translateY(-8px)  scale(0.95); }
+}
+@utility animate-streak-toast {
+  animation: streak-toast 2s cubic-bezier(0.34, 1.56, 0.64, 1) both;
 }
 
 /* Topic color dots */
