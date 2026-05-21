@@ -5,6 +5,7 @@ export const ANTHEMS = [
     thaiTitle: 'เพลงชาติไทย',
     romanTitle: 'Phleng Chat Thai',
     subtitle: 'The Song of Thailand',
+    youtubeId: 'coH0rBvqsSE',
     intro: `Thailand's national anthem was adopted in 1939, with music composed by Peter Feit (Phra Chenduriyang), a German-born Thai composer, and lyrics by Luang Saranupraphan. It replaced an earlier royal-focused anthem, deliberately centering the nation and its people rather than the monarchy. The anthem is broadcast every day at 8 am and 6 pm — at public spaces across the country, people stop and stand in respectful silence.`,
     facts: [
       { label: 'Music',   value: 'Peter Feit (Phra Chenduriyang), 1932' },
@@ -62,6 +63,7 @@ export const ANTHEMS = [
     thaiTitle: 'เพลงสรรเสริญพระบารมี',
     romanTitle: 'Sansoen Phra Barami',
     subtitle: 'Glorifying His Majesty\'s Virtue',
+    youtubeId: 'v_PsivwtY0I',
     intro: `The Royal Anthem honours the reigning monarch and is distinct from the National Anthem. It is played before every film screening in Thai cinemas — audiences rise and stand in silence — and at royal ceremonies, official broadcasts, and national holidays. The melody was composed by Peter Feit; the current lyrics were written by Prince Narisara Nuvadtivongs and have remained largely unchanged since the reign of Rama V.`,
     facts: [
       { label: 'Music',   value: 'Peter Feit (Phra Chenduriyang)' },

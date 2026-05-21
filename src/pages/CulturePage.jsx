@@ -22,11 +22,22 @@ function AnthemPanel({ anthem }) {
         {anthem.intro}
       </p>
 
-      {/* Facts strip */}
-      <div className="mb-8 rounded-lg border border-border bg-muted/20 px-4 py-1 max-w-[480px]">
-        {anthem.facts.map(f => (
-          <FactRow key={f.label} label={f.label} value={f.value} />
-        ))}
+      {/* Facts + video side by side */}
+      <div className="flex flex-col md:flex-row gap-5 mb-8">
+        <div className="rounded-lg border border-border bg-muted/20 px-4 py-1 md:w-[380px] shrink-0">
+          {anthem.facts.map(f => (
+            <FactRow key={f.label} label={f.label} value={f.value} />
+          ))}
+        </div>
+        <div className="flex-1 rounded-lg overflow-hidden border border-border aspect-video">
+          <iframe
+            src={`https://www.youtube.com/embed/${anthem.youtubeId}`}
+            title={anthem.title}
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+            className="w-full h-full"
+          />
+        </div>
       </div>
 
       {/* Lyrics */}
