@@ -1,112 +1,22 @@
 import { Button } from '@/components/ui/button';
 
-// ── Tone Wave illustration ────────────────────────────────────────
-const TONE_LINES = [
-  // id, name, color, SVG path, endpoint Y, char label, char position, anim duration/delay
-  {
-    id: 1, color: '#f59e0b',
-    path: 'M40,78 C130,68 250,44 320,40',
-    endY: 40,  charX: 262, charY: 27,  char: 'ก๊า',
-    dur: '4.5s', delay: '0s',
-  },
-  {
-    id: 2, color: '#ef4444',
-    path: 'M40,56 C120,76 240,118 320,142',
-    endY: 142, charX: 52,  charY: 43,  char: 'ก้า',
-    dur: '5.2s', delay: '0.8s',
-  },
-  {
-    id: 3, color: '#3b82f6',
-    path: 'M40,97 L320,97',
-    endY: 97,  charX: 180, charY: 84,  char: 'กา',
-    dur: '3.8s', delay: '0.3s',
-  },
-  {
-    id: 4, color: '#10b981',
-    path: 'M40,142 C110,158 215,106 320,60',
-    endY: 60,  charX: 300, charY: 47,  char: 'ก๋า',
-    dur: '6.1s', delay: '1.5s',
-  },
-  {
-    id: 5, color: '#8b5cf6',
-    path: 'M40,118 C150,124 260,132 320,136',
-    endY: 136, charX: 52,  charY: 105, char: 'ก่า',
-    dur: '4.8s', delay: '1.1s',
-  },
-];
-
-function ToneWaveIllustration() {
+// ── Hero illustration ─────────────────────────────────────────────
+function HeroIllustration() {
   return (
-    <div className="relative shrink-0 select-none" aria-hidden="true">
-      <svg
-        viewBox="0 0 360 178"
-        width="348"
-        height="172"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <defs>
-          {/* Glow: blur + merge with original for a soft halo */}
-          <filter id="tw-glow" x="-30%" y="-80%" width="160%" height="260%">
-            <feGaussianBlur stdDeviation="2.6" result="blur" />
-            <feMerge>
-              <feMergeNode in="blur" />
-              <feMergeNode in="SourceGraphic" />
-            </feMerge>
-          </filter>
-        </defs>
-
-        {/* Faint pitch-staff reference lines */}
-        {[32, 64, 97, 130, 160].map(y => (
-          <line
-            key={y}
-            x1="30" y1={y} x2="330" y2={y}
-            stroke="currentColor"
-            strokeWidth="0.6"
-            strokeOpacity="0.07"
-          />
-        ))}
-
-        {/* Tone contour paths */}
-        {TONE_LINES.map(t => (
-          <g
-            key={t.id}
-            style={{
-              animation: `tone-wave-${t.id} ${t.dur} ease-in-out infinite ${t.delay}`,
-              transformBox: 'fill-box',
-            }}
-          >
-            {/* Contour line */}
-            <path
-              d={t.path}
-              stroke={t.color}
-              strokeWidth="2.2"
-              strokeLinecap="round"
-              filter="url(#tw-glow)"
-              strokeOpacity="0.88"
-            />
-            {/* End-point anchor dot */}
-            <circle
-              cx={320} cy={t.endY}
-              r="3"
-              fill={t.color}
-              fillOpacity="0.65"
-            />
-            {/* Thai character label */}
-            <text
-              x={t.charX}
-              y={t.charY}
-              textAnchor="middle"
-              fontSize="12.5"
-              fontFamily="'Noto Serif Thai', 'Sarabun', sans-serif"
-              fill={t.color}
-              fillOpacity="0.92"
-            >
-              {t.char}
-            </text>
-          </g>
-        ))}
-      </svg>
+    <div className="relative shrink-0 select-none flex flex-col items-center" aria-hidden="true">
+      {/* Floating image */}
+      <img
+        src="/hero-illustration.png"
+        alt=""
+        width="380"
+        height="380"
+        className="animate-hero-float w-[320px] md:w-[380px] drop-shadow-xl"
+        draggable="false"
+      />
+      {/* Ground shadow that shrinks as the image rises */}
+      <div
+        className="animate-hero-shadow -mt-4 w-48 h-4 rounded-full bg-foreground/20 blur-md"
+      />
     </div>
   );
 }
@@ -273,8 +183,8 @@ export default function HomePage({ showPage }) {
           </div>
         </div>
 
-        <div className="hidden md:block">
-          <ToneWaveIllustration />
+        <div className="hidden md:flex justify-center">
+          <HeroIllustration />
         </div>
       </div>
 
