@@ -291,6 +291,28 @@
   color: hsl(30 10% 90%);
 }
 
+/* ── Tone wave undulation keyframes ─────────────────────────────── */
+@keyframes tone-wave-1 {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-4px); }
+}
+@keyframes tone-wave-2 {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(3.5px); }
+}
+@keyframes tone-wave-3 {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-2.5px); }
+}
+@keyframes tone-wave-4 {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(4px); }
+}
+@keyframes tone-wave-5 {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-3px); }
+}
+
 /* ── Hero section radial glow ────────────────────────────────────── */
 .hero-glow {
   background: radial-gradient(ellipse 80% 60% at 50% 0%,
