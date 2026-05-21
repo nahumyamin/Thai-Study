@@ -107,7 +107,7 @@ function App() {
     });
   };
 
-  const activeGroup = GROUP_MAP[activePage] || 'study';
+  const activeGroup = GROUP_MAP[activePage] ?? null;
 
   return (
     <div className="min-h-screen bg-background text-foreground" data-theme={theme === 'dark' ? 'dark' : undefined}>
