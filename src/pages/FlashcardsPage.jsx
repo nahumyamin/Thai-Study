@@ -15,7 +15,7 @@ function shuffle(arr) {
   return a;
 }
 
-export default function FlashcardsPage({ starred, toggleStar }) {
+export default function FlashcardsPage({ starred, toggleStar, showRomaji = true }) {
   const [search, setSearch] = useState('');
   const [activeTopic, setActiveTopic] = useState('all');
   const [showStarred, setShowStarred] = useState(false);
@@ -134,6 +134,7 @@ export default function FlashcardsPage({ starred, toggleStar }) {
               word={word}
               starred={starred.has(word.thai)}
               onToggleStar={toggleStar}
+              showRomaji={showRomaji}
             />
           ))
         )}
@@ -146,6 +147,7 @@ export default function FlashcardsPage({ starred, toggleStar }) {
           starred={starred}
           onToggleStar={toggleStar}
           onClose={() => setStudyOpen(false)}
+          showRomaji={showRomaji}
         />
       )}
     </div>

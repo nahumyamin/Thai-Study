@@ -56,7 +56,7 @@ function MoonIcon() {
   );
 }
 
-export default function Nav({ activePage, activeGroup, showPage, onSearch, theme, onToggleTheme }) {
+export default function Nav({ activePage, activeGroup, showPage, onSearch, theme, onToggleTheme, showRomaji, onToggleRomaji }) {
   const [menuOpen, setMenuOpen] = useState(false);
 
   const handleNav = (page) => {
@@ -109,6 +109,17 @@ export default function Nav({ activePage, activeGroup, showPage, onSearch, theme
             aria-label="Search"
           >
             <SearchIcon />
+          </button>
+          <button
+            onClick={onToggleRomaji}
+            className={cn(
+              'px-2 py-1.5 text-[0.6rem] font-bold tracking-widest uppercase rounded transition-colors',
+              showRomaji ? 'text-amber-400' : 'text-white/30 hover:text-white/60'
+            )}
+            aria-label={showRomaji ? 'Hide romanization' : 'Show romanization'}
+            title={showRomaji ? 'Hide romanization' : 'Show romanization'}
+          >
+            rōm
           </button>
           <button
             onClick={onToggleTheme}

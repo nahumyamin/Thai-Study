@@ -11,7 +11,7 @@ function SpeakerIcon({ active }) {
   );
 }
 
-export default function FlashCard({ word, starred, onToggleStar, onOpen }) {
+export default function FlashCard({ word, starred, onToggleStar, onOpen, showRomaji = true }) {
   const [flipped, setFlipped] = useState(false);
   const [speaking, setSpeaking] = useState(false);
   const color = topics[word.topic]?.color || '#888';
@@ -84,7 +84,7 @@ export default function FlashCard({ word, starred, onToggleStar, onOpen }) {
           {/* topic color strip — subtle on dark bg */}
           <div className="absolute top-0 left-0 right-0 h-1 rounded-t-lg opacity-70" style={{ background: color }} />
           <div className="text-[1.1rem] font-serif font-normal text-center leading-snug mb-1">{word.en}</div>
-          <div className="text-[0.8rem] italic text-center opacity-55 leading-snug">{word.rom}</div>
+          {showRomaji && <div className="text-[0.8rem] italic text-center opacity-55 leading-snug">{word.rom}</div>}
           {word.ex && <div className="text-[0.75rem] italic text-center opacity-45 leading-snug mt-1 px-2">{word.ex}</div>}
           <div className="absolute bottom-2 text-[0.65rem] tracking-widest uppercase opacity-40">
             {topics[word.topic]?.label || word.topic}

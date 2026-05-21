@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { allVocab, topics } from '../data/vocab.js';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -21,7 +21,7 @@ function getWrongChoices(correct, pool, count = 3) {
   return shuffle(others).slice(0, count);
 }
 
-export default function QuizPage({ starred }) {
+export default function QuizPage({ starred, showRomaji = true }) {
   const [screen, setScreen] = useState('setup');
   const [qTopic, setQTopic] = useState('all');
   const [qCount, setQCount] = useState(10);
@@ -117,7 +117,7 @@ export default function QuizPage({ starred }) {
       }
     } else {
       setMissed(m => [...m, correct]);
-      setFeedback(`Answer: ${correct.thai} (${correct.rom}) — ${correct.en}`);
+      setFeedback(`Answer: ${correct.thai}${showRomaji ? ` (${correct.rom})` : ''} — ${correct.en}`);
       setStreak(0);
     }
   };
@@ -139,7 +139,8 @@ export default function QuizPage({ starred }) {
     if (answered) return;
     setMissed(m => [...m, questions[qIdx].word]);
     setAnswered(true);
-    setFeedback(`Answer: ${questions[qIdx].word.thai} (${questions[qIdx].word.rom}) — ${questions[qIdx].word.en}`);
+    const w = questions[qIdx].word;
+    setFeedback(`Answer: ${w.thai}${showRomaji ? ` (${w.rom})` : ''} — ${w.en}`);
     setStreak(0);
   };
 
@@ -162,6 +163,24 @@ export default function QuizPage({ starred }) {
     setStreakToast(null);
     setScreen('quiz');
   };
+
+  // ── Listen mode helpers ───────────────────────────────────────────
+  const speakWord = () => {
+    if (!('speechSynthesis' in window) || !questions[qIdx]) return;
+    window.speechSynthesis.cancel();
+    const utt = new SpeechSynthesisUtterance(questions[qIdx].word.thai);
+    utt.lang = 'th-TH';
+    utt.rate = 0.85;
+    window.speechSynthesis.speak(utt);
+  };
+
+  // Auto-play when question loads in listen mode
+  useEffect(() => {
+    if (qMode !== 'listen' || screen !== 'quiz' || !questions[qIdx]) return;
+    const t = setTimeout(() => speakWord(), 120);
+    return () => clearTimeout(t);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [qIdx, qMode, screen]);
 
   const pct = questions.length > 0 ? Math.round((score / questions.length) * 100) : 0;
   const msg = pct >= 90 ? 'Excellent! You really know this material.' :
@@ -215,8 +234,9 @@ export default function QuizPage({ starred }) {
             <CardContent className="pt-4">
               <span className="block text-[0.75rem] font-semibold tracking-widest uppercase text-muted-foreground mb-3">Mode</span>
               <div className="flex flex-wrap gap-1.5">
-                <Button size="sm" variant={qMode === 'mc' ? 'default' : 'outline'} onClick={() => setQMode('mc')}>Multiple choice</Button>
-                <Button size="sm" variant={qMode === 'type' ? 'default' : 'outline'} onClick={() => setQMode('type')}>Type the Thai</Button>
+                <Button size="sm" variant={qMode === 'mc'     ? 'default' : 'outline'} onClick={() => setQMode('mc')}>Multiple choice</Button>
+                <Button size="sm" variant={qMode === 'type'   ? 'default' : 'outline'} onClick={() => setQMode('type')}>Type the Thai</Button>
+                <Button size="sm" variant={qMode === 'listen' ? 'default' : 'outline'} onClick={() => setQMode('listen')}>Listen &amp; choose</Button>
               </div>
             </CardContent>
           </Card>
@@ -295,15 +315,42 @@ export default function QuizPage({ starred }) {
 
         <Card className="mb-4">
           <CardContent className="pt-6 pb-6 text-center">
-            <div className="text-[0.72rem] tracking-widest uppercase text-muted-foreground mb-2">What is the Thai word for…</div>
-            <div className="font-serif text-2xl font-normal text-foreground leading-snug">{q.word.en}</div>
-            {q.word.rom && <div className="text-sm italic text-muted-foreground mt-1">{q.word.rom}</div>}
+            {qMode === 'listen' ? (
+              <>
+                <div className="text-[0.72rem] tracking-widest uppercase text-muted-foreground mb-4">
+                  Listen and choose the meaning
+                </div>
+                <button
+                  onClick={speakWord}
+                  className="mx-auto flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 hover:bg-primary/20 text-primary transition-colors"
+                  aria-label="Replay word"
+                >
+                  <svg width="28" height="28" viewBox="0 0 14 14" fill="none">
+                    <path d="M2 5H4.5L8 2V12L4.5 9H2V5Z" fill="currentColor" stroke="currentColor" strokeWidth="1.2" strokeLinejoin="round" />
+                    <path d="M10 4.5C10.8 5.3 11.3 6.1 11.3 7C11.3 7.9 10.8 8.7 10 9.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+                  </svg>
+                </button>
+                {/* Thai word hidden until answered */}
+                <div className={cn(
+                  'font-thai-display text-3xl mt-4 transition-all duration-300',
+                  answered ? 'opacity-100' : 'opacity-0 select-none pointer-events-none'
+                )}>
+                  {q.word.thai}
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="text-[0.72rem] tracking-widest uppercase text-muted-foreground mb-2">What is the Thai word for…</div>
+                <div className="font-serif text-2xl font-normal text-foreground leading-snug">{q.word.en}</div>
+                {showRomaji && q.word.rom && <div className="text-sm italic text-muted-foreground mt-1">{q.word.rom}</div>}
+              </>
+            )}
           </CardContent>
         </Card>
 
-        {qMode === 'mc' ? (
+        {(qMode === 'mc' || qMode === 'listen') ? (
           <div>
-            <div className="grid grid-cols-2 gap-2 mb-3">
+            <div className={cn('grid gap-2 mb-3', qMode === 'listen' ? 'grid-cols-1' : 'grid-cols-2')}>
               {q.choices.map((choice, i) => {
                 let variantClass = '';
                 const isCorrectChoice = choice.thai === q.word.thai;
@@ -324,11 +371,15 @@ export default function QuizPage({ starred }) {
                   >
                     <Button
                       variant="outline"
-                      className={cn('w-full rounded-none h-auto py-3 text-base text-foreground font-thai-display', variantClass)}
+                      className={cn(
+                        'w-full rounded-none h-auto py-3 text-base text-foreground',
+                        qMode !== 'listen' && 'font-thai-display',
+                        variantClass
+                      )}
                       onClick={() => handleMcAnswer(choice)}
                       disabled={answered}
                     >
-                      {choice.thai}
+                      {qMode === 'listen' ? choice.en : choice.thai}
                     </Button>
                   </div>
                 );
