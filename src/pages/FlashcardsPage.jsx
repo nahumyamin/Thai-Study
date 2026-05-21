@@ -23,6 +23,13 @@ export default function FlashcardsPage({ starred, toggleStar, showRomaji = true 
   const [studyOpen, setStudyOpen] = useState(false);
   const [studyIndex, setStudyIndex] = useState(0);
 
+  // Word count per topic (unfiltered totals for the pill badges)
+  const topicCounts = useMemo(() => {
+    const counts = { all: allVocab.length };
+    for (const w of allVocab) counts[w.topic] = (counts[w.topic] ?? 0) + 1;
+    return counts;
+  }, []);
+
   const filtered = useMemo(() => {
     let list = order;
     if (showStarred) list = list.filter(w => starred.has(w.thai));
@@ -100,25 +107,30 @@ export default function FlashcardsPage({ starred, toggleStar, showRomaji = true 
       </div>
 
       {/* Filter pills */}
-      <div className="flex flex-wrap gap-1.5 mb-4">
-        <Button
-          size="sm"
-          variant={activeTopic === 'all' ? 'default' : 'outline'}
-          onClick={() => setActiveTopic('all')}
-        >
-          All
-        </Button>
-        {Object.entries(topics).map(([key, val]) => (
-          <Button
-            key={key}
-            size="sm"
-            variant={activeTopic === key ? 'default' : 'outline'}
-            onClick={() => setActiveTopic(key)}
-            style={activeTopic === key ? { background: val.color, borderColor: val.color, color: '#fff' } : undefined}
-          >
-            {val.label}
-          </Button>
-        ))}
+      <div className="flex flex-wrap gap-2 mb-4">
+        {[['all', 'All'], ...Object.entries(topics).map(([k, v]) => [k, v.label])].map(([key, label]) => {
+          const active = activeTopic === key;
+          return (
+            <button
+              key={key}
+              onClick={() => setActiveTopic(key)}
+              className={cn(
+                'flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-sm font-medium transition-colors border',
+                active
+                  ? 'bg-primary/10 border-primary/40 text-foreground'
+                  : 'bg-transparent border-border text-muted-foreground hover:text-foreground hover:bg-muted/50'
+              )}
+            >
+              {label}
+              <span className={cn(
+                'text-[0.65rem] font-mono rounded-full px-1.5 leading-5 min-w-[1.25rem] text-center tabular-nums',
+                active ? 'bg-primary/20 text-primary' : 'bg-muted text-muted-foreground'
+              )}>
+                {topicCounts[key] ?? 0}
+              </span>
+            </button>
+          );
+        })}
       </div>
 
       <p className="text-xs text-muted-foreground text-center mb-2">Tap any card to reveal translation &amp; pronunciation</p>
