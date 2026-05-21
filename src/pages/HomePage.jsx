@@ -1,52 +1,112 @@
 import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
 
-// ── 3D tile block ─────────────────────────────────────────────────
-function Tile({ char, bg, fg, size = 60 }) {
-  const r = Math.round(size * 0.16);
-  return (
-    <svg
-      width={size + 8}
-      height={size + 10}
-      viewBox={`0 0 ${size + 8} ${size + 10}`}
-      style={{ filter: 'drop-shadow(0 6px 14px rgba(0,0,0,0.13))' }}
-    >
-      {/* depth layer */}
-      <rect x={5} y={7} width={size} height={size} rx={r} fill="rgba(0,0,0,0.18)" />
-      {/* face */}
-      <rect x={1} y={1} width={size} height={size} rx={r} fill={bg} />
-      {/* character */}
-      <text
-        x={size / 2 + 1}
-        y={size * 0.67 + 1}
-        textAnchor="middle"
-        fontSize={size * 0.44}
-        fontFamily="'Sarabun', sans-serif"
-        fill={fg}
-      >
-        {char}
-      </text>
-    </svg>
-  );
-}
-
-const HERO_TILES = [
-  { char: 'ก', bg: '#FEF08A', fg: '#92400E', size: 76, left: 95,  top: 0,   cls: 'animate-tile-1' },
-  { char: 'ส', bg: '#BAE6FD', fg: '#0C4A6E', size: 60, left: 0,   top: 56,  cls: 'animate-tile-2' },
-  { char: 'น', bg: '#BBF7D0', fg: '#14532D', size: 68, left: 188, top: 18,  cls: 'animate-tile-3' },
-  { char: 'เ', bg: '#DDD6FE', fg: '#4C1D95', size: 52, left: 52,  top: 132, cls: 'animate-tile-2' },
-  { char: 'ไ', bg: '#FECACA', fg: '#7F1D1D', size: 64, left: 150, top: 120, cls: 'animate-tile-1' },
-  { char: 'ม', bg: '#FED7AA', fg: '#7C2D12', size: 50, left: 234, top: 92,  cls: 'animate-tile-3' },
+// ── Tone Wave illustration ────────────────────────────────────────
+const TONE_LINES = [
+  // id, name, color, SVG path, endpoint Y, char label, char position, anim duration/delay
+  {
+    id: 1, color: '#f59e0b',
+    path: 'M40,78 C130,68 250,44 320,40',
+    endY: 40,  charX: 262, charY: 27,  char: 'ก๊า',
+    dur: '4.5s', delay: '0s',
+  },
+  {
+    id: 2, color: '#ef4444',
+    path: 'M40,56 C120,76 240,118 320,142',
+    endY: 142, charX: 52,  charY: 43,  char: 'ก้า',
+    dur: '5.2s', delay: '0.8s',
+  },
+  {
+    id: 3, color: '#3b82f6',
+    path: 'M40,97 L320,97',
+    endY: 97,  charX: 180, charY: 84,  char: 'กา',
+    dur: '3.8s', delay: '0.3s',
+  },
+  {
+    id: 4, color: '#10b981',
+    path: 'M40,142 C110,158 215,106 320,60',
+    endY: 60,  charX: 300, charY: 47,  char: 'ก๋า',
+    dur: '6.1s', delay: '1.5s',
+  },
+  {
+    id: 5, color: '#8b5cf6',
+    path: 'M40,118 C150,124 260,132 320,136',
+    endY: 136, charX: 52,  charY: 105, char: 'ก่า',
+    dur: '4.8s', delay: '1.1s',
+  },
 ];
 
-function HeroIllustration() {
+function ToneWaveIllustration() {
   return (
-    <div className="relative w-[295px] h-[215px] shrink-0 select-none" aria-hidden="true">
-      {HERO_TILES.map((t, i) => (
-        <div key={i} className={cn('absolute', t.cls)} style={{ left: t.left, top: t.top }}>
-          <Tile {...t} />
-        </div>
-      ))}
+    <div className="relative shrink-0 select-none" aria-hidden="true">
+      <svg
+        viewBox="0 0 360 178"
+        width="348"
+        height="172"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <defs>
+          {/* Glow: blur + merge with original for a soft halo */}
+          <filter id="tw-glow" x="-30%" y="-80%" width="160%" height="260%">
+            <feGaussianBlur stdDeviation="2.6" result="blur" />
+            <feMerge>
+              <feMergeNode in="blur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+        </defs>
+
+        {/* Faint pitch-staff reference lines */}
+        {[32, 64, 97, 130, 160].map(y => (
+          <line
+            key={y}
+            x1="30" y1={y} x2="330" y2={y}
+            stroke="currentColor"
+            strokeWidth="0.6"
+            strokeOpacity="0.07"
+          />
+        ))}
+
+        {/* Tone contour paths */}
+        {TONE_LINES.map(t => (
+          <g
+            key={t.id}
+            style={{
+              animation: `tone-wave-${t.id} ${t.dur} ease-in-out infinite ${t.delay}`,
+              transformBox: 'fill-box',
+            }}
+          >
+            {/* Contour line */}
+            <path
+              d={t.path}
+              stroke={t.color}
+              strokeWidth="2.2"
+              strokeLinecap="round"
+              filter="url(#tw-glow)"
+              strokeOpacity="0.88"
+            />
+            {/* End-point anchor dot */}
+            <circle
+              cx={320} cy={t.endY}
+              r="3"
+              fill={t.color}
+              fillOpacity="0.65"
+            />
+            {/* Thai character label */}
+            <text
+              x={t.charX}
+              y={t.charY}
+              textAnchor="middle"
+              fontSize="12.5"
+              fontFamily="'Noto Serif Thai', 'Sarabun', sans-serif"
+              fill={t.color}
+              fillOpacity="0.92"
+            >
+              {t.char}
+            </text>
+          </g>
+        ))}
+      </svg>
     </div>
   );
 }
@@ -198,8 +258,8 @@ export default function HomePage({ showPage }) {
           </div>
         </div>
 
-        <div className="hidden md:block animate-tile-3">
-          <HeroIllustration />
+        <div className="hidden md:block">
+          <ToneWaveIllustration />
         </div>
       </div>
 
