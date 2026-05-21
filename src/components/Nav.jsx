@@ -7,6 +7,10 @@ import {
 } from '@/components/ui/sheet';
 import { cn } from '@/lib/utils';
 
+const CULTURE_PAGES = [
+  { id: 'culture', label: 'Anthems' },
+];
+
 const STUDY_PAGES = [
   { id: 'cards',    label: 'Flashcards' },
   { id: 'quiz',     label: 'Quiz' },
@@ -77,7 +81,9 @@ export default function Nav({ activePage, activeGroup, showPage, onSearch, theme
       : 'text-white/50 hover:text-white/85 border-transparent'
   );
 
-  const subPages = activeGroup === 'study' ? STUDY_PAGES : REFERENCE_PAGES;
+  const subPages = activeGroup === 'study' ? STUDY_PAGES
+    : activeGroup === 'culture' ? CULTURE_PAGES
+    : REFERENCE_PAGES;
 
   return (
     <nav className="bg-zinc-900 text-white sticky top-0 z-50 border-b border-white/10">
@@ -97,6 +103,9 @@ export default function Nav({ activePage, activeGroup, showPage, onSearch, theme
           </button>
           <button className={groupTabClass('reference')} onClick={() => handleNav('grammar')}>
             Reference
+          </button>
+          <button className={groupTabClass('culture')} onClick={() => handleNav('culture')}>
+            Culture
           </button>
         </div>
 
@@ -172,6 +181,29 @@ export default function Nav({ activePage, activeGroup, showPage, onSearch, theme
                   Reference
                 </span>
                 {REFERENCE_PAGES.map(p => (
+                  <button
+                    key={p.id}
+                    className={cn(
+                      'text-left px-7 py-[0.65rem] text-sm tracking-[0.02em] border-l-[3px] transition-all',
+                      activePage === p.id
+                        ? 'text-white border-amber-400 bg-white/[0.06]'
+                        : 'text-white/65 border-transparent'
+                    )}
+                    onClick={() => handleNav(p.id)}
+                  >
+                    {p.label}
+                  </button>
+                ))}
+
+                <div className="h-px bg-white/[0.08] my-1.5" />
+
+                <span className={cn(
+                  'px-5 py-2 text-[0.68rem] font-bold tracking-[0.1em] uppercase',
+                  activeGroup === 'culture' ? 'text-amber-400' : 'text-white/40'
+                )}>
+                  Culture
+                </span>
+                {CULTURE_PAGES.map(p => (
                   <button
                     key={p.id}
                     className={cn(
