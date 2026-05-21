@@ -8,9 +8,9 @@ import { cn } from '@/lib/utils';
  * Dark:   bg-*-900/40 / text-*-200 → ~11-14:1 contrast
  */
 const STYLES = {
-  mid:  'bg-blue-100  text-blue-900  border-blue-200  dark:bg-blue-900/40  dark:text-blue-200  dark:border-blue-800',
-  high: 'bg-red-100   text-red-900   border-red-200   dark:bg-red-900/40   dark:text-red-200   dark:border-red-800',
-  low:  'bg-green-100 text-green-900 border-green-200 dark:bg-green-900/40 dark:text-green-200 dark:border-green-800',
+  mid:  'bg-blue-50  text-blue-900  border-blue-200  dark:bg-blue-900/40  dark:text-blue-200  dark:border-blue-800',
+  high: 'bg-red-50   text-red-900   border-red-200   dark:bg-red-900/40   dark:text-red-200   dark:border-red-800',
+  low:  'bg-green-50 text-green-900 border-green-200 dark:bg-green-900/40 dark:text-green-200 dark:border-green-800',
 };
 
 /**
