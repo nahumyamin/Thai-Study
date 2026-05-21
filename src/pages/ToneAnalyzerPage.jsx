@@ -42,7 +42,7 @@ function SyllableCard({ syl, analysis, index }) {
 
       {/* syllable + tone name */}
       <div className="px-5 pt-5 pb-3 flex items-end justify-between gap-3">
-        <div className="text-[3rem] font-light text-foreground leading-none">{syl.raw}</div>
+        <div className="text-[3rem] font-light font-thai-display text-foreground leading-none">{syl.raw}</div>
         <div className="flex flex-col items-end gap-1 pb-1">
           <ToneContour contour={tone.contour} color={tone.color} size={52} />
           <ToneBadge toneKey={analysis.toneKey} />
@@ -216,7 +216,7 @@ export function ToneAnalyzerPanel() {
       {/* Live word display */}
       {input.trim() && (
         <div className="text-center mb-8">
-          <div className="text-[5rem] font-light text-foreground leading-none tracking-wide mb-3">
+          <div className="text-[5rem] font-light font-thai-display text-foreground leading-none tracking-wide mb-3">
             {input}
           </div>
           <div className="relative inline-flex items-center justify-center">

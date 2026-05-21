@@ -52,19 +52,20 @@ export default function FlashCard({ word, starred, onToggleStar, onOpen }) {
     >
       <div className="card-inner">
         {/* Front */}
-        <div className="card-face flex flex-col items-center justify-center border border-border bg-card rounded-lg p-4 select-none">
+        <div className="card-face flex flex-col items-center justify-center border border-border bg-card rounded-lg p-4 select-none shadow-sm">
+          {/* topic color strip */}
+          <div className="absolute top-0 left-0 right-0 h-1 rounded-t-lg" style={{ background: color }} />
           <button
             onClick={handleStar}
             className={cn(
-              'absolute top-2 left-2 text-xl leading-none p-1 z-[2] transition-all bg-transparent border-none cursor-pointer',
+              'absolute top-3 left-2 text-xl leading-none p-1 z-[2] transition-all bg-transparent border-none cursor-pointer',
               starred ? 'text-amber-500' : 'text-muted-foreground hover:text-amber-500'
             )}
             aria-label={starred ? 'Unstar' : 'Star'}
           >
             {starred ? '★' : '☆'}
           </button>
-          <span className="absolute top-2 right-2 w-2 h-2 rounded-full" style={{ background: color }} />
-          <div className="text-[1.75rem] font-light text-foreground text-center leading-snug">{word.thai}</div>
+          <div className="text-[1.75rem] font-light font-thai-display text-foreground text-center leading-snug mt-1">{word.thai}</div>
           <div className="absolute bottom-2 text-[0.7rem] text-muted-foreground tracking-wider uppercase">tap to flip</div>
           <button
             onClick={handleSpeak}
@@ -79,18 +80,20 @@ export default function FlashCard({ word, starred, onToggleStar, onOpen }) {
         </div>
 
         {/* Back */}
-        <div className="card-face card-back flex flex-col items-center justify-center bg-foreground text-background rounded-lg p-4 select-none">
+        <div className="card-face card-back card-back-rich flex flex-col items-center justify-center rounded-lg p-4 select-none">
+          {/* topic color strip — subtle on dark bg */}
+          <div className="absolute top-0 left-0 right-0 h-1 rounded-t-lg opacity-70" style={{ background: color }} />
           <div className="text-[1.1rem] font-serif font-normal text-center leading-snug mb-1">{word.en}</div>
-          <div className="text-[0.8rem] italic text-center opacity-60 leading-snug">{word.rom}</div>
-          {word.ex && <div className="text-[0.75rem] italic text-center opacity-50 leading-snug mt-1 px-2">{word.ex}</div>}
-          <div className="absolute bottom-2 text-[0.7rem] tracking-widest uppercase opacity-50">
+          <div className="text-[0.8rem] italic text-center opacity-55 leading-snug">{word.rom}</div>
+          {word.ex && <div className="text-[0.75rem] italic text-center opacity-45 leading-snug mt-1 px-2">{word.ex}</div>}
+          <div className="absolute bottom-2 text-[0.65rem] tracking-widest uppercase opacity-40">
             {topics[word.topic]?.label || word.topic}
           </div>
           <button
             onClick={handleSpeak}
             className={cn(
               'absolute bottom-1.5 right-1.5 p-1.5 z-[2] bg-transparent border-none cursor-pointer transition-colors',
-              speaking ? 'opacity-100' : 'opacity-50 hover:opacity-80'
+              speaking ? 'opacity-100' : 'opacity-40 hover:opacity-70'
             )}
             aria-label="Pronounce"
           >
