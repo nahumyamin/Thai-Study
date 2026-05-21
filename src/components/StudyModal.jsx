@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { cn } from '@/lib/utils';
 
-export default function StudyModal({ words, initialIndex, starred, onToggleStar, onClose }) {
+export default function StudyModal({ words, initialIndex, starred, onToggleStar, onClose, showRomaji = true }) {
   const [idx, setIdx] = useState(initialIndex || 0);
   const [flipped, setFlipped] = useState(false);
 
@@ -66,17 +66,18 @@ export default function StudyModal({ words, initialIndex, starred, onToggleStar,
             <div className="card-inner">
               {/* Front */}
               <div className="card-face flex flex-col items-center justify-center border border-border bg-card rounded-lg p-8 gap-2">
-                <span className="absolute top-3 right-3 w-2.5 h-2.5 rounded-full" style={{ background: color }} />
-                <div className="text-[4rem] font-light text-foreground text-center leading-tight">{current.thai}</div>
+                <div className="absolute top-0 left-0 right-0 h-1 rounded-t-lg" style={{ background: color }} />
+                <div className="text-[4rem] font-light font-thai-display text-foreground text-center leading-tight">{current.thai}</div>
                 <div className="absolute bottom-3 text-[0.72rem] text-muted-foreground tracking-widest uppercase">tap to flip</div>
               </div>
 
               {/* Back */}
-              <div className="card-face card-back flex flex-col items-center justify-center bg-foreground text-background rounded-lg p-8 gap-2">
+              <div className="card-face card-back card-back-rich flex flex-col items-center justify-center rounded-lg p-8 gap-2">
+                <div className="absolute top-0 left-0 right-0 h-1 rounded-t-lg opacity-70" style={{ background: color }} />
                 <div className="text-[1.6rem] font-serif font-normal text-center leading-snug">{current.en}</div>
-                <div className="text-[0.9rem] italic text-center opacity-70">{current.rom}</div>
-                {current.ex && <div className="text-[0.82rem] italic text-center opacity-55 leading-relaxed mt-1 px-2">{current.ex}</div>}
-                <div className="absolute bottom-3 text-[0.7rem] tracking-widest uppercase opacity-50">
+                {showRomaji && <div className="text-[0.9rem] italic text-center opacity-65">{current.rom}</div>}
+                {current.ex && <div className="text-[0.82rem] italic text-center opacity-50 leading-relaxed mt-1 px-2">{current.ex}</div>}
+                <div className="absolute bottom-3 text-[0.7rem] tracking-widest uppercase opacity-40">
                   {topics[current.topic]?.label || current.topic}
                 </div>
               </div>

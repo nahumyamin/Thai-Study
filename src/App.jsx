@@ -47,6 +47,9 @@ function App() {
       return new Set();
     }
   });
+  const [showRomaji, setShowRomaji] = useState(() =>
+    localStorage.getItem('thai-study-romaji') !== 'false'
+  );
 
   const showPage = (page) => {
     setActivePage(page);
@@ -84,6 +87,10 @@ function App() {
     localStorage.setItem('thai-study-starred', JSON.stringify([...starred]));
   }, [starred]);
 
+  useEffect(() => {
+    localStorage.setItem('thai-study-romaji', showRomaji ? 'true' : 'false');
+  }, [showRomaji]);
+
   const toggleTheme = () => setTheme(t => t === 'light' ? 'dark' : 'light');
 
   const toggleStar = (thai) => {
@@ -106,15 +113,17 @@ function App() {
         onSearch={() => setSearchOpen(true)}
         theme={theme}
         onToggleTheme={toggleTheme}
+        showRomaji={showRomaji}
+        onToggleRomaji={() => setShowRomaji(r => !r)}
       />
       <SearchOverlay open={searchOpen} onClose={() => setSearchOpen(false)} showPage={showPage} />
 
       <div key={activePage} className="animate-page-in">
         {activePage === 'home'          && <HomePage showPage={showPage} />}
-        {activePage === 'cards'         && <FlashcardsPage starred={starred} toggleStar={toggleStar} />}
+        {activePage === 'cards'         && <FlashcardsPage starred={starred} toggleStar={toggleStar} showRomaji={showRomaji} />}
         {activePage === 'grammar'       && <GrammarPage />}
         {activePage === 'pronunciation' && <PronunciationPage />}
-        {activePage === 'quiz'          && <QuizPage starred={starred} />}
+        {activePage === 'quiz'          && <QuizPage starred={starred} showRomaji={showRomaji} />}
         {activePage === 'classifiers'   && <ClassifiersPage />}
         {activePage === 'numbers'       && <NumbersPage />}
         {activePage === 'rush'          && <ClassRushPage />}

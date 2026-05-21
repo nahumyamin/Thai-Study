@@ -344,3 +344,29 @@ export const PASSAGES = [
 ผู้พิการในประเทศไทยต้องต่อสู้เพื่อสิทธิความเท่าเทียมกันมานาน เมื่อไม่นานมานี้ กลุ่มผู้พิการในกรุงเทพได้ร่วมกันฟ้องศาล เพื่อให้บริษัทรถไฟฟ้า BTS สร้างลิฟต์ให้ทุกสถานี สุดท้าย ศาลตัดสินให้กลุ่มผู้พิการชนะ จากนั้น BTS ก็สร้างลิฟต์ให้ทุกสถานี นี่อาจจะเป็นคดีแรกที่แสดงให้เห็นว่าคนพิการเริ่มมีสิทธิมากขึ้นในสังคม แต่เราคงจะได้เห็นอะไรดีๆ มากกว่านี้ก็ได้ในอนาคต`
   },
 ];
+
+export const PASSAGE_DIFFICULTY = {
+  "งานศพ — Funerals":                "intermediate",
+  "ครอบครัวใหญ่ — Big Families":     "beginner",
+  "โชคดีโชคร้าย — Luck & Beliefs":  "intermediate",
+  "อาหารตามสั่ง — Street Food":      "beginner",
+  "ทหารไทย — Thai Military":         "advanced",
+  "ซอยตัน — Dead-End Alleys":        "intermediate",
+  "เวลามาตรฐาน — Standard Time":     "beginner",
+  "ผัดไทย — Pad Thai":               "beginner",
+  "สูบบุหรี่ — Smoking":             "intermediate",
+  "บัตรเอทีเอ็ม — ATM Cards":        "beginner",
+  "ปั๊มน้ำมัน — Petrol Stations":    "beginner",
+  "หมอกควันพิษ — Toxic Smog":        "advanced",
+  "สัตว์รบกวน — Pests":              "intermediate",
+  "ห้องเช่า — Rental Rooms":         "intermediate",
+  "หวยใต้ดิน — Underground Lottery": "advanced",
+  "รถไฟไทย — Thai Railways":         "intermediate",
+  "น้ำดื่ม — Drinking Water":        "beginner",
+  "โรงจำนำ — Pawnshops":             "intermediate",
+  "ค่าไฟฟ้า — Electricity Bills":    "intermediate",
+  "ขายของออนไลน์ — Online Selling":  "intermediate",
+  "แรงงานต่างด้าว — Migrant Workers":"advanced",
+  "การลงทุน — Investing":            "advanced",
+  "สิทธิผู้พิการ — Disability Rights":"advanced",
+};
