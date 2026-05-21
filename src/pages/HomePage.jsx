@@ -219,6 +219,20 @@ function IcoClassifiers() {
     </svg>
   );
 }
+function IcoClusters() {
+  return (
+    <svg width="42" height="42" viewBox="0 0 42 42" fill="none">
+      {/* Two consonant blocks side-by-side suggesting a cluster */}
+      <rect x="4"  y="10" width="15" height="20" rx="3" fill="#fef9c3" stroke="#fde047" strokeWidth="1.3"/>
+      <rect x="21" y="10" width="15" height="20" rx="3" fill="#dbeafe" stroke="#93c5fd" strokeWidth="1.3"/>
+      {/* Thai chars ก + ล */}
+      <text x="11.5" y="25" textAnchor="middle" fontSize="11" fontFamily="'Sarabun',sans-serif" fill="#854d0e">ก</text>
+      <text x="28.5" y="25" textAnchor="middle" fontSize="11" fontFamily="'Sarabun',sans-serif" fill="#1e40af">ล</text>
+      {/* small + between them, bottom */}
+      <text x="21" y="36" textAnchor="middle" fontSize="8" fontFamily="sans-serif" fill="#94a3b8">→ kl</text>
+    </svg>
+  );
+}
 
 const FEATURES = [
   { id: 'cards',         label: 'Flashcards',        desc: '313 vocabulary words across 18 topics',               Ico: IcoCards },
@@ -230,6 +244,7 @@ const FEATURES = [
   { id: 'months',        label: 'Months',             desc: 'All 12 Thai months with a built-in quiz',             Ico: IcoMonths },
   { id: 'pronunciation', label: 'Pronunciation',      desc: 'Tones, vowels, and consonant classes',                Ico: IcoPronunciation },
   { id: 'classifiers',   label: 'Classifiers',        desc: 'Noun classifiers and Thai numerals reference',        Ico: IcoClassifiers },
+  { id: 'clusters',      label: 'Clusters',           desc: 'All consonant cluster combinations with examples',    Ico: IcoClusters },
 ];
 
 export default function HomePage({ showPage }) {

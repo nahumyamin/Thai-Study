@@ -18,6 +18,7 @@ const STUDY_PAGES = [
 const REFERENCE_PAGES = [
   { id: 'grammar', label: 'Grammar' },
   { id: 'pronunciation', label: 'Pronunciation' },
+  { id: 'clusters', label: 'Clusters' },
   { id: 'months', label: 'Months' },
   { id: 'classifiers', label: 'Classifiers' },
   { id: 'numbers', label: 'Numbers' },
