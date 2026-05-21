@@ -133,9 +133,32 @@ function ToneReferenceTable() {
   );
 }
 
+// ── Large speaker icon ────────────────────────────────────────────
+function SpeakerIconLg({ active }) {
+  return (
+    <svg width="32" height="32" viewBox="0 0 14 14" fill="none">
+      <path d="M2 5H4.5L8 2V12L4.5 9H2V5Z" fill={active ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round" />
+      <path d="M10 4.5C10.8 5.3 11.3 6.1 11.3 7C11.3 7.9 10.8 8.7 10 9.5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
+    </svg>
+  );
+}
+
 // ── Embeddable panel (no outer wrapper or heading) ────────────────
 export function ToneAnalyzerPanel() {
   const [input, setInput] = useState('');
+  const [speaking, setSpeaking] = useState(false);
+
+  const handleSpeak = () => {
+    if (!input.trim() || !('speechSynthesis' in window)) return;
+    window.speechSynthesis.cancel();
+    const utt = new SpeechSynthesisUtterance(input.trim());
+    utt.lang = 'th-TH';
+    utt.rate = 0.85;
+    utt.onstart = () => setSpeaking(true);
+    utt.onend   = () => setSpeaking(false);
+    utt.onerror = () => setSpeaking(false);
+    window.speechSynthesis.speak(utt);
+  };
 
   const syllables = useMemo(() => {
     if (!input.trim()) return [];
@@ -193,9 +216,19 @@ export function ToneAnalyzerPanel() {
       {/* Live word display */}
       {input.trim() && (
         <div className="text-center mb-8">
-          <div className="text-[5rem] font-light text-foreground leading-none tracking-wide">
+          <div className="text-[5rem] font-light text-foreground leading-none tracking-wide mb-3">
             {input}
           </div>
+          <button
+            onClick={handleSpeak}
+            className={cn(
+              'p-2 bg-transparent border-none cursor-pointer transition-colors rounded-lg',
+              speaking ? 'text-primary' : 'text-muted-foreground hover:text-foreground'
+            )}
+            aria-label="Pronounce"
+          >
+            <SpeakerIconLg active={speaking} />
+          </button>
         </div>
       )}
 
