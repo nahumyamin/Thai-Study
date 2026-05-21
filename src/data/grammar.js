@@ -1,8 +1,17 @@
 export const GRAMMAR_INTRO = `Thai grammar is remarkably different from English. There are no verb conjugations, no plural endings, and no articles. Word order and a small set of particles carry most of the grammatical meaning. These twenty patterns cover the structures you will encounter most frequently.`;
 
+export const GRAMMAR_CATEGORIES = [
+  { id: 'basics',    label: 'Sentence Basics',      short: 'Basics'    },
+  { id: 'time',      label: 'Time & Aspect',         short: 'Time'      },
+  { id: 'questions', label: 'Negation & Questions',  short: 'Questions' },
+  { id: 'verbs',     label: 'Verbs & Particles',     short: 'Verbs'     },
+  { id: 'complex',   label: 'Complex Sentences',     short: 'Complex'   },
+];
+
 export const GRAMMAR_RULES = [
   {
     num: 1,
+    category: 'basics',
     title: 'Basic sentence order: Subject – Verb – Object',
     pattern: 'S + V + O',
     desc: `Thai follows the same subject–verb–object order as English. Verbs do not change form for tense, person, or number. Context, time words, and aspect particles tell you <em>when</em> something happens.`,
@@ -15,6 +24,7 @@ export const GRAMMAR_RULES = [
   },
   {
     num: 2,
+    category: 'time',
     title: 'Tense & aspect with จะ / กำลัง / แล้ว / เคย',
     pattern: 'particle + verb',
     desc: `There are no verb tenses in Thai. Instead, four particles placed before or after the verb signal when or how an action happens: <strong>จะ</strong> (future/intention), <strong>กำลัง</strong> (right now), <strong>แล้ว</strong> (completed / already), <strong>เคย</strong> (past experience / used to).`,
@@ -27,6 +37,7 @@ export const GRAMMAR_RULES = [
   },
   {
     num: 3,
+    category: 'questions',
     title: 'Negation with ไม่',
     pattern: 'ไม่ + verb/adjective',
     desc: `<strong>ไม่</strong> (mai, falling tone) is placed directly before a verb or adjective to negate it — equivalent to "not", "don't", or "doesn't". For the verb <strong>มี</strong> (to have/exist), negation uses <strong>ไม่มี</strong>. Emphatic negation adds <strong>เลย</strong> at the end: <em>not at all</em>.`,
@@ -39,6 +50,7 @@ export const GRAMMAR_RULES = [
   },
   {
     num: 4,
+    category: 'basics',
     title: 'Adjectives follow nouns; comparison with กว่า',
     pattern: 'noun + adjective; A + adj + กว่า + B',
     desc: `In Thai, adjectives come <em>after</em> the noun they describe, unlike English. For comparisons, add <strong>กว่า</strong> after the adjective: <em>more … than</em>. Superlatives use <strong>ที่สุด</strong> after the adjective: <em>the most …</em>.`,
@@ -51,6 +63,7 @@ export const GRAMMAR_RULES = [
   },
   {
     num: 5,
+    category: 'verbs',
     title: 'Modals: ต้อง / สามารถ...ได้ / อยาก / ควร / อาจจะ',
     pattern: 'modal + verb (+ ได้)',
     desc: `Thai modals sit before the main verb and do not change form. The most common ones: <strong>ต้อง</strong> (must), <strong>สามารถ…ได้</strong> (can/able to — split around the verb), <strong>อยาก</strong> (want to), <strong>ควร</strong> (should), <strong>อาจจะ</strong> (might). <strong>ได้</strong> alone after a verb also means "can" or marks a completed action.`,
@@ -63,6 +76,7 @@ export const GRAMMAR_RULES = [
   },
   {
     num: 6,
+    category: 'complex',
     title: 'Causative ทำให้ — "to cause / to make"',
     pattern: 'cause + ทำให้ + effect',
     desc: `<strong>ทำให้</strong> (tham hai) is one of the most common structures in written Thai. It connects a cause to its effect, meaning "causes", "makes", or "results in". The subject performs the action that brings about the result stated after ทำให้.`,
@@ -75,6 +89,7 @@ export const GRAMMAR_RULES = [
   },
   {
     num: 7,
+    category: 'complex',
     title: 'Conditionals with ถ้า…ก็ — "if … then …"',
     pattern: 'ถ้า + condition + ก็ + result',
     desc: `<strong>ถ้า</strong> opens the condition clause (if). <strong>ก็</strong> starts the result clause (then). ก็ is optional in informal speech but very common in written Thai. The structure works for present, future, and hypothetical situations alike — tense comes from context.`,
@@ -87,6 +102,7 @@ export const GRAMMAR_RULES = [
   },
   {
     num: 8,
+    category: 'complex',
     title: 'Relative clauses with ที่ — "that / which / who"',
     pattern: 'noun + ที่ + verb/clause',
     desc: `<strong>ที่</strong> functions as a relative pronoun, equivalent to English "that", "which", or "who". It follows the noun being described and introduces a clause that modifies it. The same word ที่ also means "place", so context matters.`,
@@ -99,6 +115,7 @@ export const GRAMMAR_RULES = [
   },
   {
     num: 9,
+    category: 'complex',
     title: 'Reporting speech & thought with ว่า',
     pattern: 'verb of saying/thinking + ว่า + clause',
     desc: `<strong>ว่า</strong> introduces a quoted or reported clause after verbs of saying, thinking, believing, or knowing — like English "that" in "he said <em>that</em>…". There is no change between direct and indirect speech; the verb form stays the same.`,
@@ -111,6 +128,7 @@ export const GRAMMAR_RULES = [
   },
   {
     num: 10,
+    category: 'complex',
     title: 'Discourse connectors: เพราะ / แต่ / ดังนั้น / อย่างไรก็ตาม',
     pattern: 'clause + connector + clause',
     desc: `These four connectors build the logical flow of sentences. <strong>เพราะ</strong> gives a reason (because). <strong>แต่</strong> introduces a contrast (but). <strong>ดังนั้น</strong> signals a conclusion (therefore). <strong>อย่างไรก็ตาม</strong> concedes a point (however). Mastering them dramatically improves reading speed.`,
@@ -123,6 +141,7 @@ export const GRAMMAR_RULES = [
   },
   {
     num: 11,
+    category: 'verbs',
     title: 'The five uses of ให้',
     pattern: 'give · let · for · so that · causative',
     desc: `<strong>ให้</strong> (hai) is one of Thai's most versatile words. Its meaning shifts depending on position and surrounding verbs. The same written word carries five distinct grammatical functions — sometimes in the same sentence. Learning to distinguish them is key to reading Thai naturally.`,
@@ -187,6 +206,7 @@ export const GRAMMAR_RULES = [
   },
   {
     num: 12,
+    category: 'basics',
     title: 'คือ vs เป็น — the two "to be" verbs',
     pattern: 'A + คือ + B (identity) | A + เป็น + B (role/state)',
     desc: `Thai has two main linking verbs that both translate as "is/are" but are not interchangeable. <strong>คือ</strong> (khue) equates two things — it defines, identifies, or clarifies. Think of it as "=". <strong>เป็น</strong> (pen) describes a role, profession, nationality, category, or state. Think of it as "functions as" or "is classified as". A useful test: if you can say "X is defined as Y", use คือ; if you are describing what X is like or what role X plays, use เป็น.`,
@@ -222,6 +242,7 @@ export const GRAMMAR_RULES = [
   },
   {
     num: 13,
+    category: 'questions',
     title: 'Yes/no questions: ไหม / ใช่ไหม / หรือเปล่า',
     pattern: 'statement + ไหม | statement + ใช่ไหม | statement + หรือเปล่า',
     desc: `Thai forms yes/no questions by adding a particle at the end of a statement — the word order does not change. <strong>ไหม</strong> (mai, rising tone) is the neutral question marker. <strong>ใช่ไหม</strong> is a tag question: "isn't it? / right?". <strong>หรือเปล่า</strong> is more casual: "or not?". To answer, repeat the key verb affirmatively, or say <strong>ไม่</strong> + verb for "no".`,
@@ -234,6 +255,7 @@ export const GRAMMAR_RULES = [
   },
   {
     num: 14,
+    category: 'questions',
     title: 'Question words: ใคร / อะไร / ที่ไหน / เมื่อไร / ทำไม / อย่างไร',
     pattern: 'question word takes the position of the unknown',
     desc: `Thai question words slot into the position of the information being asked — the word order mirrors the answer. <strong>ใคร</strong> = who, <strong>อะไร</strong> = what, <strong>ที่ไหน</strong> = where, <strong>เมื่อไร/เมื่อไหร่</strong> = when, <strong>ทำไม</strong> = why (always sentence-final or initial), <strong>อย่างไร</strong> = how. <strong>กี่</strong> = how many (+ classifier).`,
@@ -246,6 +268,7 @@ export const GRAMMAR_RULES = [
   },
   {
     num: 15,
+    category: 'basics',
     title: 'Classifiers: counting and specifying nouns',
     pattern: 'noun + number + classifier | noun + นี้/นั้น + classifier',
     desc: `Thai requires a <em>classifier</em> (เลขนาม) whenever a noun is counted or specified with "this/that/which". The classifier follows the number and matches the category of noun. Common ones: <strong>คน</strong> (people), <strong>คัน</strong> (vehicles), <strong>ใบ</strong> (flat objects, documents), <strong>ตัว</strong> (animals, letters, items of clothing), <strong>เล่ม</strong> (books), <strong>อัน</strong> (small general objects), <strong>แห่ง</strong> (places/institutions).`,
@@ -258,6 +281,7 @@ export const GRAMMAR_RULES = [
   },
   {
     num: 16,
+    category: 'complex',
     title: 'Passive with ถูก (adversative) and ได้รับ (neutral)',
     pattern: 'subject + ถูก + verb | subject + ได้รับ + noun',
     desc: `Thai does not have a true grammatical passive, but two structures serve the function. <strong>ถูก</strong> (thuk) before a verb creates an adversative passive — the subject is acted upon, often with a negative or undesirable result. <strong>ได้รับ</strong> (dai rap, "to receive") is neutral and used for receiving benefits, rights, or treatment. The colloquial <strong>โดน</strong> is interchangeable with ถูก in spoken Thai.`,
@@ -270,6 +294,7 @@ export const GRAMMAR_RULES = [
   },
   {
     num: 17,
+    category: 'verbs',
     title: 'Directional verbs ไป / มา after main verbs',
     pattern: 'verb + ไป (away) | verb + มา (toward speaker)',
     desc: `<strong>ไป</strong> (pai) and <strong>มา</strong> (ma) follow a main verb to show direction relative to the speaker. ไป means movement away; มา means movement toward. They also appear in compound verbs: <strong>เอา…ไป</strong> = take away, <strong>เอา…มา</strong> = bring here. Many verbs combine with both to describe complete movements: <strong>กลับมา</strong> = come back, <strong>ออกไป</strong> = go out.`,
@@ -282,6 +307,7 @@ export const GRAMMAR_RULES = [
   },
   {
     num: 18,
+    category: 'verbs',
     title: 'โดย — by / via / through / in a manner',
     pattern: 'โดย + noun/verb phrase',
     desc: `<strong>โดย</strong> (doi) is a versatile preposition indicating means, method, agent, or manner. It appears in many fixed adverbial phrases: <strong>โดยตรง</strong> = directly, <strong>โดยทั่วไป</strong> = generally, <strong>โดยรวม</strong> = overall, <strong>โดยอัตโนมัติ</strong> = automatically. In formal writing it can introduce the agent of a passive action (like English "by"), though ถูก is more common for that purpose.`,
@@ -294,6 +320,7 @@ export const GRAMMAR_RULES = [
   },
   {
     num: 19,
+    category: 'time',
     title: 'อยู่ — ongoing state and location',
     pattern: 'verb + อยู่ (continuous) | noun + อยู่ที่ + place (location)',
     desc: `<strong>อยู่</strong> (yu) after a verb signals that an action or state is ongoing or stable — similar to the English progressive "-ing" but also used for lasting states. Combined with <strong>กำลัง</strong> it reinforces the present progressive. As a standalone verb, อยู่ means "to be located at / to live". It also appears in <strong>อาศัยอยู่</strong> (to reside) and <strong>ยังคงอยู่</strong> (still remains).`,
@@ -306,6 +333,7 @@ export const GRAMMAR_RULES = [
   },
   {
     num: 20,
+    category: 'time',
     title: 'Time connectors: ก่อน / หลัง / ระหว่าง / ตั้งแต่…จนถึง',
     pattern: 'ก่อน(ที่จะ) · หลัง(จาก) · ระหว่าง · ตั้งแต่…จนถึง',
     desc: `Four high-frequency time connectors for ordering events. <strong>ก่อน</strong> = before; with a following verb, use <strong>ก่อนที่จะ</strong>. <strong>หลัง / หลังจาก</strong> = after; with a verb clause, use <strong>หลังจากที่</strong>. <strong>ระหว่าง</strong> = during / between. <strong>ตั้งแต่</strong> = since / from (a point in time); <strong>จนถึง / จนกว่า</strong> = until. These connectors work with both nouns and verb clauses.`,
