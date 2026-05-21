@@ -3,26 +3,7 @@ import { TRUE_CLUSTER_GROUPS, FALSE_CLUSTERS, CLUSTER_RULES, CLUSTERS_INTRO } fr
 import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
-
-// ── Class badge ───────────────────────────────────────────────────
-const CLASS_STYLE = {
-  mid:  'text-blue-800 bg-blue-50 border-blue-200 dark:text-blue-200 dark:bg-blue-900/30 dark:border-blue-800',
-  high: 'text-red-900 bg-red-50 border-red-200 dark:text-red-200 dark:bg-red-900/30 dark:border-red-800',
-  low:  'text-green-800 bg-green-50 border-green-200 dark:text-green-200 dark:bg-green-900/30 dark:border-green-800',
-};
-const CLASS_LABEL = { mid: 'mid', high: 'high', low: 'low' };
-
-function ClassBadge({ cls, className }) {
-  return (
-    <span className={cn(
-      'inline-block text-[0.6rem] font-bold uppercase tracking-widest px-1.5 py-px rounded border shrink-0',
-      CLASS_STYLE[cls] || CLASS_STYLE.low,
-      className
-    )}>
-      {CLASS_LABEL[cls]}
-    </span>
-  );
-}
+import ClassBadge from '../components/ClassBadge.jsx';
 
 // ── Single cluster card ───────────────────────────────────────────
 function ClusterCard({ item }) {

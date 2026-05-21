@@ -1,6 +1,7 @@
 import { CONSONANTS } from '../data/consonants.js';
 import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
+import ClassBadge from '../components/ClassBadge.jsx';
 
 export default function ConsonantsPage() {
   const midClass = CONSONANTS.filter(c => c.cls === 'mid');
@@ -18,14 +19,12 @@ export default function ConsonantsPage() {
       </p>
 
       {[
-        { cls: midClass, label: `Mid class — ${midClass.length} letters`, color: 'bg-blue-50 text-blue-800' },
-        { cls: highClass, label: `High class — ${highClass.length} letters`, color: 'bg-red-50 text-red-900' },
-        { cls: lowClass, label: `Low class — ${lowClass.length} letters`, color: 'bg-green-50 text-green-800' },
-      ].map(({ cls, label, color }) => (
+        { cls: midClass,  clsKey: 'mid',  label: `Mid class — ${midClass.length} letters`  },
+        { cls: highClass, clsKey: 'high', label: `High class — ${highClass.length} letters` },
+        { cls: lowClass,  clsKey: 'low',  label: `Low class — ${lowClass.length} letters`   },
+      ].map(({ cls, clsKey, label }) => (
         <div key={label} className="mb-6">
-          <span className={`inline-block text-xs font-semibold tracking-widest uppercase px-2 py-1 mb-3 ${color}`}>
-            {label}
-          </span>
+          <ClassBadge cls={clsKey} variant="block" label={label} className="mb-3" />
           <div className="grid grid-cols-[repeat(auto-fill,minmax(72px,1fr))] gap-1.5">
             {cls.map(c => (
               <Card key={c.l + c.name} className="rounded-none shadow-none">

@@ -45,7 +45,7 @@ function RuleDetail({ rule }) {
               <p className="text-sm text-muted-foreground leading-relaxed mb-3"
                  dangerouslySetInnerHTML={{ __html: sub.desc }} />
               {sub.key && (
-                <span className="inline-block text-[0.72rem] bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-300 px-1.5 py-0.5 mb-3 rounded-sm">
+                <span className="inline-block text-[0.72rem] bg-amber-100 dark:bg-amber-900/40 text-amber-900 dark:text-amber-200 px-1.5 py-0.5 mb-3 rounded-sm">
                   {sub.key}
                 </span>
               )}
@@ -66,7 +66,7 @@ function RuleDetail({ rule }) {
       ) : (
         <>
           {rule.key && (
-            <span className="inline-block text-[0.72rem] bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-300 px-1.5 py-0.5 mb-4 rounded-sm">
+            <span className="inline-block text-[0.72rem] bg-amber-100 dark:bg-amber-900/40 text-amber-900 dark:text-amber-200 px-1.5 py-0.5 mb-4 rounded-sm">
               {rule.key}
             </span>
           )}

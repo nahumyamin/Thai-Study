@@ -5,6 +5,7 @@ import { ToneAnalyzerPanel } from './ToneAnalyzerPage.jsx';
 import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
+import ClassBadge from '../components/ClassBadge.jsx';
 
 const TABS = [
   { id: 'overview',  label: 'Overview' },
@@ -92,12 +93,12 @@ export default function PronunciationPage() {
             <tbody>
               {TONE_TABLE.rows.map(row => (
                 <tr key={row.cls}>
-                  <td className={`border border-border px-3 py-2 text-center font-semibold text-[0.8rem] tracking-wider uppercase ${
-                    row.clsClass === 'mid-cls' ? 'bg-blue-50 text-blue-800' :
-                    row.clsClass === 'high-cls' ? 'bg-red-50 text-red-900' :
-                    'bg-green-50 text-green-800'
-                  }`}>
-                    {row.cls}
+                  <td className="border border-border px-3 py-2 text-center">
+                    <ClassBadge
+                      cls={row.clsClass === 'mid-cls' ? 'mid' : row.clsClass === 'high-cls' ? 'high' : 'low'}
+                      variant="pill"
+                      label={row.cls}
+                    />
                   </td>
                   {row.tones.map((t, i) => (
                     <td key={i} className="border border-border px-3 py-2 text-center">{t}</td>
@@ -118,14 +119,12 @@ export default function PronunciationPage() {
         </p>
 
         {[
-          { cls: midClass, label: `Mid class — ${midClass.length} letters`, color: 'text-blue-800 bg-blue-50' },
-          { cls: highClass, label: `High class — ${highClass.length} letters`, color: 'text-red-900 bg-red-50' },
-          { cls: lowClass, label: `Low class — ${lowClass.length} letters`, color: 'text-green-800 bg-green-50' },
-        ].map(({ cls, label, color }) => (
+          { cls: midClass,  clsKey: 'mid',  label: `Mid class — ${midClass.length} letters`  },
+          { cls: highClass, clsKey: 'high', label: `High class — ${highClass.length} letters` },
+          { cls: lowClass,  clsKey: 'low',  label: `Low class — ${lowClass.length} letters`   },
+        ].map(({ cls, clsKey, label }) => (
           <div key={label} className="mb-5">
-            <span className={`inline-block text-xs font-semibold tracking-widest uppercase px-2 py-1 mb-2 ${color}`}>
-              {label}
-            </span>
+            <ClassBadge cls={clsKey} variant="block" label={label} className="mb-2" />
             <div className="grid grid-cols-[repeat(auto-fill,minmax(72px,1fr))] gap-1.5">
               {cls.map(c => (
                 <Card key={c.l + c.name} className="rounded-none shadow-none">
