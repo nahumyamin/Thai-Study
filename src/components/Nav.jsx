@@ -97,7 +97,7 @@ export default function Nav({ activePage, activeGroup, showPage, onSearch, theme
         </button>
 
         {/* Desktop group tabs */}
-        <div className={cn('items-center', activePage === 'home' ? 'hidden' : 'hidden sm:flex')}>
+        <div className="hidden sm:flex items-center">
           <button className={groupTabClass('study')} onClick={() => handleNav('cards')}>
             Study
           </button>
@@ -225,7 +225,7 @@ export default function Nav({ activePage, activeGroup, showPage, onSearch, theme
       </div>
 
       {/* Row 2: sub-tabs (desktop only, hidden on home) */}
-      <div className={cn('items-center px-5 bg-black/[0.18] overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden', activePage === 'home' ? 'hidden' : 'hidden sm:flex')}>
+      <div className={cn('items-center px-5 bg-black/[0.18] overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden', activePage === 'home' ? 'hidden' : 'hidden sm:flex')} aria-hidden={activePage === 'home'}>
         {subPages.map(p => (
           <button key={p.id} className={subTabClass(p.id)} onClick={() => handleNav(p.id)}>
             {p.label}
