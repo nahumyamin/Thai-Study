@@ -21,10 +21,11 @@ const GROUP_MAP = {
   rush: 'study',
   scramble: 'study',
   passages: 'study',
+  months: 'study',
   grammar: 'reference',
   pronunciation: 'reference',
-  months: 'reference',
   classifiers: 'reference',
+  // legacy routes — still work via hash but not in nav
   numbers: 'reference',
   clusters: 'reference',
 };

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { PRONUNCIATION_INTRO, TONES, TONE_TABLE, CORE_VOWELS, COMPOUND_VOWELS, TIPS } from '../data/pronunciation.js';
 import { CONSONANTS } from '../data/consonants.js';
 import { ToneAnalyzerPanel } from './ToneAnalyzerPage.jsx';
+import { ClustersPanel } from './ConsonantClustersPage.jsx';
 import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
@@ -9,6 +10,7 @@ import ClassBadge from '../components/ClassBadge.jsx';
 
 const TABS = [
   { id: 'overview',  label: 'Overview' },
+  { id: 'clusters',  label: 'Clusters' },
   { id: 'analyzer',  label: 'Tone Analyzer' },
 ];
 
@@ -45,6 +47,8 @@ export default function PronunciationPage() {
       </div>
 
       {tab === 'analyzer' && <ToneAnalyzerPanel />}
+
+      {tab === 'clusters' && <ClustersPanel />}
 
       {tab === 'overview' && <>
       <p className="text-sm text-muted-foreground leading-relaxed mb-8">{PRONUNCIATION_INTRO}</p>

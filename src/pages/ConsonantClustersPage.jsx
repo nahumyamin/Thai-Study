@@ -70,15 +70,10 @@ function ClusterCard({ item }) {
   );
 }
 
-// ── Main page ─────────────────────────────────────────────────────
-export default function ConsonantClustersPage() {
+// ── Reusable panel (used as a tab inside PronunciationPage) ───────
+export function ClustersPanel() {
   return (
-    <div className="max-w-[1200px] mx-auto px-5 py-8">
-      <h1 className="text-3xl font-serif font-normal mb-1">
-        Consonant <em className="text-primary not-italic font-medium">Clusters</em>
-      </h1>
-      <p className="text-xs font-bold tracking-widest uppercase text-muted-foreground mb-1">พยัญชนะควบกล้ำ</p>
-      <Separator className="mb-5" />
+    <>
       <p className="text-sm text-muted-foreground leading-relaxed mb-8 max-w-[68ch]">{CLUSTERS_INTRO}</p>
 
       {/* ── True clusters ──────────────────────────────────────────── */}
@@ -196,6 +191,20 @@ export default function ConsonantClustersPage() {
           )}
         </div>
       </div>
+    </>
+  );
+}
+
+// ── Standalone page (kept for any direct links) ───────────────────
+export default function ConsonantClustersPage() {
+  return (
+    <div className="max-w-[1200px] mx-auto px-5 py-8">
+      <h1 className="text-3xl font-serif font-normal mb-1">
+        Consonant <em className="text-primary not-italic font-medium">Clusters</em>
+      </h1>
+      <p className="text-xs font-bold tracking-widest uppercase text-muted-foreground mb-1">พยัญชนะควบกล้ำ</p>
+      <Separator className="mb-5" />
+      <ClustersPanel />
     </div>
   );
 }

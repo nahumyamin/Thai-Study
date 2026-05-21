@@ -8,20 +8,18 @@ import {
 import { cn } from '@/lib/utils';
 
 const STUDY_PAGES = [
-  { id: 'cards', label: 'Flashcards' },
-  { id: 'quiz', label: 'Quiz' },
-  { id: 'rush', label: 'Class Rush' },
+  { id: 'cards',    label: 'Flashcards' },
+  { id: 'quiz',     label: 'Quiz' },
+  { id: 'rush',     label: 'Class Rush' },
   { id: 'scramble', label: 'Scramble' },
   { id: 'passages', label: 'Passages' },
+  { id: 'months',   label: 'Months' },
 ];
 
 const REFERENCE_PAGES = [
-  { id: 'grammar', label: 'Grammar' },
+  { id: 'grammar',       label: 'Grammar' },
   { id: 'pronunciation', label: 'Pronunciation' },
-  { id: 'clusters', label: 'Clusters' },
-  { id: 'months', label: 'Months' },
-  { id: 'classifiers', label: 'Classifiers' },
-  { id: 'numbers', label: 'Numbers' },
+  { id: 'classifiers',   label: 'Numbers & Classifiers' },
 ];
 
 function SearchIcon() {
