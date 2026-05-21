@@ -6,7 +6,7 @@ function HeroIllustration() {
     <div className="relative shrink-0 select-none flex flex-col items-center" aria-hidden="true">
       {/* Floating image */}
       <img
-        src="/hero-illustration.png"
+        src={`${import.meta.env.BASE_URL}hero-illustration.png`}
         alt=""
         width="380"
         height="380"
