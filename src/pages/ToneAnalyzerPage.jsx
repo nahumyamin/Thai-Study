@@ -36,7 +36,7 @@ function SyllableCard({ syl, analysis, index }) {
   const { tone, steps } = analysis;
 
   return (
-    <div className="border border-border rounded-2xl bg-card overflow-hidden flex flex-col min-w-[200px] max-w-[260px]">
+    <div className="border border-border rounded-2xl bg-card overflow-hidden flex flex-col min-w-[200px] max-w-[260px] animate-card-enter" style={{ animationDelay: `${index * 60}ms` }}>
       {/* top strip — colour accent */}
       <div className="h-1" style={{ background: tone.color }} />
 
@@ -219,16 +219,21 @@ export function ToneAnalyzerPanel() {
           <div className="text-[5rem] font-light text-foreground leading-none tracking-wide mb-3">
             {input}
           </div>
-          <button
-            onClick={handleSpeak}
-            className={cn(
-              'p-2 bg-transparent border-none cursor-pointer transition-colors rounded-lg',
-              speaking ? 'text-primary' : 'text-muted-foreground hover:text-foreground'
+          <div className="relative inline-flex items-center justify-center">
+            {speaking && (
+              <span className="absolute inset-0 rounded-full border-2 border-current text-primary pointer-events-none animate-speaker-ripple" />
             )}
-            aria-label="Pronounce"
-          >
-            <SpeakerIconLg active={speaking} />
-          </button>
+            <button
+              onClick={handleSpeak}
+              className={cn(
+                'relative p-2 bg-transparent border-none cursor-pointer transition-colors rounded-lg',
+                speaking ? 'text-primary' : 'text-muted-foreground hover:text-foreground'
+              )}
+              aria-label="Pronounce"
+            >
+              <SpeakerIconLg active={speaking} />
+            </button>
+          </div>
         </div>
       )}
 
@@ -251,7 +256,7 @@ export function ToneAnalyzerPanel() {
       {/* Empty state */}
       {!input.trim() && (
         <div className="text-center py-12 text-muted-foreground/40">
-          <div className="text-[4rem] leading-none mb-3">ก</div>
+          <div className="text-[4rem] leading-none mb-3 inline-block animate-breathe">ก</div>
           <div className="text-sm text-muted-foreground">
             Type any Thai word above to analyze its tones
           </div>
