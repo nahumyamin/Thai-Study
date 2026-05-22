@@ -9,6 +9,7 @@ import { cn } from '@/lib/utils';
 
 const CULTURE_PAGES = [
   { id: 'culture', label: 'Anthems' },
+  { id: 'idioms',  label: 'Idioms'  },
 ];
 
 const STUDY_PAGES = [

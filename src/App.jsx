@@ -14,6 +14,7 @@ import ReadingPassagesPage from './pages/ReadingPassagesPage.jsx';
 import MonthsPage from './pages/MonthsPage.jsx';
 import ConsonantClustersPage from './pages/ConsonantClustersPage.jsx';
 import CulturePage from './pages/CulturePage.jsx';
+import IdiomsPage from './pages/IdiomsPage.jsx';
 
 const GROUP_MAP = {
   home: null,
@@ -27,6 +28,7 @@ const GROUP_MAP = {
   pronunciation: 'reference',
   classifiers: 'reference',
   culture: 'culture',
+  idioms:  'culture',
   // legacy routes — still work via hash but not in nav
   numbers: 'reference',
   clusters: 'reference',
@@ -137,6 +139,7 @@ function App() {
         {activePage === 'months'        && <MonthsPage />}
         {activePage === 'clusters'      && <ConsonantClustersPage />}
         {activePage === 'culture'       && <CulturePage />}
+        {activePage === 'idioms'        && <IdiomsPage />}
       </div>
     </div>
   );
