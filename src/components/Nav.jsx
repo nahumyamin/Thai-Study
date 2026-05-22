@@ -8,8 +8,9 @@ import {
 import { cn } from '@/lib/utils';
 
 const CULTURE_PAGES = [
-  { id: 'culture', label: 'Anthems' },
-  { id: 'idioms',  label: 'Idioms'  },
+  { id: 'culture',   label: 'Anthems'   },
+  { id: 'idioms',    label: 'Idioms'    },
+  { id: 'festivals', label: 'Festivals' },
 ];
 
 const STUDY_PAGES = [
