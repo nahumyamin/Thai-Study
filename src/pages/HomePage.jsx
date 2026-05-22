@@ -1,4 +1,60 @@
 import { Button } from '@/components/ui/button';
+import { allVocab, topics } from '../data/vocab.js';
+import { cn } from '@/lib/utils';
+
+// Pick a word deterministically from the current date — same word all day
+function getDailyWord() {
+  const day = Math.floor(Date.now() / 86_400_000);
+  return allVocab[day % allVocab.length];
+}
+
+function WordOfTheDay({ showPage }) {
+  const word = getDailyWord();
+  const topic = topics[word.topic];
+
+  return (
+    <div className="rounded-xl border border-primary/20 bg-primary/5 p-5 md:p-6">
+      <div className="flex items-center justify-between mb-4">
+        <span className="text-[0.68rem] font-bold tracking-[0.18em] uppercase text-primary">
+          Word of the Day
+        </span>
+        {topic && (
+          <span
+            className="text-[0.65rem] font-semibold px-2 py-0.5 rounded-full text-white"
+            style={{ backgroundColor: topic.color }}
+          >
+            {topic.label}
+          </span>
+        )}
+      </div>
+
+      <div className="flex flex-col sm:flex-row sm:items-end gap-2 mb-3">
+        <span className="font-thai-display text-4xl md:text-5xl text-foreground leading-none">
+          {word.thai}
+        </span>
+        <span className="text-sm italic text-muted-foreground sm:mb-1">
+          {word.rom}
+        </span>
+      </div>
+
+      <p className="text-base font-medium text-foreground mb-3">{word.en}</p>
+
+      {word.ex && (
+        <div className="border-l-2 border-primary/30 pl-3">
+          <p className="text-[0.68rem] font-semibold tracking-widest uppercase text-muted-foreground mb-1">Example</p>
+          <p className="font-thai-display text-base text-foreground leading-relaxed">{word.ex}</p>
+        </div>
+      )}
+
+      <button
+        onClick={() => showPage('cards')}
+        className="mt-4 text-xs text-primary hover:underline"
+      >
+        See all flashcards →
+      </button>
+    </div>
+  );
+}
 
 // ── Hero illustration ─────────────────────────────────────────────
 function HeroIllustration() {
@@ -193,6 +249,11 @@ export default function HomePage({ showPage }) {
         <div className="flex-1 h-px bg-border" />
         <span className="text-[0.9rem] tracking-[0.55em] text-muted-foreground/40 font-light pr-[0.55em]">ก ข ค ง</span>
         <div className="flex-1 h-px bg-border" />
+      </div>
+
+      {/* ── Word of the Day ── */}
+      <div className="mb-10">
+        <WordOfTheDay showPage={showPage} />
       </div>
 
       {/* ── Features ── */}
