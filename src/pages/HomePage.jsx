@@ -1,57 +1,151 @@
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { allVocab, topics } from '../data/vocab.js';
 import { cn } from '@/lib/utils';
 
-// Pick a word deterministically from the current date — same word all day
-function getDailyWord() {
-  const day = Math.floor(Date.now() / 86_400_000);
-  return allVocab[day % allVocab.length];
+const DAILY_PROMPTS = [
+  { topic: 'At a Thai temple',        prompt: 'You\'re visiting a famous temple with a friend. Describe what you see or do — using both words in one Thai sentence.' },
+  { topic: 'Family gathering',        prompt: 'It\'s Songkran and your family is together. Use both words to describe the scene or a moment.' },
+  { topic: 'At the market',           prompt: 'You\'re shopping at a weekend market in Bangkok. Write a sentence that uses both words naturally.' },
+  { topic: 'A phone call home',       prompt: 'You\'re calling a Thai friend to catch up. Use both words in something you might actually say.' },
+  { topic: 'Telling a short story',   prompt: 'Something unexpected happened today. Write one sentence that tells part of the story — using both words.' },
+  { topic: 'Describing your day',     prompt: 'It\'s evening and you\'re reflecting on the day. Use both words in a single sentence about what happened.' },
+  { topic: 'At a Thai restaurant',    prompt: 'You\'re ordering food or talking with the staff. Use both words somewhere in what you say.' },
+  { topic: 'Making plans',            prompt: 'You\'re making plans with a Thai friend for the weekend. Use both words in one sentence.' },
+  { topic: 'Giving advice',           prompt: 'A friend is going through something difficult. Write a piece of advice using both words.' },
+  { topic: 'On public transport',     prompt: 'You\'re on the BTS skytrain or a bus. Write a sentence about your journey using both words.' },
+  { topic: 'At work or school',       prompt: 'Something happened at work or school today. Use both words to describe it in one Thai sentence.' },
+  { topic: 'Talking about the news',  prompt: 'You heard something interesting on the news. Use both words to react to or summarise it.' },
+  { topic: 'Loy Krathong night',      prompt: 'You\'re by the river watching krathong float away. Write a sentence using both words.' },
+  { topic: 'Visiting a friend',       prompt: 'You just arrived at a friend\'s house. Use both words in something you say or observe.' },
+  { topic: 'A dream you had',         prompt: 'You had a strange dream last night. Use both words to describe part of it in Thai.' },
+  { topic: 'Asking for help',         prompt: 'You need someone\'s help with something. Write a polite request using both words.' },
+  { topic: 'Describing a place',      prompt: 'Think of a place you\'ve been — or want to go. Use both words to describe it in one sentence.' },
+  { topic: 'An unexpected event',     prompt: 'Something surprised you today. Write a sentence that captures the moment using both words.' },
+  { topic: 'Talking about the rain',  prompt: 'Thailand\'s monsoon season has arrived. Write a sentence about the weather using both words.' },
+  { topic: 'Morning routine',         prompt: 'Describe something from your morning in Thai — fitting both words into a single sentence.' },
+];
+
+const DAY = Math.floor(Date.now() / 86_400_000);
+
+function getDailyPair() {
+  const n = allVocab.length;
+  const w1 = allVocab[DAY % n];
+  // Offset by ~38% of the vocab to land on a different word reliably
+  const w2 = allVocab[(DAY + Math.floor(n * 0.38)) % n];
+  return [w1, w2];
 }
 
-function WordOfTheDay({ showPage }) {
-  const word = getDailyWord();
-  const topic = topics[word.topic];
+function getDailyPrompt() {
+  return DAILY_PROMPTS[DAY % DAILY_PROMPTS.length];
+}
 
+// Persist today's sentence in localStorage
+function loadSavedSentence() {
+  try {
+    const raw = localStorage.getItem('wotd-challenge');
+    if (!raw) return '';
+    const { day, text } = JSON.parse(raw);
+    return day === DAY ? text : '';
+  } catch { return ''; }
+}
+
+function saveSentence(text) {
+  localStorage.setItem('wotd-challenge', JSON.stringify({ day: DAY, text }));
+}
+
+// ── Word chip ─────────────────────────────────────────────────────
+function WordChip({ word }) {
+  const topic = topics[word.topic];
   return (
-    <div className="rounded-xl border border-primary/20 bg-primary/5 p-5 md:p-6">
-      <div className="flex items-center justify-between mb-4">
-        <span className="text-[0.68rem] font-bold tracking-[0.18em] uppercase text-primary">
-          Word of the Day
-        </span>
+    <div className="flex-1 min-w-0 rounded-lg border border-border bg-card p-4">
+      <div className="flex items-center justify-between mb-2">
+        <span className="text-[0.6rem] font-bold tracking-widest uppercase text-muted-foreground">Word</span>
         {topic && (
-          <span
-            className="text-[0.65rem] font-semibold px-2 py-0.5 rounded-full text-white"
-            style={{ backgroundColor: topic.color }}
-          >
+          <span className="text-[0.6rem] font-semibold px-1.5 py-0.5 rounded-full text-white" style={{ backgroundColor: topic.color }}>
             {topic.label}
           </span>
         )}
       </div>
+      <div className="font-thai-display text-3xl text-foreground leading-none mb-1">{word.thai}</div>
+      <div className="text-xs italic text-muted-foreground mb-1">{word.rom}</div>
+      <div className="text-sm font-medium text-foreground">{word.en}</div>
+    </div>
+  );
+}
 
-      <div className="flex flex-col sm:flex-row sm:items-end gap-2 mb-3">
-        <span className="font-thai-display text-4xl md:text-5xl text-foreground leading-none">
-          {word.thai}
+// ── Daily challenge ───────────────────────────────────────────────
+function WordOfTheDay({ showPage }) {
+  const [word1, word2] = getDailyPair();
+  const { topic, prompt } = getDailyPrompt();
+
+  const [sentence, setSentence] = useState(loadSavedSentence);
+  const [revealed, setRevealed] = useState(false);
+
+  const handleChange = (e) => {
+    setSentence(e.target.value);
+    saveSentence(e.target.value);
+  };
+
+  return (
+    <div className="rounded-xl border border-primary/20 bg-primary/5 p-5 md:p-6">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-4">
+        <span className="text-[0.68rem] font-bold tracking-[0.18em] uppercase text-primary">
+          Daily Challenge
         </span>
-        <span className="text-sm italic text-muted-foreground sm:mb-1">
-          {word.rom}
-        </span>
+        <span className="text-[0.65rem] text-muted-foreground">Changes at midnight</span>
       </div>
 
-      <p className="text-base font-medium text-foreground mb-3">{word.en}</p>
+      {/* Two word chips */}
+      <div className="flex flex-col sm:flex-row gap-3 mb-5">
+        <WordChip word={word1} />
+        <div className="flex items-center justify-center text-muted-foreground/40 font-serif text-lg sm:flex-col">+</div>
+        <WordChip word={word2} />
+      </div>
 
-      {word.ex && (
-        <div className="border-l-2 border-primary/30 pl-3">
-          <p className="text-[0.68rem] font-semibold tracking-widest uppercase text-muted-foreground mb-1">Example</p>
-          <p className="font-thai-display text-base text-foreground leading-relaxed">{word.ex}</p>
+      {/* Prompt */}
+      <div className="rounded-lg bg-card border border-border px-4 py-3 mb-4">
+        <div className="flex items-center gap-2 mb-1">
+          <span className="text-[0.65rem] font-bold tracking-widest uppercase text-primary">Today's topic</span>
+          <span className="text-[0.65rem] font-semibold text-muted-foreground">— {topic}</span>
+        </div>
+        <p className="text-sm text-foreground leading-relaxed">{prompt}</p>
+      </div>
+
+      {/* Input */}
+      <textarea
+        value={sentence}
+        onChange={handleChange}
+        placeholder="เขียนประโยคของคุณที่นี่… (Write your Thai sentence here)"
+        rows={3}
+        className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-sm font-thai-display text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-1 focus:ring-primary/40 resize-none mb-3"
+      />
+
+      {/* Actions */}
+      <div className="flex items-center justify-between gap-3 flex-wrap">
+        <button
+          onClick={() => setRevealed(r => !r)}
+          className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+        >
+          {revealed ? 'Hide examples ↑' : 'Reveal example sentences ↓'}
+        </button>
+        <button onClick={() => showPage('cards')} className="text-xs text-primary hover:underline">
+          See all flashcards →
+        </button>
+      </div>
+
+      {/* Example reveal */}
+      {revealed && (
+        <div className="mt-4 flex flex-col gap-3 border-t border-border/60 pt-4">
+          {[word1, word2].map(w => w.ex && (
+            <div key={w.thai} className="border-l-2 border-primary/30 pl-3">
+              <span className="text-[0.65rem] font-semibold text-muted-foreground uppercase tracking-widest">{w.thai} — example</span>
+              <p className="font-thai-display text-sm text-foreground mt-0.5 leading-relaxed">{w.ex}</p>
+            </div>
+          ))}
         </div>
       )}
-
-      <button
-        onClick={() => showPage('cards')}
-        className="mt-4 text-xs text-primary hover:underline"
-      >
-        See all flashcards →
-      </button>
     </div>
   );
 }
