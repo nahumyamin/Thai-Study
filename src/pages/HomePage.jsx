@@ -373,8 +373,18 @@ export default function HomePage({ showPage }) {
       </div>
 
       {/* ── Credit ── */}
-      <div className="mt-20 text-center text-sm text-muted-foreground border-t border-border pt-8">
-        Created by <span className="font-medium text-foreground">Random Noise</span>
+      <div className="mt-20 text-center border-t border-border pt-8 flex flex-col items-center gap-4">
+        <p className="text-sm text-muted-foreground">
+          Created by <span className="font-medium text-foreground">Random Noise</span>
+        </p>
+        <a
+          href="https://buymeacoffee.com/randomnoise"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-amber-400 hover:bg-amber-300 text-amber-950 font-semibold text-sm transition-colors shadow-sm hover:shadow-md"
+        >
+          <span>☕</span> Buy me a coffee
+        </a>
       </div>
     </div>
   );

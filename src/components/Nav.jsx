@@ -28,6 +28,18 @@ const REFERENCE_PAGES = [
   { id: 'classifiers',   label: 'Numbers & Classifiers' },
 ];
 
+function CoffeeIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M18 8h1a4 4 0 0 1 0 8h-1" />
+      <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z" />
+      <line x1="6" y1="1" x2="6" y2="4" />
+      <line x1="10" y1="1" x2="10" y2="4" />
+      <line x1="14" y1="1" x2="14" y2="4" />
+    </svg>
+  );
+}
+
 function SearchIcon() {
   return (
     <svg width="20" height="20" viewBox="0 0 16 16" fill="none">
@@ -113,6 +125,16 @@ export default function Nav({ activePage, activeGroup, showPage, onSearch, theme
 
         {/* Search + mobile hamburger */}
         <div className="ml-auto flex items-center gap-1">
+          <a
+            href="https://buymeacoffee.com/randomnoise"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="p-2.5 text-amber-400/70 hover:text-amber-400 transition-colors"
+            aria-label="Buy me a coffee"
+            title="Buy me a coffee"
+          >
+            <CoffeeIcon />
+          </a>
           <button
             onClick={onSearch}
             className="p-2.5 text-white/60 hover:text-white transition-colors"
