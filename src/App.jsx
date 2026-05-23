@@ -38,6 +38,24 @@ const GROUP_MAP = {
 
 const VALID_PAGES = new Set(Object.keys(GROUP_MAP));
 
+const PAGE_TITLES = {
+  home:         'Thai Study — Learn Thai Vocabulary, Grammar & Pronunciation',
+  cards:        'Flashcards — Thai Study',
+  quiz:         'Vocabulary Quiz — Thai Study',
+  rush:         'Class Rush — Thai Study',
+  scramble:     'Scramble — Thai Study',
+  passages:     'Reading Passages — Thai Study',
+  months:       'Thai Months — Thai Study',
+  grammar:      'Grammar Patterns — Thai Study',
+  pronunciation:'Pronunciation & Tones — Thai Study',
+  classifiers:  'Numbers & Classifiers — Thai Study',
+  culture:      'Thai Anthems — Thai Study',
+  idioms:       'Thai Idioms — Thai Study',
+  festivals:    'Festivals & Calendar — Thai Study',
+  numbers:      'Numbers — Thai Study',
+  clusters:     'Consonant Clusters — Thai Study',
+};
+
 function pageFromHash() {
   const hash = window.location.hash.slice(1);
   return VALID_PAGES.has(hash) ? hash : 'home';
@@ -70,6 +88,10 @@ function App() {
     window.addEventListener('hashchange', onHashChange);
     return () => window.removeEventListener('hashchange', onHashChange);
   }, []);
+
+  useEffect(() => {
+    document.title = PAGE_TITLES[activePage] ?? PAGE_TITLES.home;
+  }, [activePage]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
