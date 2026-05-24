@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { GRAMMAR_INTRO, GRAMMAR_RULES, GRAMMAR_CATEGORIES } from '../data/grammar.js';
+import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
 
@@ -96,7 +97,7 @@ function RuleCard({ rule }) {
 }
 
 // ── Main page ─────────────────────────────────────────────────────
-export default function GrammarPage() {
+export default function GrammarPage({ showPage }) {
   const [activeTab, setActiveTab] = useState(GRAMMAR_CATEGORIES[0].id);
 
   const tabRules = GRAMMAR_RULES.filter(r => r.category === activeTab);
@@ -144,8 +145,19 @@ export default function GrammarPage() {
         ))}
       </div>
 
+      {/* ── Practice CTA ─────────────────────────────────────────── */}
+      <div className="mt-10 pt-6 border-t border-border flex items-center justify-between gap-4 flex-wrap">
+        <div>
+          <div className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-1">Practice this</div>
+          <p className="text-sm text-muted-foreground">Reinforce grammar patterns by unscrambling real sentences.</p>
+        </div>
+        <Button variant="outline" size="sm" onClick={() => showPage('scramble')} className="shrink-0">
+          Try Scramble →
+        </Button>
+      </div>
+
       {/* ── Tab navigation footer ─────────────────────────────────── */}
-      <div className="flex justify-between mt-10 pt-5 border-t border-border">
+      <div className="flex justify-between mt-6 pt-5 border-t border-border">
         {(() => {
           const idx = GRAMMAR_CATEGORIES.findIndex(c => c.id === activeTab);
           const prev = GRAMMAR_CATEGORIES[idx - 1];

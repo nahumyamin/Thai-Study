@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { CLASSIFIERS_INTRO, CLASSIFIER_GROUPS } from '../data/classifiers.js';
 import { NUMBERS_INTRO, DIGITS, BUILDING_RULES, CONTEXT_CARDS } from '../data/numbers.js';
+import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
@@ -10,7 +11,7 @@ const TABS = [
   { id: 'numbers',     label: 'Numbers'     },
 ];
 
-export default function ClassifiersPage() {
+export default function ClassifiersPage({ showPage }) {
   const [tab, setTab] = useState('classifiers');
 
   return (
@@ -150,6 +151,17 @@ export default function ClassifiersPage() {
           </section>
         </>
       )}
+
+      {/* Practice CTA */}
+      <div className="pt-6 border-t border-border flex items-center justify-between gap-4 flex-wrap">
+        <div>
+          <div className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-1">Practice this</div>
+          <p className="text-sm text-muted-foreground">Quiz yourself on vocabulary using numbers and classifiers.</p>
+        </div>
+        <Button variant="outline" size="sm" onClick={() => showPage('quiz')} className="shrink-0">
+          Try the Quiz →
+        </Button>
+      </div>
     </div>
   );
 }

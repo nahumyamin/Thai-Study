@@ -140,7 +140,7 @@ function PassageCard({ passage, idx, onSelect }) {
 }
 
 // ── Main component ────────────────────────────────────────────────
-export default function ReadingPassagesPage() {
+export default function ReadingPassagesPage({ showPage }) {
   const [selectedIdx, setSelectedIdx] = useState(null);
   const [diffFilter, setDiffFilter]   = useState('all');
   const [speaking, setSpeaking]       = useState(false);
@@ -216,6 +216,16 @@ export default function ReadingPassagesPage() {
         <h1 className="text-3xl font-serif font-normal mb-1">
           Reading <em className="text-primary not-italic font-medium">Passages</em>
         </h1>
+        <p className="text-xs text-muted-foreground mt-1 mb-4">
+          New to reading Thai?{' '}
+          <button
+            className="underline underline-offset-2 hover:text-foreground transition-colors"
+            onClick={() => showPage('reading')}
+          >
+            Read the Reading Strategies guide
+          </button>
+          {' '}first.
+        </p>
         <Separator className="mb-6" />
 
         {/* Difficulty filter tabs */}

@@ -14,6 +14,7 @@ import ScramblePage from './pages/ScramblePage.jsx';
 import ReadingPassagesPage from './pages/ReadingPassagesPage.jsx';
 import MonthsPage from './pages/MonthsPage.jsx';
 import ConsonantClustersPage from './pages/ConsonantClustersPage.jsx';
+import ReadingStrategiesPage from './pages/ReadingStrategiesPage.jsx';
 import CulturePage from './pages/CulturePage.jsx';
 import IdiomsPage from './pages/IdiomsPage.jsx';
 import FestivalsPage from './pages/FestivalsPage.jsx';
@@ -29,6 +30,7 @@ const GROUP_MAP = {
   grammar: 'reference',
   pronunciation: 'reference',
   classifiers: 'reference',
+  reading: 'reference',
   culture: 'culture',
   idioms:    'culture',
   festivals: 'culture',
@@ -50,6 +52,7 @@ const PAGE_TITLES = {
   grammar:      'Grammar Patterns — Thai Study',
   pronunciation:'Pronunciation & Tones — Thai Study',
   classifiers:  'Numbers & Classifiers — Thai Study',
+  reading:      'Reading Strategies — Thai Study',
   culture:      'Thai Anthems — Thai Study',
   idioms:       'Thai Idioms — Thai Study',
   festivals:    'Festivals & Calendar — Thai Study',
@@ -162,15 +165,16 @@ function App() {
 
       <div key={activePage} className="animate-page-in">
         {activePage === 'home'          && <HomePage showPage={showPage} />}
-        {activePage === 'cards'         && <FlashcardsPage starred={starred} toggleStar={toggleStar} showRomaji={showRomaji} />}
-        {activePage === 'grammar'       && <GrammarPage />}
-        {activePage === 'pronunciation' && <PronunciationPage />}
-        {activePage === 'quiz'          && <QuizPage starred={starred} showRomaji={showRomaji} />}
-        {activePage === 'classifiers'   && <ClassifiersPage />}
+        {activePage === 'cards'         && <FlashcardsPage starred={starred} toggleStar={toggleStar} showRomaji={showRomaji} showPage={showPage} />}
+        {activePage === 'grammar'       && <GrammarPage showPage={showPage} />}
+        {activePage === 'pronunciation' && <PronunciationPage showPage={showPage} />}
+        {activePage === 'quiz'          && <QuizPage starred={starred} showRomaji={showRomaji} showPage={showPage} />}
+        {activePage === 'classifiers'   && <ClassifiersPage showPage={showPage} />}
+        {activePage === 'reading'       && <ReadingStrategiesPage showPage={showPage} />}
         {activePage === 'numbers'       && <NumbersPage />}
-        {activePage === 'rush'          && <ClassRushPage />}
-        {activePage === 'scramble'      && <ScramblePage />}
-        {activePage === 'passages'      && <ReadingPassagesPage />}
+        {activePage === 'rush'          && <ClassRushPage showPage={showPage} />}
+        {activePage === 'scramble'      && <ScramblePage showPage={showPage} />}
+        {activePage === 'passages'      && <ReadingPassagesPage showPage={showPage} />}
         {activePage === 'months'        && <MonthsPage />}
         {activePage === 'clusters'      && <ConsonantClustersPage />}
         {activePage === 'culture'       && <CulturePage />}

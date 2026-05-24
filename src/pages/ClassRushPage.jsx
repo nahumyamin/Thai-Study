@@ -20,7 +20,7 @@ const LOW_LETTERS = CONSONANTS.filter(c => c.cls === 'low').map(c => c.l).join('
 const MID_LETTERS = CONSONANTS.filter(c => c.cls === 'mid').map(c => c.l).join(' ');
 const HIGH_LETTERS = CONSONANTS.filter(c => c.cls === 'high').map(c => c.l).join(' ');
 
-export default function ClassRushPage() {
+export default function ClassRushPage({ showPage }) {
   const [screen, setScreen] = useState('intro');
   const [difficulty, setDifficulty] = useState('normal');
 
@@ -238,8 +238,18 @@ export default function ClassRushPage() {
 
         {/* Quiz controls — always at top */}
         <div className="max-w-[480px] mb-8">
-          <p className="text-sm text-muted-foreground leading-relaxed mb-6">
+          <p className="text-sm text-muted-foreground leading-relaxed mb-2">
             A consonant flashes on screen. Tap its class — Low, Mid, or High — as fast as you can. Miss three and it's game over.
+          </p>
+          <p className="text-xs text-muted-foreground mb-6">
+            Not sure about consonant classes?{' '}
+            <button
+              className="underline underline-offset-2 hover:text-foreground transition-colors"
+              onClick={() => showPage('pronunciation')}
+            >
+              Read the Pronunciation guide
+            </button>
+            {' '}first.
           </p>
           <div className="mb-6">
             <span className="block text-[0.75rem] font-semibold tracking-widest uppercase text-muted-foreground mb-3">
