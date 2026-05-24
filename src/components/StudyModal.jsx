@@ -62,7 +62,7 @@ export default function StudyModal({ words, initialIndex, starred, onToggleStar,
           className="flex items-center justify-center p-2 min-h-[320px] cursor-pointer relative"
           onClick={flip}
         >
-          <div className={cn('card-wrapper w-full', flipped && 'flipped')} style={{ height: '300px', perspective: '1000px' }}>
+          <div className={cn('card-wrapper activated w-full', flipped && 'flipped')} style={{ height: '300px' }}>
             <div className="card-inner">
               {/* Front */}
               <div className="card-face flex flex-col items-center justify-center border border-border bg-card rounded-lg p-8 gap-2">
