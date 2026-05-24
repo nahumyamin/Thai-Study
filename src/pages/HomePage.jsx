@@ -160,7 +160,7 @@ function HeroIllustration() {
         alt=""
         width="380"
         height="380"
-        className="animate-hero-float w-[320px] md:w-[380px] drop-shadow-xl"
+        className="animate-hero-float w-[320px] md:w-[460px] drop-shadow-xl"
         draggable="false"
       />
       {/* Ground shadow that shrinks as the image rises */}
