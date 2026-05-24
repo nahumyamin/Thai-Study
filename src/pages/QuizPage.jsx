@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { allVocab, topics } from '../data/vocab.js';
+import { track } from '@/lib/analytics.js';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Progress } from '@/components/ui/progress';
@@ -71,6 +72,7 @@ export default function QuizPage({ starred, showRomaji = true }) {
     setStreak(0);
     setStreakToast(null);
     setScreen('quiz');
+    track('quiz_start', { topic: qTopic, count: qs.length, mode: qMode });
   };
 
   const handleMcAnswer = (choice) => {
@@ -163,6 +165,20 @@ export default function QuizPage({ starred, showRomaji = true }) {
     setStreakToast(null);
     setScreen('quiz');
   };
+
+  // Fire quiz_complete once when results screen appears
+  useEffect(() => {
+    if (screen === 'results' && questions.length > 0) {
+      track('quiz_complete', {
+        score,
+        total: questions.length,
+        pct: Math.round((score / questions.length) * 100),
+        topic: qTopic,
+        mode: qMode,
+      });
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [screen]);
 
   // ── Listen mode helpers ───────────────────────────────────────────
   const speakWord = () => {

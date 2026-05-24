@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { allVocab, topics } from '../data/vocab.js';
+import { track } from '@/lib/analytics.js';
 import { GRAMMAR_RULES } from '../data/grammar.js';
 import { PASSAGES } from '../data/passages.js';
 import { cn } from '@/lib/utils';
@@ -72,6 +73,7 @@ export default function SearchOverlay({ open, onClose, showPage }) {
   }, [onClose]);
 
   const handleSelect = (page) => {
+    track('search_select', { search_term: query, destination: page });
     showPage(page);
     onClose();
   };

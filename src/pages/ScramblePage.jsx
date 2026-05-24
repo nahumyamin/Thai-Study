@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { SCRAMBLE_SENTENCES } from '../data/scramble.js';
+import { track } from '@/lib/analytics.js';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
@@ -324,13 +325,19 @@ export default function ScramblePage() {
       });
     setSentences(picked);
     setPhase('playing');
+    track('game_start', { game: 'scramble', difficulty: count, mode });
   };
 
   if (phase === 'setup') return (
     <SetupScreen count={count} setCount={setCount} mode={mode} setMode={setMode} onStart={handleStart} />
   );
   if (phase === 'playing') return (
-    <PlayScreen sentences={sentences} mode={mode} onFinish={scores => { setFinalScores(scores); setPhase('results'); }} />
+    <PlayScreen sentences={sentences} mode={mode} onFinish={scores => {
+      setFinalScores(scores);
+      setPhase('results');
+      const correct = scores.filter(s => s.ok).length;
+      track('game_complete', { game: 'scramble', correct, total: scores.length, pct: Math.round((correct / scores.length) * 100), mode });
+    }} />
   );
   return (
     <ResultsScreen sentences={sentences} scores={finalScores} onPlayAgain={() => setPhase('setup')} />

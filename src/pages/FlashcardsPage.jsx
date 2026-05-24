@@ -1,5 +1,6 @@
 import { useState, useMemo, useEffect } from 'react';
 import { allVocab, topics } from '../data/vocab.js';
+import { track } from '@/lib/analytics.js';
 import FlashCard from '../components/FlashCard.jsx';
 import StudyModal from '../components/StudyModal.jsx';
 import { Button } from '@/components/ui/button';
@@ -53,11 +54,13 @@ export default function FlashcardsPage({ starred, toggleStar, showRomaji = true 
 
   const handleShuffle = () => {
     setOrder(prev => shuffle(prev));
+    track('flashcard_shuffle');
   };
 
   const openStudyMode = (idx = 0) => {
     setStudyIndex(idx);
     setStudyOpen(true);
+    track('study_mode_start', { word_count: filtered.length });
   };
 
   const myListBtn = (extraClass = '') => (
@@ -119,7 +122,7 @@ export default function FlashcardsPage({ starred, toggleStar, showRomaji = true 
           return (
             <button
               key={key}
-              onClick={() => setActiveTopic(key)}
+              onClick={() => { setActiveTopic(key); if (key !== 'all') track('filter_topic', { topic: key }); }}
               className={cn(
                 'flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-sm font-medium transition-colors border',
                 active

@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Nav from './components/Nav.jsx';
+import { track } from './lib/analytics.js';
 import SearchOverlay from './components/SearchOverlay.jsx';
 import HomePage from './pages/HomePage.jsx';
 import FlashcardsPage from './pages/FlashcardsPage.jsx';
@@ -91,6 +92,16 @@ function App() {
 
   useEffect(() => {
     document.title = PAGE_TITLES[activePage] ?? PAGE_TITLES.home;
+  }, [activePage]);
+
+  // Track section navigation — skip first render (GA4 handles initial page_view automatically)
+  const isFirstNav = useRef(true);
+  useEffect(() => {
+    if (isFirstNav.current) { isFirstNav.current = false; return; }
+    track('page_view', {
+      page_title: PAGE_TITLES[activePage] ?? PAGE_TITLES.home,
+      page_location: window.location.href,
+    });
   }, [activePage]);
 
   useEffect(() => {

@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { CONSONANTS, DIFF } from '../data/consonants.js';
+import { track } from '@/lib/analytics.js';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Card, CardContent } from '@/components/ui/card';
@@ -85,6 +86,7 @@ export default function ClassRushPage() {
     setCurrentIdx(0);
     setLetterState(null);
     setScreen('game');
+    track('game_start', { game: 'class_rush', difficulty });
     setTimeout(() => {
       startTimeRef.current = Date.now();
       timerRef.current = setInterval(() => {
@@ -209,6 +211,13 @@ export default function ClassRushPage() {
       });
     }
   };
+
+  useEffect(() => {
+    if (screen === 'results') {
+      track('game_complete', { game: 'class_rush', score, correct: correctCount, missed: missedList.length, difficulty });
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [screen]);
 
   useEffect(() => {
     return () => clearInterval(timerRef.current);
