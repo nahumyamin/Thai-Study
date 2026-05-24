@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Button } from '@/components/ui/button';
 import { PRONUNCIATION_INTRO, TONES, TONE_TABLE, CORE_VOWELS, COMPOUND_VOWELS, TIPS } from '../data/pronunciation.js';
 import { CONSONANTS } from '../data/consonants.js';
 import { ToneAnalyzerPanel } from './ToneAnalyzerPage.jsx';
@@ -14,7 +15,7 @@ const TABS = [
   { id: 'analyzer',  label: 'Tone Analyzer' },
 ];
 
-export default function PronunciationPage() {
+export default function PronunciationPage({ showPage }) {
   const [tab, setTab] = useState('overview');
 
   const midClass = CONSONANTS.filter(c => c.cls === 'mid');
@@ -346,6 +347,17 @@ export default function PronunciationPage() {
           ))}
         </div>
       </section>
+
+      {/* Practice CTA */}
+      <div className="pt-6 border-t border-border flex items-center justify-between gap-4 flex-wrap">
+        <div>
+          <div className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-1">Practice this</div>
+          <p className="text-sm text-muted-foreground">Drill consonant classes with timed flashcards.</p>
+        </div>
+        <Button variant="outline" size="sm" onClick={() => showPage('rush')} className="shrink-0">
+          Try Class Rush →
+        </Button>
+      </div>
       </>}
     </div>
   );

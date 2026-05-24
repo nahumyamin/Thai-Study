@@ -162,15 +162,15 @@ function App() {
 
       <div key={activePage} className="animate-page-in">
         {activePage === 'home'          && <HomePage showPage={showPage} />}
-        {activePage === 'cards'         && <FlashcardsPage starred={starred} toggleStar={toggleStar} showRomaji={showRomaji} />}
-        {activePage === 'grammar'       && <GrammarPage />}
-        {activePage === 'pronunciation' && <PronunciationPage />}
-        {activePage === 'quiz'          && <QuizPage starred={starred} showRomaji={showRomaji} />}
-        {activePage === 'classifiers'   && <ClassifiersPage />}
+        {activePage === 'cards'         && <FlashcardsPage starred={starred} toggleStar={toggleStar} showRomaji={showRomaji} showPage={showPage} />}
+        {activePage === 'grammar'       && <GrammarPage showPage={showPage} />}
+        {activePage === 'pronunciation' && <PronunciationPage showPage={showPage} />}
+        {activePage === 'quiz'          && <QuizPage starred={starred} showRomaji={showRomaji} showPage={showPage} />}
+        {activePage === 'classifiers'   && <ClassifiersPage showPage={showPage} />}
         {activePage === 'numbers'       && <NumbersPage />}
-        {activePage === 'rush'          && <ClassRushPage />}
-        {activePage === 'scramble'      && <ScramblePage />}
-        {activePage === 'passages'      && <ReadingPassagesPage />}
+        {activePage === 'rush'          && <ClassRushPage showPage={showPage} />}
+        {activePage === 'scramble'      && <ScramblePage showPage={showPage} />}
+        {activePage === 'passages'      && <ReadingPassagesPage showPage={showPage} />}
         {activePage === 'months'        && <MonthsPage />}
         {activePage === 'clusters'      && <ConsonantClustersPage />}
         {activePage === 'culture'       && <CulturePage />}

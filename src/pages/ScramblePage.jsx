@@ -66,16 +66,26 @@ function WordChips({ words, onChange, disabled }) {
 }
 
 // ── Setup screen ──────────────────────────────────────────────────
-function SetupScreen({ count, setCount, mode, setMode, onStart }) {
+function SetupScreen({ count, setCount, mode, setMode, onStart, showPage }) {
   return (
     <div className="max-w-[640px] mx-auto px-5 py-8">
       <h1 className="text-3xl font-serif font-normal mb-1">
         Thai <em className="text-primary not-italic font-medium">Scramble</em>
       </h1>
       <Separator className="mb-4" />
-      <p className="text-sm text-muted-foreground leading-relaxed mb-8">
+      <p className="text-sm text-muted-foreground leading-relaxed mb-2">
         Rearrange scrambled Thai words into the correct sentence order. Choose drag mode
         to reorder chips, or type the sentence out yourself.
+      </p>
+      <p className="text-xs text-muted-foreground mb-8">
+        Want a grammar refresher first?{' '}
+        <button
+          className="underline underline-offset-2 hover:text-foreground transition-colors"
+          onClick={() => showPage('grammar')}
+        >
+          Browse the Grammar guide
+        </button>
+        .
       </p>
 
       <div className="mb-8">
@@ -307,7 +317,7 @@ function ResultsScreen({ sentences, scores, onPlayAgain }) {
 }
 
 // ── Main export ───────────────────────────────────────────────────
-export default function ScramblePage() {
+export default function ScramblePage({ showPage }) {
   const [phase, setPhase] = useState('setup');
   const [count, setCount] = useState(5);
   const [mode, setMode] = useState('drag');
@@ -329,7 +339,7 @@ export default function ScramblePage() {
   };
 
   if (phase === 'setup') return (
-    <SetupScreen count={count} setCount={setCount} mode={mode} setMode={setMode} onStart={handleStart} />
+    <SetupScreen count={count} setCount={setCount} mode={mode} setMode={setMode} onStart={handleStart} showPage={showPage} />
   );
   if (phase === 'playing') return (
     <PlayScreen sentences={sentences} mode={mode} onFinish={scores => {

@@ -18,7 +18,7 @@ function shuffle(arr) {
   return a;
 }
 
-export default function FlashcardsPage({ starred, toggleStar, showRomaji = true }) {
+export default function FlashcardsPage({ starred, toggleStar, showRomaji = true, showPage }) {
   const [search, setSearch] = useState('');
   const [activeTopic, setActiveTopic] = useState('all');
   const [showStarred, setShowStarred] = useState(false);
@@ -168,6 +168,17 @@ export default function FlashcardsPage({ starred, toggleStar, showRomaji = true 
           </Button>
         </div>
       )}
+
+      {/* Practice CTA */}
+      <div className="mt-10 pt-6 border-t border-border flex items-center justify-between gap-4 flex-wrap">
+        <div>
+          <div className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-1">Ready to test yourself?</div>
+          <p className="text-sm text-muted-foreground">Take a vocabulary quiz on any topic or your starred list.</p>
+        </div>
+        <Button variant="outline" size="sm" onClick={() => showPage('quiz')} className="shrink-0">
+          Try the Quiz →
+        </Button>
+      </div>
 
       {studyOpen && filtered.length > 0 && (
         <StudyModal

@@ -22,7 +22,7 @@ function getWrongChoices(correct, pool, count = 3) {
   return shuffle(others).slice(0, count);
 }
 
-export default function QuizPage({ starred, showRomaji = true }) {
+export default function QuizPage({ starred, showRomaji = true, showPage }) {
   const [screen, setScreen] = useState('setup');
   const [qTopic, setQTopic] = useState('all');
   const [qCount, setQCount] = useState(10);
@@ -212,8 +212,18 @@ export default function QuizPage({ starred, showRomaji = true }) {
         </h1>
         <Separator className="mb-4" />
         <div className="max-w-[520px]">
-          <p className="text-sm text-muted-foreground mb-6 leading-relaxed">
+          <p className="text-sm text-muted-foreground mb-2 leading-relaxed">
             Test yourself on vocabulary. Choose a topic, how many questions, and your preferred mode — then hit Start.
+          </p>
+          <p className="text-xs text-muted-foreground mb-6">
+            Want to browse the words first?{' '}
+            <button
+              className="underline underline-offset-2 hover:text-foreground transition-colors"
+              onClick={() => showPage('cards')}
+            >
+              Open Flashcards
+            </button>
+            .
           </p>
 
           <Card className="mb-4">
