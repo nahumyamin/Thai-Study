@@ -137,16 +137,23 @@
 
 /* Card flip animation — cannot be done in Tailwind */
 .card-wrapper {
-  perspective: 900px;
   height: 175px;
   cursor: pointer;
+}
+/* 3D context is deferred until first interaction to avoid creating
+   hundreds of GPU compositing layers on initial render, which crashes
+   iOS Safari when all 313 cards are visible. */
+.card-wrapper.activated {
+  perspective: 900px;
 }
 .card-inner {
   width: 100%;
   height: 100%;
   position: relative;
-  transform-style: preserve-3d;
   transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.card-wrapper.activated .card-inner {
+  transform-style: preserve-3d;
 }
 .card-wrapper.flipped .card-inner {
   transform: rotateY(180deg);
@@ -155,11 +162,19 @@
   position: absolute;
   width: 100%;
   height: 100%;
+}
+.card-wrapper.activated .card-face {
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
 }
+/* Hide back face visually until 3D context is active so it doesn't
+   render as a mirrored element on top of the front face. */
 .card-back {
   transform: rotateY(180deg);
+  visibility: hidden;
+}
+.card-wrapper.activated .card-back {
+  visibility: visible;
 }
 
 /* ── Syllable card stagger entrance ─────────────────────────────── */

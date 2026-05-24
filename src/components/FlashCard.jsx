@@ -13,12 +13,19 @@ function SpeakerIcon({ active }) {
 
 export default function FlashCard({ word, starred, onToggleStar, onOpen, showRomaji = true }) {
   const [flipped, setFlipped] = useState(false);
+  const [activated, setActivated] = useState(false);
   const [speaking, setSpeaking] = useState(false);
   const color = topics[word.topic]?.color || '#888';
 
   const handleClick = () => {
     if (onOpen) {
       onOpen();
+      return;
+    }
+    if (!activated) {
+      // Apply 3D context first, then flip on next frame so the transition fires
+      setActivated(true);
+      requestAnimationFrame(() => requestAnimationFrame(() => setFlipped(true)));
     } else {
       setFlipped(f => !f);
     }
@@ -44,7 +51,7 @@ export default function FlashCard({ word, starred, onToggleStar, onOpen, showRom
 
   return (
     <div
-      className={cn('card-wrapper', flipped && 'flipped')}
+      className={cn('card-wrapper', activated && 'activated', flipped && 'flipped')}
       onClick={handleClick}
       role="button"
       tabIndex={0}

@@ -1,10 +1,12 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { allVocab, topics } from '../data/vocab.js';
 import FlashCard from '../components/FlashCard.jsx';
 import StudyModal from '../components/StudyModal.jsx';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
+
+const PAGE_SIZE = 48;
 
 function shuffle(arr) {
   const a = [...arr];
@@ -22,6 +24,7 @@ export default function FlashcardsPage({ starred, toggleStar, showRomaji = true 
   const [order, setOrder] = useState(allVocab);
   const [studyOpen, setStudyOpen] = useState(false);
   const [studyIndex, setStudyIndex] = useState(0);
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
 
   // Word count per topic (unfiltered totals for the pill badges)
   const topicCounts = useMemo(() => {
@@ -29,6 +32,9 @@ export default function FlashcardsPage({ starred, toggleStar, showRomaji = true 
     for (const w of allVocab) counts[w.topic] = (counts[w.topic] ?? 0) + 1;
     return counts;
   }, []);
+
+  // Reset pagination when filters change
+  useEffect(() => { setVisibleCount(PAGE_SIZE); }, [activeTopic, showStarred, search, order]);
 
   const filtered = useMemo(() => {
     let list = order;
@@ -140,7 +146,7 @@ export default function FlashcardsPage({ starred, toggleStar, showRomaji = true 
         {filtered.length === 0 ? (
           <div className="col-span-full text-center text-muted-foreground py-12 italic">No cards match your filter.</div>
         ) : (
-          filtered.map((word, i) => (
+          filtered.slice(0, visibleCount).map((word, i) => (
             <FlashCard
               key={word.thai + i}
               word={word}
@@ -151,6 +157,14 @@ export default function FlashcardsPage({ starred, toggleStar, showRomaji = true 
           ))
         )}
       </div>
+
+      {visibleCount < filtered.length && (
+        <div className="mt-6 text-center">
+          <Button variant="outline" onClick={() => setVisibleCount(c => c + PAGE_SIZE)}>
+            Show more ({filtered.length - visibleCount} remaining)
+          </Button>
+        </div>
+      )}
 
       {studyOpen && filtered.length > 0 && (
         <StudyModal
