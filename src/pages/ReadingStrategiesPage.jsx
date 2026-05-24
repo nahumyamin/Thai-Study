@@ -125,13 +125,13 @@ export default function ReadingStrategiesPage({ showPage }) {
       {/* Quick-jump TOC */}
       <nav className="mb-10 flex flex-wrap gap-2">
         {READING_SECTIONS.map(s => (
-          <a
+          <button
             key={s.id}
-            href={`#${s.id}`}
+            onClick={() => document.getElementById(s.id)?.scrollIntoView({ behavior: 'smooth' })}
             className="text-xs px-3 py-1.5 rounded-full border border-border text-muted-foreground hover:text-foreground hover:border-primary/40 transition-colors"
           >
             {s.title}
-          </a>
+          </button>
         ))}
       </nav>
 
