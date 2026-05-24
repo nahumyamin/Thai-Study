@@ -53,6 +53,141 @@ export default function PronunciationPage() {
       {tab === 'overview' && <>
       <p className="text-sm text-muted-foreground leading-relaxed mb-8">{PRONUNCIATION_INTRO}</p>
 
+      {/* Syllable structure */}
+      <section className="mb-10">
+        <h2 className="font-serif text-xl font-normal mb-2 pb-2 border-b border-border">Anatomy of a Thai syllable</h2>
+        <p className="text-sm text-muted-foreground leading-relaxed mb-6">
+          Every Thai syllable has up to four components in a fixed order. Understanding these slots lets you decode any word — even unfamiliar ones.
+        </p>
+
+        {/* Four slots */}
+        <div className="flex flex-wrap items-center justify-center gap-2 mb-8">
+          {[
+            { slot: 'Initial', th: 'ก',  sub: 'consonant',          note: 'required', border: 'border-primary/40',     bg: 'bg-primary/5',          label: 'text-primary',      char: 'text-foreground' },
+            { slot: 'Vowel',   th: 'า',  sub: 'above/below/around', note: 'required', border: 'border-blue-400/40',    bg: 'bg-blue-50 dark:bg-blue-900/20',    label: 'text-blue-500',     char: 'text-blue-600 dark:text-blue-300' },
+            { slot: 'Tone mark', th: '้', sub: 'written above',     note: 'optional', border: 'border-amber-400/40',   bg: 'bg-amber-50 dark:bg-amber-900/20',  label: 'text-amber-600',    char: 'text-amber-600 dark:text-amber-300' },
+            { slot: 'Final',   th: 'น',  sub: 'sonorant or stop',   note: 'optional', border: 'border-green-400/40',   bg: 'bg-green-50 dark:bg-green-900/20',  label: 'text-green-600',    char: 'text-green-700 dark:text-green-300' },
+          ].map(({ slot, th, sub, note, border, bg, label, char }, i, arr) => (
+            <div key={slot} className="flex items-center gap-2">
+              <div className={cn('rounded-xl border-2 px-4 py-3 min-w-[88px] text-center', border, bg)}>
+                <div className={cn('text-[0.6rem] font-bold tracking-[0.15em] uppercase mb-1', label)}>{slot}</div>
+                <div className={cn('text-3xl font-thai-display leading-none mb-1.5', char)}>{th}</div>
+                <div className="text-[0.65rem] text-muted-foreground leading-tight">{sub}</div>
+                <div className={cn('text-[0.6rem] font-semibold mt-1.5', note === 'required' ? 'text-foreground' : 'text-muted-foreground/50')}>
+                  {note}
+                </div>
+              </div>
+              {i < arr.length - 1 && (
+                <span className="text-muted-foreground/30 text-lg select-none">+</span>
+              )}
+            </div>
+          ))}
+        </div>
+
+        {/* Worked examples */}
+        <div className="text-xs font-semibold tracking-widest uppercase text-muted-foreground mb-3">Worked examples</div>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-8">
+          {[
+            {
+              word: 'มา',   rom: 'maa',   en: 'to come',
+              parts: [
+                { label: 'Initial', th: 'ม', rom: 'm',  color: 'text-primary' },
+                { label: 'Vowel',   th: 'า', rom: 'aa', color: 'text-blue-500' },
+              ],
+              note: 'Open syllable — no final consonant',
+            },
+            {
+              word: 'คน',   rom: 'khon',  en: 'person',
+              parts: [
+                { label: 'Initial', th: 'ค', rom: 'kh', color: 'text-primary' },
+                { label: 'Vowel',   th: 'โ–ะ', rom: 'o',  color: 'text-blue-500' },
+                { label: 'Final',   th: 'น', rom: 'n',  color: 'text-green-600' },
+              ],
+              note: 'Closed syllable — ends with sonorant',
+            },
+            {
+              word: 'น้ำ',  rom: 'náam',  en: 'water',
+              parts: [
+                { label: 'Initial',    th: 'น', rom: 'n',       color: 'text-primary' },
+                { label: 'Vowel',      th: 'า', rom: 'aa',      color: 'text-blue-500' },
+                { label: 'Tone mark',  th: '้', rom: 'falling', color: 'text-amber-600' },
+                { label: 'Final',      th: 'ม', rom: 'm',       color: 'text-green-600' },
+              ],
+              note: 'All four slots present',
+            },
+          ].map(({ word, rom, en, parts, note }) => (
+            <div key={word} className="rounded-xl border border-border bg-card p-4">
+              <div className="flex items-baseline gap-2 mb-3">
+                <span className="text-3xl font-thai-display text-foreground">{word}</span>
+                <span className="text-sm italic text-muted-foreground">{rom}</span>
+                <span className="text-sm text-muted-foreground ml-auto">"{en}"</span>
+              </div>
+              <div className="flex flex-wrap gap-1.5 mb-3">
+                {parts.map(p => (
+                  <div key={p.label} className="flex flex-col items-center rounded-lg bg-muted/40 px-2.5 py-1.5 min-w-[42px]">
+                    <span className={cn('text-xl font-thai-display leading-none', p.color)}>{p.th}</span>
+                    <span className="text-[0.6rem] text-muted-foreground mt-0.5">{p.rom}</span>
+                    <span className={cn('text-[0.55rem] font-bold tracking-wide uppercase mt-0.5', p.color)}>{p.label}</span>
+                  </div>
+                ))}
+              </div>
+              <p className="text-[0.7rem] italic text-muted-foreground">{note}</p>
+            </div>
+          ))}
+        </div>
+
+        {/* Live vs dead */}
+        <div className="text-xs font-semibold tracking-widest uppercase text-muted-foreground mb-3">Live vs dead syllables</div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-8">
+          <div className="rounded-xl border border-border bg-card p-4">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="w-2.5 h-2.5 rounded-full bg-green-500 shrink-0" />
+              <span className="font-semibold text-sm">Live syllable</span>
+            </div>
+            <p className="text-sm text-muted-foreground leading-relaxed mb-2">
+              Ends in a <strong className="text-foreground">sonorant final</strong> (–m, –n, –ng, –y, –w) or a <strong className="text-foreground">long vowel</strong> with no final consonant.
+            </p>
+            <div className="flex gap-2 flex-wrap">
+              {['มา maa', 'คน khon', 'กาง kaang'].map(w => (
+                <span key={w} className="text-xs bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200 px-2 py-0.5 rounded-full">{w}</span>
+              ))}
+            </div>
+          </div>
+          <div className="rounded-xl border border-border bg-card p-4">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="w-2.5 h-2.5 rounded-full bg-red-400 shrink-0" />
+              <span className="font-semibold text-sm">Dead syllable</span>
+            </div>
+            <p className="text-sm text-muted-foreground leading-relaxed mb-2">
+              Ends in a <strong className="text-foreground">stop final</strong> (–k, –t, –p) or has a <strong className="text-foreground">short vowel</strong> with no final consonant. Tones behave differently.
+            </p>
+            <div className="flex gap-2 flex-wrap">
+              {['กิน kin', 'วัด wát', 'จบ jòp'].map(w => (
+                <span key={w} className="text-xs bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-200 px-2 py-0.5 rounded-full">{w}</span>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Vowel positions */}
+        <div className="text-xs font-semibold tracking-widest uppercase text-muted-foreground mb-3">Where vowels sit around the consonant</div>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          {[
+            { pos: 'After',      ex: 'กา',   note: '–า, –ี, –ู …',    desc: 'Most common position' },
+            { pos: 'Before',     ex: 'เก',   note: 'เ–, แ–, โ– …',   desc: 'Vowel written left of consonant' },
+            { pos: 'Above',      ex: 'กิ',   note: '–ิ, –ั, –็ …',   desc: 'Short vowel markers on top' },
+            { pos: 'Surrounding',ex: 'เกาะ', note: 'เ–าะ, เ–ีย …',   desc: 'Split across multiple positions' },
+          ].map(({ pos, ex, note, desc }) => (
+            <div key={pos} className="rounded-xl border border-border bg-card p-3 text-center">
+              <div className="text-[0.6rem] font-bold tracking-[0.15em] uppercase text-muted-foreground mb-2">{pos}</div>
+              <div className="text-2xl font-thai-display text-primary mb-1">{ex}</div>
+              <div className="text-xs font-mono text-muted-foreground mb-1">{note}</div>
+              <div className="text-[0.65rem] text-muted-foreground/70 leading-snug">{desc}</div>
+            </div>
+          ))}
+        </div>
+      </section>
+
       {/* Tones section */}
       <section className="mb-10">
         <h2 className="font-serif text-xl font-normal mb-2 pb-2 border-b border-border">The five tones</h2>
