@@ -217,14 +217,14 @@ export default function ReadingPassagesPage({ showPage }) {
           Reading <em className="text-primary not-italic font-medium">Passages</em>
         </h1>
         <p className="text-xs text-muted-foreground mt-1 mb-4">
-          Struggling with tones or vowels?{' '}
+          New to reading Thai?{' '}
           <button
             className="underline underline-offset-2 hover:text-foreground transition-colors"
-            onClick={() => showPage('pronunciation')}
+            onClick={() => showPage('reading')}
           >
-            Review Pronunciation
+            Read the Reading Strategies guide
           </button>
-          {' '}before diving in.
+          {' '}first.
         </p>
         <Separator className="mb-6" />
 

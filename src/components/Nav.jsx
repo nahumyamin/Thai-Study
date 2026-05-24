@@ -26,6 +26,7 @@ const REFERENCE_PAGES = [
   { id: 'grammar',       label: 'Grammar' },
   { id: 'pronunciation', label: 'Pronunciation' },
   { id: 'classifiers',   label: 'Numbers & Classifiers' },
+  { id: 'reading',       label: 'Reading Strategies' },
 ];
 
 function CoffeeIcon() {
