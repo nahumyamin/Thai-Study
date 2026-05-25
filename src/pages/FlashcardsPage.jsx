@@ -29,10 +29,11 @@ export default function FlashcardsPage({ starred, toggleStar, showRomaji = true,
   const [thaiFont, setThaiFont] = useState('default');
 
   const FONT_OPTIONS = [
-    { key: 'default',  label: 'Serif',     fontClass: 'font-thai-display'   },
-    { key: 'kanit',    label: 'Kanit',     fontClass: 'font-thai-kanit'     },
-    { key: 'noto-sans', label: 'Loopless', fontClass: 'font-thai-noto-sans' },
-    { key: 'cursive',  label: 'Cursive',   fontClass: 'font-thai-cursive'   },
+    { key: 'default',   label: 'Serif',     fontClass: 'font-thai-display'   },
+    { key: 'kanit',     label: 'Kanit',     fontClass: 'font-thai-kanit'     },
+    { key: 'noto-sans', label: 'Loopless',  fontClass: 'font-thai-noto-sans' },
+    { key: 'sriracha',  label: 'Sriracha',  fontClass: 'font-thai-sriracha'  },
+    { key: 'athiti',    label: 'Athiti',    fontClass: 'font-thai-athiti'    },
   ];
 
   // Word count per topic (unfiltered totals for the pill badges)

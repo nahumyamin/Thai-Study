@@ -272,10 +272,11 @@ export default function PronunciationPage({ showPage }) {
                     <span className="text-2xl text-foreground leading-snug">{c.l}</span>
                     <span className="text-xs font-semibold text-primary">{c.sound}</span>
                     <span className="text-[0.65rem] italic text-muted-foreground">{c.name}</span>
-                    <div className="flex items-center gap-1.5 mt-1 pt-1 border-t border-border w-full justify-center">
-                      <span className="font-thai-kanit text-base text-muted-foreground leading-none" title="Kanit">{c.l}</span>
-                      <span className="font-thai-noto-sans text-base text-muted-foreground leading-none" title="Noto Sans Thai (loopless)">{c.l}</span>
-                      <span className="font-thai-cursive text-base text-muted-foreground leading-none" title="Charmonman (cursive)">{c.l}</span>
+                    <div className="flex items-center gap-1 mt-1 pt-1 border-t border-border w-full justify-center">
+                      <span className="font-thai-kanit text-sm text-muted-foreground leading-none" title="Kanit">{c.l}</span>
+                      <span className="font-thai-noto-sans text-sm text-muted-foreground leading-none" title="Loopless">{c.l}</span>
+                      <span className="font-thai-sriracha text-sm text-muted-foreground leading-none" title="Sriracha">{c.l}</span>
+                      <span className="font-thai-athiti text-sm text-muted-foreground leading-none" title="Athiti">{c.l}</span>
                     </div>
                   </CardContent>
                 </Card>
