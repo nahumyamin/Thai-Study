@@ -143,7 +143,7 @@ function WordOfTheDay({ showPage }) {
               onClick={handleCopy}
               className="text-xs text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
             >
-              ⎘ Copy sentence
+              {copied ? '✓ Copied!' : '⎘ Copy sentence'}
             </button>
           )}
           <button onClick={() => showPage('cards')} className="text-xs text-primary hover:underline">
@@ -151,13 +151,6 @@ function WordOfTheDay({ showPage }) {
           </button>
         </div>
       </div>
-
-      {/* Copy toast */}
-      {copied && (
-        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 animate-streak-toast px-4 py-2 rounded-full bg-foreground text-background text-sm font-medium shadow-lg pointer-events-none whitespace-nowrap">
-          ✓ Copied to clipboard
-        </div>
-      )}
 
       {/* Example reveal */}
       {revealed && (
