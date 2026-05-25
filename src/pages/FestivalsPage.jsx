@@ -63,9 +63,11 @@ function YearTimeline({ activeFilter, onSelect }) {
 // ── Vocabulary row ────────────────────────────────────────────────
 function VocabRow({ v }) {
   return (
-    <div className="flex items-baseline gap-3 py-1.5 border-b border-border/50 last:border-0">
-      <span className="font-thai-display text-lg text-foreground w-28 shrink-0">{v.thai}</span>
-      <span className="text-xs italic text-muted-foreground w-28 shrink-0">{v.rom}</span>
+    <div className="py-2 border-b border-border/50 last:border-0">
+      <div className="flex items-baseline gap-2 flex-wrap">
+        <span className="font-thai-display text-lg text-foreground leading-snug">{v.thai}</span>
+        <span className="text-xs italic text-muted-foreground">{v.rom}</span>
+      </div>
       <span className="text-sm text-muted-foreground">{v.en}</span>
     </div>
   );
