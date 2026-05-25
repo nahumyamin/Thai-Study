@@ -341,4 +341,6 @@ export const allVocab = [
   { thai: "เลิกงาน", rom: "loek ngan", en: "to finish work, knock off (end of shift)", topic: "labor", ex: "เขาเลิกงานห้าโมงเย็นแล้วรีบกลับบ้าน" },
   { thai: "เกินตัว", rom: "koen tua", en: "beyond one's means or station, to overreach", topic: "society", ex: "ซื้อของแพงทุกอย่างโดยไม่มีเงินเก็บถือว่าเกินตัวมาก" },
   { thai: "ไม่เอาด้วย", rom: "mai ao duai", en: "to want no part of it, to refuse to go along", topic: "grammar", ex: "เขาบอกว่าไม่เอาด้วยกับแผนนั้นตั้งแต่ต้น" },
+  { thai: "กองทุน", rom: "gong tun", en: "fund (investment or welfare fund)", topic: "finance", ex: "รัฐบาลตั้งกองทุนช่วยเหลือผู้ที่ได้รับผลกระทบจากน้ำท่วม" },
+  { thai: "เอาแต่ใจ", rom: "ao tae jai", en: "selfish, self-centered, only thinking of oneself", topic: "society", ex: "เขาเอาแต่ใจตัวเองโดยไม่สนใจความรู้สึกคนอื่น" },
 ];
