@@ -18,6 +18,7 @@ import ReadingStrategiesPage from './pages/ReadingStrategiesPage.jsx';
 import CulturePage from './pages/CulturePage.jsx';
 import IdiomsPage from './pages/IdiomsPage.jsx';
 import FestivalsPage from './pages/FestivalsPage.jsx';
+import FoodPage from './pages/FoodPage.jsx';
 
 const GROUP_MAP = {
   home: null,
@@ -34,6 +35,7 @@ const GROUP_MAP = {
   culture: 'culture',
   idioms:    'culture',
   festivals: 'culture',
+  food:      'culture',
   // legacy routes — still work via hash but not in nav
   numbers: 'reference',
   clusters: 'reference',
@@ -56,6 +58,7 @@ const PAGE_TITLES = {
   culture:      'Thai Anthems — Thai Study',
   idioms:       'Thai Idioms — Thai Study',
   festivals:    'Festivals & Calendar — Thai Study',
+  food:         'Thai Food — Thai Study',
   numbers:      'Numbers — Thai Study',
   clusters:     'Consonant Clusters — Thai Study',
 };
@@ -180,6 +183,7 @@ function App() {
         {activePage === 'culture'       && <CulturePage />}
         {activePage === 'idioms'        && <IdiomsPage />}
         {activePage === 'festivals'     && <FestivalsPage />}
+        {activePage === 'food'          && <FoodPage />}
       </div>
     </div>
   );

@@ -5,6 +5,7 @@ const CULTURE_PAGES = [
   { id: 'culture',   label: 'Anthems'   },
   { id: 'idioms',    label: 'Idioms'    },
   { id: 'festivals', label: 'Festivals' },
+  { id: 'food',      label: 'Food'      },
 ];
 
 const STUDY_PAGES = [
