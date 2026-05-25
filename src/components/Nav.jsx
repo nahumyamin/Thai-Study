@@ -1,10 +1,4 @@
-import { useState } from 'react';
-import {
-  Sheet,
-  SheetContent,
-  SheetTrigger,
-  SheetTitle,
-} from '@/components/ui/sheet';
+import { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 
 const CULTURE_PAGES = [
@@ -81,6 +75,12 @@ export default function Nav({ activePage, activeGroup, showPage, onSearch, theme
     showPage(page);
     setMenuOpen(false);
   };
+
+  // Lock body scroll when menu is open
+  useEffect(() => {
+    document.body.style.overflow = menuOpen ? 'hidden' : '';
+    return () => { document.body.style.overflow = ''; };
+  }, [menuOpen]);
 
   const groupTabClass = (group) => cn(
     'text-xs font-semibold uppercase tracking-widest px-4 py-3 border-b-2 transition-all whitespace-nowrap bg-transparent border-x-0 border-t-0 cursor-pointer',
@@ -162,89 +162,108 @@ export default function Nav({ activePage, activeGroup, showPage, onSearch, theme
             {theme === 'dark' ? <SunIcon /> : <MoonIcon />}
           </button>
           <div className="sm:hidden">
-          <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
-            <SheetTrigger asChild>
-              <button
-                className="flex flex-col gap-[5px] items-center justify-center p-2"
-                aria-label="Menu"
-              >
-                <span className="block w-5 h-0.5 bg-white/80 rounded-sm transition-all" />
-                <span className="block w-5 h-0.5 bg-white/80 rounded-sm transition-all" />
-                <span className="block w-5 h-0.5 bg-white/80 rounded-sm transition-all" />
-              </button>
-            </SheetTrigger>
-            <SheetContent side="top" className="bg-zinc-900 border-none p-0 pt-0">
-              <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
-              <div className="flex flex-col py-2">
-                <span className={cn(
-                  'px-5 py-2 text-[0.68rem] font-bold tracking-[0.1em] uppercase',
-                  activeGroup === 'study' ? 'text-amber-400' : 'text-white/40'
-                )}>
-                  Study
-                </span>
-                {STUDY_PAGES.map(p => (
+            {/* Hamburger trigger */}
+            <button
+              className="flex flex-col gap-[5px] items-center justify-center p-2"
+              aria-label="Open menu"
+              onClick={() => setMenuOpen(true)}
+            >
+              <span className="block w-5 h-0.5 bg-white/80 rounded-sm" />
+              <span className="block w-5 h-0.5 bg-white/80 rounded-sm" />
+              <span className="block w-5 h-0.5 bg-white/80 rounded-sm" />
+            </button>
+
+            {/* Full-screen overlay */}
+            {menuOpen && (
+              <div className="fixed inset-0 z-[200] bg-zinc-900 flex flex-col">
+                {/* Top bar with X */}
+                <div className="flex items-center justify-between px-5 py-3 border-b border-white/10 shrink-0">
                   <button
-                    key={p.id}
-                    className={cn(
-                      'text-left px-7 py-[0.65rem] text-sm tracking-[0.02em] border-l-[3px] transition-all',
-                      activePage === p.id
-                        ? 'text-white border-amber-400 bg-white/[0.06]'
-                        : 'text-white/65 border-transparent'
-                    )}
-                    onClick={() => handleNav(p.id)}
+                    onClick={() => handleNav('home')}
+                    className="font-serif text-sm text-white/90 bg-transparent border-none cursor-pointer hover:text-white transition-colors"
                   >
-                    {p.label}
+                    Thai <em className="text-amber-400 not-italic">Study</em>
                   </button>
-                ))}
-
-                <div className="h-px bg-white/[0.08] my-1.5" />
-
-                <span className={cn(
-                  'px-5 py-2 text-[0.68rem] font-bold tracking-[0.1em] uppercase',
-                  activeGroup === 'reference' ? 'text-amber-400' : 'text-white/40'
-                )}>
-                  Reference
-                </span>
-                {REFERENCE_PAGES.map(p => (
                   <button
-                    key={p.id}
-                    className={cn(
-                      'text-left px-7 py-[0.65rem] text-sm tracking-[0.02em] border-l-[3px] transition-all',
-                      activePage === p.id
-                        ? 'text-white border-amber-400 bg-white/[0.06]'
-                        : 'text-white/65 border-transparent'
-                    )}
-                    onClick={() => handleNav(p.id)}
+                    onClick={() => setMenuOpen(false)}
+                    className="text-white/60 hover:text-white transition-colors bg-transparent border-none cursor-pointer p-1 text-xl leading-none"
+                    aria-label="Close menu"
                   >
-                    {p.label}
+                    ✕
                   </button>
-                ))}
+                </div>
 
-                <div className="h-px bg-white/[0.08] my-1.5" />
+                {/* Scrollable nav list */}
+                <div className="flex-1 overflow-y-auto py-2">
+                  <span className={cn(
+                    'block px-5 py-2 text-[0.68rem] font-bold tracking-[0.1em] uppercase',
+                    activeGroup === 'study' ? 'text-amber-400' : 'text-white/40'
+                  )}>
+                    Study
+                  </span>
+                  {STUDY_PAGES.map(p => (
+                    <button
+                      key={p.id}
+                      className={cn(
+                        'w-full text-left px-7 py-[0.75rem] text-sm tracking-[0.02em] border-l-[3px] transition-all bg-transparent',
+                        activePage === p.id
+                          ? 'text-white border-amber-400 bg-white/[0.06]'
+                          : 'text-white/65 border-transparent'
+                      )}
+                      onClick={() => handleNav(p.id)}
+                    >
+                      {p.label}
+                    </button>
+                  ))}
 
-                <span className={cn(
-                  'px-5 py-2 text-[0.68rem] font-bold tracking-[0.1em] uppercase',
-                  activeGroup === 'culture' ? 'text-amber-400' : 'text-white/40'
-                )}>
-                  Culture
-                </span>
-                {CULTURE_PAGES.map(p => (
-                  <button
-                    key={p.id}
-                    className={cn(
-                      'text-left px-7 py-[0.65rem] text-sm tracking-[0.02em] border-l-[3px] transition-all',
-                      activePage === p.id
-                        ? 'text-white border-amber-400 bg-white/[0.06]'
-                        : 'text-white/65 border-transparent'
-                    )}
-                    onClick={() => handleNav(p.id)}
-                  >
-                    {p.label}
-                  </button>
-                ))}
+                  <div className="h-px bg-white/[0.08] my-1.5" />
+
+                  <span className={cn(
+                    'block px-5 py-2 text-[0.68rem] font-bold tracking-[0.1em] uppercase',
+                    activeGroup === 'reference' ? 'text-amber-400' : 'text-white/40'
+                  )}>
+                    Reference
+                  </span>
+                  {REFERENCE_PAGES.map(p => (
+                    <button
+                      key={p.id}
+                      className={cn(
+                        'w-full text-left px-7 py-[0.75rem] text-sm tracking-[0.02em] border-l-[3px] transition-all bg-transparent',
+                        activePage === p.id
+                          ? 'text-white border-amber-400 bg-white/[0.06]'
+                          : 'text-white/65 border-transparent'
+                      )}
+                      onClick={() => handleNav(p.id)}
+                    >
+                      {p.label}
+                    </button>
+                  ))}
+
+                  <div className="h-px bg-white/[0.08] my-1.5" />
+
+                  <span className={cn(
+                    'block px-5 py-2 text-[0.68rem] font-bold tracking-[0.1em] uppercase',
+                    activeGroup === 'culture' ? 'text-amber-400' : 'text-white/40'
+                  )}>
+                    Culture
+                  </span>
+                  {CULTURE_PAGES.map(p => (
+                    <button
+                      key={p.id}
+                      className={cn(
+                        'w-full text-left px-7 py-[0.75rem] text-sm tracking-[0.02em] border-l-[3px] transition-all bg-transparent',
+                        activePage === p.id
+                          ? 'text-white border-amber-400 bg-white/[0.06]'
+                          : 'text-white/65 border-transparent'
+                      )}
+                      onClick={() => handleNav(p.id)}
+                    >
+                      {p.label}
+                    </button>
+                  ))}
+                </div>
               </div>
-            </SheetContent>
-          </Sheet>
+            )}
           </div>
         </div>
       </div>
