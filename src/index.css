@@ -314,6 +314,12 @@
 @utility font-thai-display {
   font-family: 'Noto Serif Thai', 'Sarabun', sans-serif;
 }
+@utility font-thai-kanit {
+  font-family: 'Kanit', 'Sarabun', sans-serif;
+}
+@utility font-thai-playpen {
+  font-family: 'Playpen Sans Thai', 'Sarabun', cursive;
+}
 
 /* ── Flashcard back — rich textured surface ──────────────────────── */
 .card-back-rich {

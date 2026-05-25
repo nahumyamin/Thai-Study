@@ -11,7 +11,9 @@ function SpeakerIcon({ active }) {
   );
 }
 
-export default function FlashCard({ word, starred, onToggleStar, onOpen, showRomaji = true }) {
+const THAI_FONT_CLASS = { kanit: 'font-thai-kanit', playpen: 'font-thai-playpen' };
+
+export default function FlashCard({ word, starred, onToggleStar, onOpen, showRomaji = true, thaiFont = 'default' }) {
   const [flipped, setFlipped] = useState(false);
   const [activated, setActivated] = useState(false);
   const [speaking, setSpeaking] = useState(false);
@@ -72,7 +74,7 @@ export default function FlashCard({ word, starred, onToggleStar, onOpen, showRom
           >
             {starred ? '★' : '☆'}
           </button>
-          <div className="text-[1.75rem] font-light font-thai-display text-foreground text-center leading-snug mt-1">{word.thai}</div>
+          <div className={cn('text-[1.75rem] font-light text-foreground text-center leading-snug mt-1', THAI_FONT_CLASS[thaiFont] ?? 'font-thai-display')}>{word.thai}</div>
           <div className="absolute bottom-2 text-[0.7rem] text-muted-foreground tracking-wider uppercase">tap to flip</div>
           <button
             onClick={handleSpeak}

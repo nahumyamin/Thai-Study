@@ -4,8 +4,10 @@
     {
       "name": "thai-study",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev", "--", "--port", "5177"],
-      "port": 5177
+      "runtimeArgs": ["run", "dev"],
+      "port": 5173,
+      "autoPort": true,
+      "cwd": "/Users/random-noise/Documents/Claude/Thai-Study"
     }
   ]
 }

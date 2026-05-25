@@ -4,7 +4,9 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { cn } from '@/lib/utils';
 
-export default function StudyModal({ words, initialIndex, starred, onToggleStar, onClose, showRomaji = true }) {
+const THAI_FONT_CLASS = { kanit: 'font-thai-kanit', playpen: 'font-thai-playpen' };
+
+export default function StudyModal({ words, initialIndex, starred, onToggleStar, onClose, showRomaji = true, thaiFont = 'default' }) {
   const [idx, setIdx] = useState(initialIndex || 0);
   const [flipped, setFlipped] = useState(false);
 
@@ -67,7 +69,7 @@ export default function StudyModal({ words, initialIndex, starred, onToggleStar,
               {/* Front */}
               <div className="card-face flex flex-col items-center justify-center border border-border bg-card rounded-lg p-8 gap-2">
                 <div className="absolute top-0 left-0 right-0 h-1 rounded-t-lg" style={{ background: color }} />
-                <div className="text-[4rem] font-light font-thai-display text-foreground text-center leading-tight">{current.thai}</div>
+                <div className={cn('text-[4rem] font-light text-foreground text-center leading-tight', THAI_FONT_CLASS[thaiFont] ?? 'font-thai-display')}>{current.thai}</div>
                 <div className="absolute bottom-3 text-[0.72rem] text-muted-foreground tracking-widest uppercase">tap to flip</div>
               </div>
 

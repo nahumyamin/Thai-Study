@@ -26,6 +26,13 @@ export default function FlashcardsPage({ starred, toggleStar, showRomaji = true,
   const [studyOpen, setStudyOpen] = useState(false);
   const [studyIndex, setStudyIndex] = useState(0);
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+  const [thaiFont, setThaiFont] = useState('default');
+
+  const FONT_OPTIONS = [
+    { key: 'default', label: 'Serif',   fontClass: 'font-thai-display' },
+    { key: 'kanit',   label: 'Kanit',   fontClass: 'font-thai-kanit'   },
+    { key: 'playpen', label: 'Playpen', fontClass: 'font-thai-playpen' },
+  ];
 
   // Word count per topic (unfiltered totals for the pill badges)
   const topicCounts = useMemo(() => {
@@ -142,6 +149,26 @@ export default function FlashcardsPage({ starred, toggleStar, showRomaji = true,
         })}
       </div>
 
+      {/* Font toggle */}
+      <div className="flex items-center gap-2 mb-3">
+        <span className="text-xs text-muted-foreground shrink-0">Thai font:</span>
+        {FONT_OPTIONS.map(f => (
+          <button
+            key={f.key}
+            onClick={() => setThaiFont(f.key)}
+            className={cn(
+              'flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs border transition-colors',
+              thaiFont === f.key
+                ? 'bg-primary/10 border-primary/40 text-foreground'
+                : 'bg-transparent border-border text-muted-foreground hover:text-foreground hover:bg-muted/50'
+            )}
+          >
+            <span className={f.fontClass} style={{ fontSize: '1rem', lineHeight: 1 }}>ก</span>
+            {f.label}
+          </button>
+        ))}
+      </div>
+
       <p className="text-xs text-muted-foreground text-center mb-2">Tap any card to reveal translation &amp; pronunciation</p>
 
       {/* Card grid */}
@@ -156,6 +183,7 @@ export default function FlashcardsPage({ starred, toggleStar, showRomaji = true,
               starred={starred.has(word.thai)}
               onToggleStar={toggleStar}
               showRomaji={showRomaji}
+              thaiFont={thaiFont}
             />
           ))
         )}
@@ -188,6 +216,7 @@ export default function FlashcardsPage({ starred, toggleStar, showRomaji = true,
           onToggleStar={toggleStar}
           onClose={() => setStudyOpen(false)}
           showRomaji={showRomaji}
+          thaiFont={thaiFont}
         />
       )}
     </div>
