@@ -45,9 +45,11 @@ function SpeakerBtn({ text, className = '' }) {
 // ── Vocab row ─────────────────────────────────────────────────────
 function VocabRow({ v }) {
   return (
-    <div className="flex items-baseline gap-3 py-1.5 border-b border-border/50 last:border-0">
-      <span className="font-thai-display text-lg text-foreground w-32 shrink-0">{v.thai}</span>
-      <span className="text-xs italic text-muted-foreground w-28 shrink-0">{v.rom}</span>
+    <div className="py-2 border-b border-border/50 last:border-0">
+      <div className="flex items-baseline gap-2 flex-wrap">
+        <span className="font-thai-display text-lg text-foreground leading-snug">{v.thai}</span>
+        <span className="text-xs italic text-muted-foreground">{v.rom}</span>
+      </div>
       <span className="text-sm text-muted-foreground">{v.en}</span>
     </div>
   );
@@ -118,16 +120,20 @@ function FoodCard({ dish, isActive, onToggle }) {
               <h3 className="text-[0.68rem] font-bold tracking-widest uppercase text-muted-foreground mb-2">
                 Key Ingredients
               </h3>
-              <ul className="flex flex-col gap-1.5">
+              <ul className="flex flex-col">
                 {dish.ingredients.map((ing) => (
-                  <li key={ing.thai} className="flex items-baseline gap-2 text-sm">
+                  <li key={ing.thai} className="flex items-start gap-2 py-1.5 border-b border-border/40 last:border-0">
                     <span
-                      className="mt-1.5 w-1.5 h-1.5 rounded-full shrink-0"
+                      className="w-1.5 h-1.5 rounded-full shrink-0 mt-2"
                       style={{ backgroundColor: region.color }}
                     />
-                    <span className="font-thai-display text-base text-foreground leading-snug w-28 shrink-0">{ing.thai}</span>
-                    <span className="text-xs italic text-muted-foreground w-24 shrink-0">{ing.rom}</span>
-                    <span className="text-muted-foreground">{ing.en}</span>
+                    <div className="min-w-0">
+                      <div className="flex items-baseline gap-2 flex-wrap">
+                        <span className="font-thai-display text-base text-foreground leading-snug">{ing.thai}</span>
+                        <span className="text-xs italic text-muted-foreground">{ing.rom}</span>
+                      </div>
+                      <span className="text-sm text-muted-foreground">{ing.en}</span>
+                    </div>
                   </li>
                 ))}
               </ul>
@@ -153,14 +159,14 @@ function FoodCard({ dish, isActive, onToggle }) {
               {dish.ordering.map(o => (
                 <div
                   key={o.thai}
-                  className="flex items-center gap-3 p-3 rounded-lg bg-muted/40 border border-border/60"
+                  className="flex items-start gap-3 p-3 rounded-lg bg-muted/40 border border-border/60"
                 >
-                  <SpeakerBtn text={o.thai} />
-                  <div className="flex-1 min-w-0">
+                  <SpeakerBtn text={o.thai} className="mt-0.5" />
+                  <div className="min-w-0">
                     <span className="font-thai-display text-base text-foreground block leading-snug">{o.thai}</span>
-                    <span className="text-[0.75rem] italic text-muted-foreground">{o.rom}</span>
+                    <span className="text-[0.75rem] italic text-muted-foreground block">{o.rom}</span>
+                    <span className="text-sm text-muted-foreground block mt-0.5">{o.en}</span>
                   </div>
-                  <span className="text-sm text-muted-foreground text-right">{o.en}</span>
                 </div>
               ))}
             </div>
