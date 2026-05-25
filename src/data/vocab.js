@@ -335,4 +335,10 @@ export const allVocab = [
   { thai: "แบบ / ประเภท", rom: "baep / pra phet", en: "type, kind, style, manner", topic: "grammar" },
   { thai: "ประมาณ", rom: "pra man", en: "approximately, about (quantity/time)", topic: "grammar" },
   { thai: "ฯลฯ", rom: "la la la", en: "etc., and so on (abbreviation for เป็นต้น)", topic: "grammar" },
+  { thai: "ประสบการณ์", rom: "pra sop kan", en: "experience (gained from doing)", topic: "labor", ex: "เขามีประสบการณ์ทำงานในโรงงานมากกว่าสิบปี" },
+  { thai: "พอสมควร", rom: "pho som khuan", en: "quite, fairly, moderately (a reasonable amount)", topic: "grammar", ex: "งานนี้ยากพอสมควร แต่ก็ทำได้ถ้าตั้งใจ" },
+  { thai: "ไม่เก่งเท่าไร", rom: "mai keng thao rai", en: "not very good at, not especially skilled", topic: "grammar", ex: "ฉันพูดภาษาไทยได้แต่ยังไม่เก่งเท่าไร" },
+  { thai: "เลิกงาน", rom: "loek ngan", en: "to finish work, knock off (end of shift)", topic: "labor", ex: "เขาเลิกงานห้าโมงเย็นแล้วรีบกลับบ้าน" },
+  { thai: "เกินตัว", rom: "koen tua", en: "beyond one's means or station, to overreach", topic: "society", ex: "ซื้อของแพงทุกอย่างโดยไม่มีเงินเก็บถือว่าเกินตัวมาก" },
+  { thai: "ไม่เอาด้วย", rom: "mai ao duai", en: "to want no part of it, to refuse to go along", topic: "grammar", ex: "เขาบอกว่าไม่เอาด้วยกับแผนนั้นตั้งแต่ต้น" },
 ];
