@@ -81,10 +81,17 @@ function WordOfTheDay({ showPage }) {
 
   const [sentence, setSentence] = useState(loadSavedSentence);
   const [revealed, setRevealed] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   const handleChange = (e) => {
     setSentence(e.target.value);
     saveSentence(e.target.value);
+  };
+
+  const handleCopy = () => {
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+    navigator.clipboard?.writeText(sentence).catch(() => {});
   };
 
   return (
@@ -130,10 +137,27 @@ function WordOfTheDay({ showPage }) {
         >
           {revealed ? 'Hide examples ↑' : 'Reveal example sentences ↓'}
         </button>
-        <button onClick={() => showPage('cards')} className="text-xs text-primary hover:underline">
-          See all flashcards →
-        </button>
+        <div className="flex items-center gap-3">
+          {sentence.trim() && (
+            <button
+              onClick={handleCopy}
+              className="text-xs text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
+            >
+              ⎘ Copy sentence
+            </button>
+          )}
+          <button onClick={() => showPage('cards')} className="text-xs text-primary hover:underline">
+            See all flashcards →
+          </button>
+        </div>
       </div>
+
+      {/* Copy toast */}
+      {copied && (
+        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 animate-streak-toast px-4 py-2 rounded-full bg-foreground text-background text-sm font-medium shadow-lg pointer-events-none whitespace-nowrap">
+          ✓ Copied to clipboard
+        </div>
+      )}
 
       {/* Example reveal */}
       {revealed && (
