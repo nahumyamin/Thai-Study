@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { cn } from '@/lib/utils';
 
-const THAI_FONT_CLASS = { kanit: 'font-thai-kanit', 'noto-sans': 'font-thai-noto-sans' };
+const THAI_FONT_CLASS = { kanit: 'font-thai-kanit', 'noto-sans': 'font-thai-noto-sans', cursive: 'font-thai-cursive' };
 
 export default function StudyModal({ words, initialIndex, starred, onToggleStar, onClose, showRomaji = true, thaiFont = 'default' }) {
   const [idx, setIdx] = useState(initialIndex || 0);

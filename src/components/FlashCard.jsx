@@ -11,7 +11,7 @@ function SpeakerIcon({ active }) {
   );
 }
 
-const THAI_FONT_CLASS = { kanit: 'font-thai-kanit', 'noto-sans': 'font-thai-noto-sans' };
+const THAI_FONT_CLASS = { kanit: 'font-thai-kanit', 'noto-sans': 'font-thai-noto-sans', cursive: 'font-thai-cursive' };
 
 export default function FlashCard({ word, starred, onToggleStar, onOpen, showRomaji = true, thaiFont = 'default' }) {
   const [flipped, setFlipped] = useState(false);

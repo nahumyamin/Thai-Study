@@ -320,6 +320,9 @@
 @utility font-thai-noto-sans {
   font-family: 'Noto Sans Thai', 'Sarabun', sans-serif;
 }
+@utility font-thai-cursive {
+  font-family: 'Charmonman', 'Sarabun', cursive;
+}
 
 /* ── Flashcard back — rich textured surface ──────────────────────── */
 .card-back-rich {
