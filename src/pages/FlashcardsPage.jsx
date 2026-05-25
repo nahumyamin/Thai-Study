@@ -31,7 +31,7 @@ export default function FlashcardsPage({ starred, toggleStar, showRomaji = true,
   const FONT_OPTIONS = [
     { key: 'default', label: 'Serif',   fontClass: 'font-thai-display' },
     { key: 'kanit',   label: 'Kanit',   fontClass: 'font-thai-kanit'   },
-    { key: 'playpen', label: 'Playpen', fontClass: 'font-thai-playpen' },
+    { key: 'noto-sans', label: 'Loopless', fontClass: 'font-thai-noto-sans' },
   ];
 
   // Word count per topic (unfiltered totals for the pill badges)

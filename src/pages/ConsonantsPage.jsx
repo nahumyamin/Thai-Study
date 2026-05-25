@@ -34,7 +34,7 @@ export default function ConsonantsPage() {
                   <span className="text-[0.65rem] italic text-muted-foreground">{c.name}</span>
                   <div className="flex items-center gap-2 mt-1 pt-1 border-t border-border w-full justify-center">
                     <span className="font-thai-kanit text-base text-muted-foreground leading-none">{c.l}</span>
-                    <span className="font-thai-playpen text-base text-muted-foreground leading-none">{c.l}</span>
+                    <span className="font-thai-noto-sans text-base text-muted-foreground leading-none">{c.l}</span>
                   </div>
                 </CardContent>
               </Card>
