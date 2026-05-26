@@ -344,4 +344,11 @@ export const allVocab = [
   { thai: "กองทุน", rom: "gong tun", en: "fund (investment or welfare fund)", topic: "finance", ex: "รัฐบาลตั้งกองทุนช่วยเหลือผู้ที่ได้รับผลกระทบจากน้ำท่วม" },
   { thai: "เอาแต่ใจ", rom: "ao tae jai", en: "selfish, self-centered, only thinking of oneself", topic: "society", ex: "เขาเอาแต่ใจตัวเองโดยไม่สนใจความรู้สึกคนอื่น" },
   { thai: "เพราะฉะนั้น", rom: "phro cha nan", en: "therefore, so, for that reason (spoken connector)", topic: "grammar", ex: "ฝนตกหนักมาก เพราะฉะนั้นเราจึงไม่ออกไปข้างนอก" },
+  { thai: "ค่อนข้าง", rom: "khon khang", en: "rather, quite, somewhat (degree modifier)", topic: "grammar", ex: "วันนี้อากาศค่อนข้างหนาวสำหรับเดือนเมษายน" },
+  { thai: "แทนที่จะ", rom: "thaen thi cha", en: "instead of (doing something)", topic: "grammar", ex: "แทนที่จะบ่น เขากลับลงมือแก้ปัญหาทันที" },
+  { thai: "หาก / หากว่า", rom: "hak / hak wa", en: "if (formal/written alternative to ถ้า)", topic: "grammar", ex: "หากมีปัญหาใดๆ กรุณาติดต่อเจ้าหน้าที่" },
+  { thai: "กลับ", rom: "klap", en: "on the contrary, unexpectedly (marks a surprising opposite outcome)", topic: "grammar", ex: "แทนที่จะดีขึ้น อาการกลับแย่ลงกว่าเดิม" },
+  { thai: "ยิ่ง...ยิ่ง", rom: "ying … ying", en: "the more…the more (parallel intensifier)", topic: "grammar", ex: "ยิ่งฝึกมากยิ่งเก่งขึ้น" },
+  { thai: "เกินไป", rom: "koen pai", en: "too, excessively (follows adjective or verb)", topic: "grammar", ex: "อาหารจานนี้เผ็ดเกินไปสำหรับฉัน" },
+  { thai: "ไม่ว่า...ก็", rom: "mai wa … ko", en: "no matter…, regardless of… (universal condition)", topic: "grammar", ex: "ไม่ว่าจะเหนื่อยแค่ไหน เขาก็ไม่เคยบ่น" },
 ];
