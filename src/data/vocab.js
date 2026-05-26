@@ -343,4 +343,5 @@ export const allVocab = [
   { thai: "ไม่เอาด้วย", rom: "mai ao duai", en: "to want no part of it, to refuse to go along", topic: "grammar", ex: "เขาบอกว่าไม่เอาด้วยกับแผนนั้นตั้งแต่ต้น" },
   { thai: "กองทุน", rom: "gong tun", en: "fund (investment or welfare fund)", topic: "finance", ex: "รัฐบาลตั้งกองทุนช่วยเหลือผู้ที่ได้รับผลกระทบจากน้ำท่วม" },
   { thai: "เอาแต่ใจ", rom: "ao tae jai", en: "selfish, self-centered, only thinking of oneself", topic: "society", ex: "เขาเอาแต่ใจตัวเองโดยไม่สนใจความรู้สึกคนอื่น" },
+  { thai: "เพราะฉะนั้น", rom: "phro cha nan", en: "therefore, so, for that reason (spoken connector)", topic: "grammar", ex: "ฝนตกหนักมาก เพราะฉะนั้นเราจึงไม่ออกไปข้างนอก" },
 ];
