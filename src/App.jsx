@@ -54,7 +54,7 @@ const PAGE_TITLES = {
   grammar:      'Grammar Patterns — Thai Study',
   pronunciation:'Pronunciation & Tones — Thai Study',
   classifiers:  'Numbers & Classifiers — Thai Study',
-  reading:      'Reading Strategies — Thai Study',
+  reading:      'Reading & Writing Strategies — Thai Study',
   culture:      'Thai Anthems — Thai Study',
   idioms:       'Thai Idioms — Thai Study',
   festivals:    'Festivals & Calendar — Thai Study',
