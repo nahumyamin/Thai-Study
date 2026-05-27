@@ -1,4 +1,6 @@
+import { useState } from 'react';
 import { useAuth } from '../context/AuthContext.jsx';
+import { supabase } from '../lib/supabase.js';
 
 function GoogleIcon() {
   return (
@@ -13,6 +15,24 @@ function GoogleIcon() {
 
 export default function LoginPage() {
   const { signInWithGoogle } = useAuth();
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  const handleSignIn = async () => {
+    if (!supabase) {
+      setError('Auth not configured. Please try a hard refresh (Cmd+Shift+R).');
+      return;
+    }
+    setLoading(true);
+    setError(null);
+    try {
+      const result = await signInWithGoogle();
+      if (result?.error) setError(result.error.message);
+    } catch (e) {
+      setError(e.message);
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-[80vh] flex items-center justify-center px-4">
@@ -25,12 +45,19 @@ export default function LoginPage() {
         </p>
 
         <button
-          onClick={signInWithGoogle}
-          className="w-full flex items-center justify-center gap-3 px-5 py-3 rounded-lg border border-border bg-card hover:bg-muted transition-colors text-sm font-medium text-foreground cursor-pointer"
+          onClick={handleSignIn}
+          disabled={loading}
+          className="w-full flex items-center justify-center gap-3 px-5 py-3 rounded-lg border border-border bg-card hover:bg-muted transition-colors text-sm font-medium text-foreground cursor-pointer disabled:opacity-50"
         >
           <GoogleIcon />
-          Continue with Google
+          {loading ? 'Redirecting…' : 'Continue with Google'}
         </button>
+
+        {error && (
+          <p className="text-xs text-red-500 mt-4 bg-red-50 dark:bg-red-950/30 rounded-lg px-3 py-2">
+            {error}
+          </p>
+        )}
 
         <p className="text-xs text-muted-foreground mt-6">
           All study features still work without signing in — sign in just adds progress tracking.
