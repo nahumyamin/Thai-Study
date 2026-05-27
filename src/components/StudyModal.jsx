@@ -1,17 +1,50 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { topics } from '../data/vocab.js';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { cn } from '@/lib/utils';
+import { useAuth } from '../context/AuthContext.jsx';
+import { recordAnswer, recordSession } from '../lib/progress.js';
 
 const THAI_FONT_CLASS = { kanit: 'font-thai-kanit', 'noto-sans': 'font-thai-noto-sans', sriracha: 'font-thai-sriracha', athiti: 'font-thai-athiti' };
 
 export default function StudyModal({ words, initialIndex, starred, onToggleStar, onClose, showRomaji = true, thaiFont = 'default' }) {
+  const { user } = useAuth();
   const [idx, setIdx] = useState(initialIndex || 0);
   const [flipped, setFlipped] = useState(false);
+  const sessionStartRef = useRef(Date.now());
+  const resultsRef = useRef({ correct: 0, incorrect: 0, seen: new Set() });
 
   const current = words[idx];
   const color = current ? (topics[current.topic]?.color || '#888') : '';
+
+  const handleClose = useCallback(() => {
+    const { correct, incorrect, seen } = resultsRef.current;
+    const wordsStudied = seen.size;
+    if (wordsStudied > 0) {
+      const secs = Math.round((Date.now() - sessionStartRef.current) / 1000);
+      recordSession(user?.id, 'flashcard', wordsStudied, correct, secs);
+    }
+    onClose();
+  }, [user, onClose]);
+
+  const handleKnowIt = useCallback(() => {
+    if (!current) return;
+    recordAnswer(user?.id, current.thai, true);
+    resultsRef.current.correct += 1;
+    resultsRef.current.seen.add(current.thai);
+    setIdx(i => (i + 1) % words.length);
+    setFlipped(false);
+  }, [user, current, words.length]);
+
+  const handleStillLearning = useCallback(() => {
+    if (!current) return;
+    recordAnswer(user?.id, current.thai, false);
+    resultsRef.current.incorrect += 1;
+    resultsRef.current.seen.add(current.thai);
+    setIdx(i => (i + 1) % words.length);
+    setFlipped(false);
+  }, [user, current, words.length]);
 
   const goPrev = useCallback(() => {
     setIdx(i => (i - 1 + words.length) % words.length);
@@ -32,18 +65,20 @@ export default function StudyModal({ words, initialIndex, starred, onToggleStar,
       if (e.key === 'ArrowLeft') goPrev();
       else if (e.key === 'ArrowRight') goNext();
       else if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); flip(); }
-      else if (e.key === 'Escape') onClose();
+      else if (e.key === 'Escape') handleClose();
+      else if (e.key === '1' && flipped) handleKnowIt();
+      else if (e.key === '2' && flipped) handleStillLearning();
     };
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
-  }, [goPrev, goNext, flip, onClose]);
+  }, [goPrev, goNext, flip, handleClose, handleKnowIt, handleStillLearning, flipped]);
 
   if (!current) return null;
 
   const isStarred = starred.has(current.thai);
 
   return (
-    <Dialog open onOpenChange={(open) => { if (!open) onClose(); }}>
+    <Dialog open onOpenChange={(open) => { if (!open) handleClose(); }}>
       <DialogContent className="max-w-lg w-full p-0 gap-0 border border-border bg-background [&>button]:hidden">
         <DialogTitle className="sr-only">Study Mode</DialogTitle>
 
@@ -51,7 +86,7 @@ export default function StudyModal({ words, initialIndex, starred, onToggleStar,
         <div className="flex items-center justify-between px-4 py-3 border-b border-border shrink-0">
           <span className="text-xs text-muted-foreground tracking-wide">{idx + 1} / {words.length}</span>
           <button
-            onClick={onClose}
+            onClick={handleClose}
             className="text-muted-foreground hover:text-foreground text-lg leading-none px-1 bg-transparent border-none cursor-pointer transition-colors"
             aria-label="Close"
           >
@@ -89,34 +124,53 @@ export default function StudyModal({ words, initialIndex, starred, onToggleStar,
 
         {/* Nav bar */}
         <div className="flex items-center justify-between px-4 py-3 border-t border-border shrink-0 gap-2">
-          <Button
-            variant="outline"
-            size="icon"
-            className="h-12 w-12 text-2xl rounded-none"
-            onClick={goPrev}
-            aria-label="Previous"
-          >
-            ‹
-          </Button>
-          <button
-            onClick={() => onToggleStar(current.thai)}
-            className={cn(
-              'text-2xl transition-all bg-transparent border-none cursor-pointer hover:scale-110',
-              isStarred ? 'text-amber-500' : 'text-muted-foreground'
-            )}
-            aria-label={isStarred ? 'Unstar' : 'Star'}
-          >
-            {isStarred ? '★' : '☆'}
-          </button>
-          <Button
-            variant="outline"
-            size="icon"
-            className="h-12 w-12 text-2xl rounded-none"
-            onClick={goNext}
-            aria-label="Next"
-          >
-            ›
-          </Button>
+          {flipped ? (
+            <>
+              <button
+                onClick={handleStillLearning}
+                className="flex-1 py-2.5 rounded-lg border border-red-300 text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 text-sm font-medium transition-colors cursor-pointer bg-transparent"
+                title="Still learning (key: 2)"
+              >
+                Still learning
+              </button>
+              <button
+                onClick={() => onToggleStar(current.thai)}
+                className={cn(
+                  'text-2xl transition-all bg-transparent border-none cursor-pointer hover:scale-110 px-1',
+                  isStarred ? 'text-amber-500' : 'text-muted-foreground'
+                )}
+                aria-label={isStarred ? 'Unstar' : 'Star'}
+              >
+                {isStarred ? '★' : '☆'}
+              </button>
+              <button
+                onClick={handleKnowIt}
+                className="flex-1 py-2.5 rounded-lg border border-emerald-300 text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-950/30 text-sm font-medium transition-colors cursor-pointer bg-transparent"
+                title="Know it (key: 1)"
+              >
+                Know it ✓
+              </button>
+            </>
+          ) : (
+            <>
+              <Button variant="outline" size="icon" className="h-12 w-12 text-2xl rounded-none" onClick={goPrev} aria-label="Previous">
+                ‹
+              </Button>
+              <button
+                onClick={() => onToggleStar(current.thai)}
+                className={cn(
+                  'text-2xl transition-all bg-transparent border-none cursor-pointer hover:scale-110',
+                  isStarred ? 'text-amber-500' : 'text-muted-foreground'
+                )}
+                aria-label={isStarred ? 'Unstar' : 'Star'}
+              >
+                {isStarred ? '★' : '☆'}
+              </button>
+              <Button variant="outline" size="icon" className="h-12 w-12 text-2xl rounded-none" onClick={goNext} aria-label="Next">
+                ›
+              </Button>
+            </>
+          )}
         </div>
       </DialogContent>
     </Dialog>

@@ -19,9 +19,14 @@ import CulturePage from './pages/CulturePage.jsx';
 import IdiomsPage from './pages/IdiomsPage.jsx';
 import FestivalsPage from './pages/FestivalsPage.jsx';
 import FoodPage from './pages/FoodPage.jsx';
+import DashboardPage from './pages/DashboardPage.jsx';
+import LoginPage from './pages/LoginPage.jsx';
+import { useAuth } from './context/AuthContext.jsx';
 
 const GROUP_MAP = {
   home: null,
+  dashboard: null,
+  login: null,
   cards: 'study',
   quiz: 'study',
   rush: 'study',
@@ -45,6 +50,8 @@ const VALID_PAGES = new Set(Object.keys(GROUP_MAP));
 
 const PAGE_TITLES = {
   home:         'Thai Study — Learn Thai Vocabulary, Grammar & Pronunciation',
+  dashboard:    'Dashboard — Thai Study',
+  login:        'Sign In — Thai Study',
   cards:        'Flashcards — Thai Study',
   quiz:         'Vocabulary Quiz — Thai Study',
   rush:         'Class Rush — Thai Study',
@@ -69,6 +76,7 @@ function pageFromHash() {
 }
 
 function App() {
+  const { user } = useAuth();
   const [activePage, setActivePage] = useState(pageFromHash);
   const [searchOpen, setSearchOpen] = useState(false);
   const [theme, setTheme] = useState(() => {
@@ -163,10 +171,13 @@ function App() {
         onToggleTheme={toggleTheme}
         showRomaji={showRomaji}
         onToggleRomaji={() => setShowRomaji(r => !r)}
+        user={user}
       />
       <SearchOverlay open={searchOpen} onClose={() => setSearchOpen(false)} showPage={showPage} />
 
       <div key={activePage} className="animate-page-in">
+        {activePage === 'dashboard'     && (user ? <DashboardPage showPage={showPage} /> : <LoginPage />)}
+        {activePage === 'login'         && <LoginPage />}
         {activePage === 'home'          && <HomePage showPage={showPage} />}
         {activePage === 'cards'         && <FlashcardsPage starred={starred} toggleStar={toggleStar} showRomaji={showRomaji} showPage={showPage} />}
         {activePage === 'grammar'       && <GrammarPage showPage={showPage} />}

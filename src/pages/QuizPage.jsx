@@ -1,6 +1,8 @@
 import { useState, useRef, useEffect } from 'react';
 import { allVocab, topics } from '../data/vocab.js';
 import { track } from '@/lib/analytics.js';
+import { useAuth } from '../context/AuthContext.jsx';
+import { recordAnswer, recordSession } from '../lib/progress.js';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Progress } from '@/components/ui/progress';
@@ -23,6 +25,8 @@ function getWrongChoices(correct, pool, count = 3) {
 }
 
 export default function QuizPage({ starred, showRomaji = true, showPage }) {
+  const { user } = useAuth();
+  const quizStartTime = useRef(null);
   const [screen, setScreen] = useState('setup');
   const [qTopic, setQTopic] = useState('all');
   const [qCount, setQCount] = useState(10);
@@ -72,6 +76,7 @@ export default function QuizPage({ starred, showRomaji = true, showPage }) {
     setStreak(0);
     setStreakToast(null);
     setScreen('quiz');
+    quizStartTime.current = Date.now();
     track('quiz_start', { topic: qTopic, count: qs.length, mode: qMode });
   };
 
@@ -79,6 +84,7 @@ export default function QuizPage({ starred, showRomaji = true, showPage }) {
     if (answered) return;
     const correct = questions[qIdx].word;
     const isCorrect = choice.thai === correct.thai;
+    recordAnswer(user?.id, correct.thai, isCorrect);
     setSelectedChoice(choice.thai);
     setAnswered(true);
     if (isCorrect) {
@@ -105,6 +111,7 @@ export default function QuizPage({ starred, showRomaji = true, showPage }) {
     const isCorrect = val === correct.thai ||
       val.toLowerCase() === correct.rom.toLowerCase() ||
       val.toLowerCase() === correct.en.toLowerCase().split(',')[0].trim();
+    recordAnswer(user?.id, correct.thai, isCorrect);
     setTypeState(isCorrect ? 'correct' : 'wrong');
     setAnswered(true);
     if (isCorrect) {
@@ -176,6 +183,8 @@ export default function QuizPage({ starred, showRomaji = true, showPage }) {
         topic: qTopic,
         mode: qMode,
       });
+      const secs = quizStartTime.current ? Math.round((Date.now() - quizStartTime.current) / 1000) : 0;
+      recordSession(user?.id, 'quiz', questions.length, score, secs);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [screen]);

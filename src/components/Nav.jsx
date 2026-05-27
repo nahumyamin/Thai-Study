@@ -69,7 +69,7 @@ function MoonIcon() {
   );
 }
 
-export default function Nav({ activePage, activeGroup, showPage, onSearch, theme, onToggleTheme, showRomaji, onToggleRomaji }) {
+export default function Nav({ activePage, activeGroup, showPage, onSearch, theme, onToggleTheme, showRomaji, onToggleRomaji, user }) {
   const [menuOpen, setMenuOpen] = useState(false);
 
   const handleNav = (page) => {
@@ -127,6 +127,29 @@ export default function Nav({ activePage, activeGroup, showPage, onSearch, theme
 
         {/* Search + mobile hamburger */}
         <div className="ml-auto flex items-center gap-1">
+          {user ? (
+            <button
+              onClick={() => handleNav('dashboard')}
+              className="p-1 rounded-full overflow-hidden border-2 border-transparent hover:border-amber-400 transition-colors cursor-pointer"
+              aria-label="Dashboard"
+              title="Dashboard"
+            >
+              {user.user_metadata?.avatar_url ? (
+                <img src={user.user_metadata.avatar_url} alt="avatar" className="w-6 h-6 rounded-full" />
+              ) : (
+                <div className="w-6 h-6 rounded-full bg-amber-400 flex items-center justify-center text-xs font-bold text-zinc-900">
+                  {(user.email?.[0] ?? '?').toUpperCase()}
+                </div>
+              )}
+            </button>
+          ) : (
+            <button
+              onClick={() => handleNav('login')}
+              className="text-[0.65rem] font-semibold tracking-wider uppercase px-2.5 py-1.5 rounded-md bg-amber-400/10 text-amber-400 hover:bg-amber-400/20 transition-colors cursor-pointer border-none"
+            >
+              Sign in
+            </button>
+          )}
           <a
             href="https://buymeacoffee.com/randomnoise"
             target="_blank"
