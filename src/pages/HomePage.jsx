@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { allVocab, topics } from '../data/vocab.js';
 import { cn } from '@/lib/utils';
+import { useAuth } from '../context/AuthContext.jsx';
 
 const DAILY_PROMPTS = [
   { topic: 'At a Thai temple',        prompt: 'You\'re visiting a famous temple with a friend. Describe what you see or do — using both words in one Thai sentence.' },
@@ -325,6 +326,7 @@ const FEATURES = [
 ];
 
 export default function HomePage({ showPage }) {
+  const { user } = useAuth();
   return (
     <div className="relative max-w-[1200px] mx-auto px-5 pt-14 pb-20">
       {/* radial glow behind hero */}
@@ -348,6 +350,15 @@ export default function HomePage({ showPage }) {
             <Button size="lg" onClick={() => showPage('cards')}>Start Studying →</Button>
             <Button size="lg" variant="outline" onClick={() => showPage('grammar')}>Browse Grammar</Button>
           </div>
+          {!user && (
+            <button
+              onClick={() => showPage('login')}
+              className="mt-4 inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors bg-transparent border-none cursor-pointer p-0"
+            >
+              <span className="text-amber-500">✦</span>
+              Sign in to track your progress and build streaks →
+            </button>
+          )}
         </div>
 
         <div className="hidden md:flex justify-center">
