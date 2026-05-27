@@ -7,6 +7,8 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(undefined); // undefined = loading
 
   useEffect(() => {
+    if (!supabase) { setUser(null); return; }
+
     supabase.auth.getSession().then(({ data }) => {
       setUser(data.session?.user ?? null);
     });
@@ -19,12 +21,12 @@ export function AuthProvider({ children }) {
   }, []);
 
   const signInWithGoogle = () =>
-    supabase.auth.signInWithOAuth({
+    supabase?.auth.signInWithOAuth({
       provider: 'google',
       options: { redirectTo: window.location.origin },
     });
 
-  const signOut = () => supabase.auth.signOut();
+  const signOut = () => supabase?.auth.signOut();
 
   return (
     <AuthContext.Provider value={{ user, signInWithGoogle, signOut }}>

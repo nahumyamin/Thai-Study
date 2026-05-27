@@ -1,7 +1,7 @@
 import { supabase } from './supabase.js';
 
 export async function recordAnswer(userId, thaiWord, correct) {
-  if (!userId) return;
+  if (!userId || !supabase) return;
 
   const { data: existing } = await supabase
     .from('vocab_progress')
@@ -44,7 +44,7 @@ export async function recordAnswer(userId, thaiWord, correct) {
 }
 
 export async function recordSession(userId, sessionType, wordsStudied, correctCount, durationSecs) {
-  if (!userId) return;
+  if (!userId || !supabase) return;
   await supabase.from('study_sessions').insert({
     user_id: userId,
     session_type: sessionType,
