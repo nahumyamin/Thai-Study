@@ -3,6 +3,18 @@ import { supabase } from '../lib/supabase.js';
 
 const AuthContext = createContext(null);
 
+async function ensureProfile(user) {
+  if (!supabase) return;
+  const { data } = await supabase.from('profiles').select('id').eq('id', user.id).single();
+  if (!data) {
+    await supabase.from('profiles').insert({
+      id: user.id,
+      display_name: user.user_metadata?.full_name ?? null,
+      avatar_url: user.user_metadata?.avatar_url ?? null,
+    });
+  }
+}
+
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(undefined); // undefined = loading
 
@@ -10,11 +22,15 @@ export function AuthProvider({ children }) {
     if (!supabase) { setUser(null); return; }
 
     supabase.auth.getSession().then(({ data }) => {
-      setUser(data.session?.user ?? null);
+      const u = data.session?.user ?? null;
+      setUser(u);
+      if (u) ensureProfile(u);
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
+      const u = session?.user ?? null;
+      setUser(u);
+      if (u) ensureProfile(u);
     });
 
     return () => subscription.unsubscribe();
