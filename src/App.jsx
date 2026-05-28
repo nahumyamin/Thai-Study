@@ -77,6 +77,7 @@ function App() {
   const { user } = useAuth();
   const [activePage, setActivePage] = useState(pageFromHash);
   const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [authModalMode, setAuthModalMode] = useState('signup');
   const [searchOpen, setSearchOpen] = useState(false);
   const [theme, setTheme] = useState(() => {
     return localStorage.getItem('thai-study-theme') || 'light';
@@ -94,6 +95,12 @@ function App() {
 
   const showPage = (page) => {
     if (page === 'login') {
+      setAuthModalMode('login');
+      setAuthModalOpen(true);
+      return;
+    }
+    if (page === 'signup') {
+      setAuthModalMode('signup');
       setAuthModalOpen(true);
       return;
     }
@@ -177,7 +184,7 @@ function App() {
         user={user}
       />
       <SearchOverlay open={searchOpen} onClose={() => setSearchOpen(false)} showPage={showPage} />
-      <AuthModal open={authModalOpen} onClose={() => setAuthModalOpen(false)} />
+      <AuthModal open={authModalOpen} onClose={() => setAuthModalOpen(false)} initialMode={authModalMode} />
 
       <div key={activePage} className="animate-page-in">
         {activePage === 'dashboard'     && (user ? <DashboardPage showPage={showPage} /> : (
