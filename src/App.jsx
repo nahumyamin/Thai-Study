@@ -78,35 +78,17 @@ function pageFromHash() {
 const NO_NUDGE_PAGES = new Set(['home', 'dashboard']);
 
 function StudyNudgeBanner({ onCta }) {
-  const [dismissed, setDismissed] = useState(
-    () => sessionStorage.getItem('nudge-v1') === '1'
-  );
-
-  if (dismissed) return null;
-
-  const dismiss = () => {
-    sessionStorage.setItem('nudge-v1', '1');
-    setDismissed(true);
-  };
-
   return (
     <div className="max-w-3xl mx-auto px-4 pt-6 pb-0">
-      <div className="inline-flex items-center gap-2.5 rounded-full bg-zinc-100 dark:bg-zinc-800/70 border border-zinc-200 dark:border-zinc-700/60 px-3.5 py-1.5">
-        <span className="text-xs text-zinc-400 dark:text-zinc-500 whitespace-nowrap">
+      <div className="flex items-center justify-between gap-3 rounded-full bg-zinc-100 dark:bg-zinc-800/70 border border-zinc-200 dark:border-zinc-700/60 px-4 py-2">
+        <span className="text-xs text-zinc-400 dark:text-zinc-500">
           Sign in to track your progress
         </span>
         <button
           onClick={onCta}
-          className="text-[0.7rem] font-medium text-zinc-600 dark:text-zinc-300 bg-white dark:bg-zinc-700 border border-zinc-200 dark:border-zinc-600 rounded-full px-2.5 py-0.5 hover:bg-zinc-50 dark:hover:bg-zinc-600 transition-colors cursor-pointer whitespace-nowrap"
+          className="text-[0.7rem] font-medium text-zinc-600 dark:text-zinc-300 bg-white dark:bg-zinc-700 border border-zinc-200 dark:border-zinc-600 rounded-full px-3 py-1 hover:bg-zinc-50 dark:hover:bg-zinc-600 transition-colors cursor-pointer whitespace-nowrap shrink-0"
         >
           Get started free
-        </button>
-        <button
-          onClick={dismiss}
-          aria-label="Dismiss"
-          className="text-zinc-300 dark:text-zinc-600 hover:text-zinc-500 dark:hover:text-zinc-400 transition-colors cursor-pointer bg-transparent border-none p-0 leading-none text-xs ml-0.5"
-        >
-          ✕
         </button>
       </div>
     </div>
