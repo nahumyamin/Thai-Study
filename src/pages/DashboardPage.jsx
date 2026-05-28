@@ -311,7 +311,7 @@ export default function DashboardPage({ showPage }) {
           <p className="text-sm text-muted-foreground mt-0.5">{user.email}</p>
         </div>
         <button
-          onClick={signOut}
+          onClick={async () => { await signOut(); showPage('home'); }}
           className="text-xs text-muted-foreground hover:text-foreground transition-colors border border-border rounded-lg px-3 py-1.5 cursor-pointer bg-transparent"
         >
           Sign out

@@ -42,7 +42,12 @@ export function AuthProvider({ children }) {
       options: { redirectTo: window.location.origin + import.meta.env.BASE_URL },
     });
 
-  const signOut = () => supabase?.auth.signOut();
+  const signOut = async () => {
+    // scope:'local' clears session locally without a server-side redirect
+    await supabase?.auth.signOut({ scope: 'local' });
+    // Replace the URL so the browser stays on the current domain/path
+    window.history.replaceState(null, '', window.location.pathname);
+  };
 
   return (
     <AuthContext.Provider value={{ user, signInWithGoogle, signOut }}>
