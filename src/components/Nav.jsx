@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
+import { supabase } from '../lib/supabase.js';
+import { getLevel } from '../lib/gamification.js';
 
 const CULTURE_PAGES = [
   { id: 'culture',   label: 'Anthems'   },
@@ -71,11 +73,22 @@ function MoonIcon() {
 
 export default function Nav({ activePage, activeGroup, showPage, onSearch, theme, onToggleTheme, showRomaji, onToggleRomaji, user }) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [navProfile, setNavProfile] = useState(null);
 
   const handleNav = (page) => {
     showPage(page);
     setMenuOpen(false);
   };
+
+  // Fetch lightweight profile data for the mobile menu level display
+  useEffect(() => {
+    if (!user || !supabase) { setNavProfile(null); return; }
+    supabase.from('profiles')
+      .select('display_name, total_xp, streak_count')
+      .eq('id', user.id)
+      .single()
+      .then(({ data }) => setNavProfile(data));
+  }, [user]);
 
   // Lock body scroll when menu is open
   useEffect(() => {
@@ -222,6 +235,80 @@ export default function Nav({ activePage, activeGroup, showPage, onSearch, theme
 
                 {/* Scrollable nav list */}
                 <div className="flex-1 overflow-y-auto py-2">
+
+                  {/* ── Profile / sign-in — top of menu ── */}
+                  {user ? (() => {
+                    const xp = navProfile?.total_xp ?? 0;
+                    const { level, label } = getLevel(xp);
+                    const streak = navProfile?.streak_count ?? 0;
+                    const firstName = navProfile?.display_name?.split(' ')[0]
+                      ?? user.email?.split('@')[0]
+                      ?? 'Profile';
+                    return (
+                      <button
+                        onClick={() => handleNav('dashboard')}
+                        className="w-full flex items-center gap-3 px-5 py-4 text-left hover:bg-white/5 transition-colors cursor-pointer bg-transparent border-none"
+                      >
+                        {/* Avatar */}
+                        {user.user_metadata?.avatar_url ? (
+                          <img
+                            src={user.user_metadata.avatar_url}
+                            alt="avatar"
+                            className="w-10 h-10 rounded-full shrink-0 ring-2 ring-amber-400/30"
+                          />
+                        ) : (
+                          <div className="w-10 h-10 rounded-full bg-amber-400 flex items-center justify-center text-zinc-900 text-sm font-bold shrink-0">
+                            {(user.email?.[0] ?? '?').toUpperCase()}
+                          </div>
+                        )}
+
+                        {/* Name + level + streak */}
+                        <div className="flex-1 min-w-0 text-left">
+                          <div className="text-sm font-semibold text-white truncate">{firstName}</div>
+                          <div className="flex items-center gap-2 mt-0.5">
+                            <span className="text-[0.65rem] font-bold text-amber-400 tracking-wide">
+                              Lv {level} · {label}
+                            </span>
+                            {streak > 0 && (
+                              <span className="text-[0.65rem] text-white/50">
+                                🔥 {streak}
+                              </span>
+                            )}
+                          </div>
+                          {/* XP mini progress bar */}
+                          {navProfile && (() => {
+                            const { progress, nextLevel } = getLevel(xp);
+                            return (
+                              <div className="mt-1 h-1 w-24 bg-white/10 rounded-full overflow-hidden">
+                                <div
+                                  className="h-full bg-amber-400 rounded-full"
+                                  style={{ width: `${progress * 100}%` }}
+                                />
+                              </div>
+                            );
+                          })()}
+                        </div>
+
+                        <span className="text-[0.65rem] text-amber-400/70 shrink-0">Dashboard →</span>
+                      </button>
+                    );
+                  })() : (
+                    <button
+                      onClick={() => handleNav('login')}
+                      className="w-full flex items-center gap-3 px-5 py-4 text-left hover:bg-white/5 transition-colors cursor-pointer bg-transparent border-none"
+                    >
+                      <div className="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center text-white/40 text-lg shrink-0">
+                        ?
+                      </div>
+                      <div>
+                        <div className="text-sm font-semibold text-amber-400">Sign in</div>
+                        <div className="text-[0.65rem] text-white/40 mt-0.5">Track progress &amp; unlock achievements</div>
+                      </div>
+                    </button>
+                  )}
+
+                  <div className="h-px bg-white/[0.08] mx-5 my-1" />
+
                   <span className={cn(
                     'block px-5 py-2 text-[0.68rem] font-bold tracking-[0.1em] uppercase',
                     activeGroup === 'study' ? 'text-amber-400' : 'text-white/40'
@@ -289,27 +376,6 @@ export default function Nav({ activePage, activeGroup, showPage, onSearch, theme
                     </button>
                   ))}
 
-                  <div className="h-px bg-white/[0.08] my-1.5" />
-
-                  {user ? (
-                    <button
-                      onClick={() => handleNav('dashboard')}
-                      className="w-full flex items-center gap-3 px-5 py-[0.75rem] text-sm text-white/65 bg-transparent border-none cursor-pointer"
-                    >
-                      {user.user_metadata?.avatar_url
-                        ? <img src={user.user_metadata.avatar_url} alt="avatar" className="w-5 h-5 rounded-full" />
-                        : <div className="w-5 h-5 rounded-full bg-amber-400 flex items-center justify-center text-[0.6rem] font-bold text-zinc-900">{(user.email?.[0] ?? '?').toUpperCase()}</div>
-                      }
-                      Dashboard
-                    </button>
-                  ) : (
-                    <button
-                      onClick={() => handleNav('login')}
-                      className="w-full text-left px-5 py-[0.75rem] text-sm text-amber-400 bg-transparent border-none cursor-pointer"
-                    >
-                      Sign in →
-                    </button>
-                  )}
                 </div>
               </div>
             )}
