@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import { supabase } from '../lib/supabase.js';
+import { getDailyChallengeHistory } from '../lib/progress.js';
 import { useAuth } from '../context/AuthContext.jsx';
 import { cn } from '../lib/utils.js';
 
@@ -32,6 +33,7 @@ export default function DashboardPage({ showPage }) {
   const [sessions, setSessions] = useState([]);
   const [reminders, setReminders] = useState(null);
   const [reminderSaving, setReminderSaving] = useState(false);
+  const [challenges, setChallenges] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -41,11 +43,13 @@ export default function DashboardPage({ showPage }) {
       supabase.from('vocab_progress').select('*').eq('user_id', user.id),
       supabase.from('study_sessions').select('*').eq('user_id', user.id).order('created_at', { ascending: false }).limit(10),
       supabase.from('reminder_settings').select('*').eq('user_id', user.id).single(),
-    ]).then(([p, v, s, r]) => {
+      getDailyChallengeHistory(user.id),
+    ]).then(([p, v, s, r, c]) => {
       setProfile(p.data);
       setProgress(v.data ?? []);
       setSessions(s.data ?? []);
       setReminders(r.data ?? { email_enabled: false, reminder_hour: 9, reminder_days: [1, 2, 3, 4, 5] });
+      setChallenges(c);
       setLoading(false);
     });
   }, [user]);
@@ -126,6 +130,31 @@ export default function DashboardPage({ showPage }) {
           sub="recent activity"
         />
       </div>
+
+      {/* Daily challenge streak / history */}
+      {challenges.length > 0 && (
+        <div className="rounded-xl border border-border bg-card p-5 mb-6">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-sm font-semibold text-foreground">Daily Challenge History</h2>
+            <span className="text-xs text-muted-foreground">{challenges.length} {challenges.length === 1 ? 'entry' : 'entries'}</span>
+          </div>
+          <div className="space-y-4">
+            {challenges.map(c => (
+              <div key={c.id} className="border-l-2 border-amber-400/50 pl-4">
+                <div className="flex items-center gap-2 mb-1 flex-wrap">
+                  <span className="text-[0.65rem] font-bold tracking-widest uppercase text-amber-600">
+                    {new Date(c.submitted_at).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
+                  </span>
+                  <span className="text-[0.65rem] text-muted-foreground">
+                    · {c.word1_thai} + {c.word2_thai}
+                  </span>
+                </div>
+                <p className="font-thai-display text-sm text-foreground leading-relaxed">{c.sentence}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Mastery distribution */}
       <div className="rounded-xl border border-border bg-card p-5 mb-6">

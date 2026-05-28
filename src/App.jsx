@@ -20,13 +20,12 @@ import IdiomsPage from './pages/IdiomsPage.jsx';
 import FestivalsPage from './pages/FestivalsPage.jsx';
 import FoodPage from './pages/FoodPage.jsx';
 import DashboardPage from './pages/DashboardPage.jsx';
-import LoginPage from './pages/LoginPage.jsx';
+import AuthModal from './components/AuthModal.jsx';
 import { useAuth } from './context/AuthContext.jsx';
 
 const GROUP_MAP = {
   home: null,
   dashboard: null,
-  login: null,
   cards: 'study',
   quiz: 'study',
   rush: 'study',
@@ -51,7 +50,6 @@ const VALID_PAGES = new Set(Object.keys(GROUP_MAP));
 const PAGE_TITLES = {
   home:         'Thai Study — Learn Thai Vocabulary, Grammar & Pronunciation',
   dashboard:    'Dashboard — Thai Study',
-  login:        'Sign In — Thai Study',
   cards:        'Flashcards — Thai Study',
   quiz:         'Vocabulary Quiz — Thai Study',
   rush:         'Class Rush — Thai Study',
@@ -78,6 +76,7 @@ function pageFromHash() {
 function App() {
   const { user } = useAuth();
   const [activePage, setActivePage] = useState(pageFromHash);
+  const [authModalOpen, setAuthModalOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [theme, setTheme] = useState(() => {
     return localStorage.getItem('thai-study-theme') || 'light';
@@ -94,6 +93,10 @@ function App() {
   );
 
   const showPage = (page) => {
+    if (page === 'login') {
+      setAuthModalOpen(true);
+      return;
+    }
     setActivePage(page);
     window.location.hash = page === 'home' ? '' : page;
   };
@@ -174,10 +177,22 @@ function App() {
         user={user}
       />
       <SearchOverlay open={searchOpen} onClose={() => setSearchOpen(false)} showPage={showPage} />
+      <AuthModal open={authModalOpen} onClose={() => setAuthModalOpen(false)} />
 
       <div key={activePage} className="animate-page-in">
-        {activePage === 'dashboard'     && (user ? <DashboardPage showPage={showPage} /> : <LoginPage />)}
-        {activePage === 'login'         && <LoginPage />}
+        {activePage === 'dashboard'     && (user ? <DashboardPage showPage={showPage} /> : (
+          <div className="min-h-[60vh] flex items-center justify-center px-4">
+            <div className="text-center">
+              <p className="text-muted-foreground text-sm mb-4">Sign in to view your dashboard</p>
+              <button
+                onClick={() => setAuthModalOpen(true)}
+                className="text-sm font-medium text-amber-600 hover:text-amber-500 transition-colors bg-transparent border-none cursor-pointer"
+              >
+                Continue with Google →
+              </button>
+            </div>
+          </div>
+        ))}
         {activePage === 'home'          && <HomePage showPage={showPage} />}
         {activePage === 'cards'         && <FlashcardsPage starred={starred} toggleStar={toggleStar} showRomaji={showRomaji} showPage={showPage} />}
         {activePage === 'grammar'       && <GrammarPage showPage={showPage} />}

@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { allVocab, topics } from '../data/vocab.js';
 import { cn } from '@/lib/utils';
 import { useAuth } from '../context/AuthContext.jsx';
+import { submitDailyChallenge, getDailyChallenge } from '../lib/progress.js';
 
 const DAILY_PROMPTS = [
   { topic: 'At a Thai temple',        prompt: 'You\'re visiting a famous temple with a friend. Describe what you see or do — using both words in one Thai sentence.' },
@@ -32,7 +33,6 @@ const DAY = Math.floor(Date.now() / 86_400_000);
 function getDailyPair() {
   const n = allVocab.length;
   const w1 = allVocab[DAY % n];
-  // Offset by ~38% of the vocab to land on a different word reliably
   const w2 = allVocab[(DAY + Math.floor(n * 0.38)) % n];
   return [w1, w2];
 }
@@ -41,7 +41,6 @@ function getDailyPrompt() {
   return DAILY_PROMPTS[DAY % DAILY_PROMPTS.length];
 }
 
-// Persist today's sentence in localStorage
 function loadSavedSentence() {
   try {
     const raw = localStorage.getItem('wotd-challenge');
@@ -55,7 +54,7 @@ function saveSentence(text) {
   localStorage.setItem('wotd-challenge', JSON.stringify({ day: DAY, text }));
 }
 
-// ── Word chip ─────────────────────────────────────────────────────
+// ── Word chip ──────────────────────────────────────────────────────
 function WordChip({ word }) {
   const topic = topics[word.topic];
   return (
@@ -75,14 +74,32 @@ function WordChip({ word }) {
   );
 }
 
-// ── Daily challenge ───────────────────────────────────────────────
+// ── Daily challenge ────────────────────────────────────────────────
 function WordOfTheDay({ showPage }) {
+  const { user } = useAuth();
   const [word1, word2] = getDailyPair();
   const { topic, prompt } = getDailyPrompt();
 
   const [sentence, setSentence] = useState(loadSavedSentence);
   const [revealed, setRevealed] = useState(false);
   const [copied, setCopied] = useState(false);
+
+  // Submission state
+  const [submission, setSubmission] = useState(null);    // existing DB submission for today
+  const [submitting, setSubmitting] = useState(false);
+  const [justSubmitted, setJustSubmitted] = useState(false);
+
+  // Load today's submission if user is logged in
+  useEffect(() => {
+    if (!user) { setSubmission(null); return; }
+    getDailyChallenge(user.id, DAY).then(data => {
+      setSubmission(data);
+      // Pre-fill textarea with previously submitted sentence
+      if (data?.sentence && !loadSavedSentence()) {
+        setSentence(data.sentence);
+      }
+    });
+  }, [user]);
 
   const handleChange = (e) => {
     setSentence(e.target.value);
@@ -95,13 +112,40 @@ function WordOfTheDay({ showPage }) {
     navigator.clipboard?.writeText(sentence).catch(() => {});
   };
 
+  const handleSubmit = async () => {
+    if (!sentence.trim() || !user || submitting) return;
+    setSubmitting(true);
+    const data = await submitDailyChallenge(user.id, {
+      sentence: sentence.trim(),
+      word1Thai: word1.thai,
+      word2Thai: word2.thai,
+      day: DAY,
+    });
+    setSubmission(data);
+    setJustSubmitted(true);
+    setSubmitting(false);
+    setTimeout(() => setJustSubmitted(false), 3000);
+  };
+
+  const isCompleted = !!submission;
+
   return (
-    <div className="rounded-xl border border-primary/20 bg-primary/5 p-5 md:p-6">
+    <div className={cn(
+      'rounded-xl border p-5 md:p-6 transition-colors',
+      isCompleted ? 'border-emerald-400/30 bg-emerald-50/50 dark:bg-emerald-950/10' : 'border-primary/20 bg-primary/5'
+    )}>
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
-        <span className="text-[0.68rem] font-bold tracking-[0.18em] uppercase text-primary">
-          Daily Challenge
-        </span>
+        <div className="flex items-center gap-2">
+          <span className="text-[0.68rem] font-bold tracking-[0.18em] uppercase text-primary">
+            Daily Challenge
+          </span>
+          {isCompleted && (
+            <span className="text-[0.65rem] font-semibold px-2 py-0.5 rounded-full bg-emerald-500 text-white flex items-center gap-1">
+              ✓ Done
+            </span>
+          )}
+        </div>
         <span className="text-[0.65rem] text-muted-foreground">Changes at midnight</span>
       </div>
 
@@ -130,7 +174,7 @@ function WordOfTheDay({ showPage }) {
         className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-sm font-thai-display text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-1 focus:ring-primary/40 resize-none mb-3"
       />
 
-      {/* Actions */}
+      {/* Actions row */}
       <div className="flex items-center justify-between gap-3 flex-wrap">
         <button
           onClick={() => setRevealed(r => !r)}
@@ -138,17 +182,46 @@ function WordOfTheDay({ showPage }) {
         >
           {revealed ? 'Hide examples ↑' : 'Reveal example sentences ↓'}
         </button>
+
         <div className="flex items-center gap-3">
           {sentence.trim() && (
             <button
               onClick={handleCopy}
               className="text-xs text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
             >
-              {copied ? '✓ Copied!' : '⎘ Copy sentence'}
+              {copied ? '✓ Copied!' : '⎘ Copy'}
             </button>
           )}
+
+          {/* Logged-in: submit button */}
+          {user && sentence.trim() && (
+            <button
+              onClick={handleSubmit}
+              disabled={submitting}
+              className={cn(
+                'text-xs font-semibold px-3 py-1.5 rounded-lg transition-all cursor-pointer border-none',
+                isCompleted
+                  ? 'bg-emerald-500/10 text-emerald-600 hover:bg-emerald-500/20'
+                  : 'bg-primary text-primary-foreground hover:opacity-90',
+                submitting && 'opacity-50 cursor-not-allowed'
+              )}
+            >
+              {submitting ? 'Saving…' : justSubmitted ? '✓ Saved!' : isCompleted ? '↻ Update answer' : 'Submit for today ✓'}
+            </button>
+          )}
+
+          {/* Logged-out nudge */}
+          {!user && sentence.trim() && (
+            <button
+              onClick={() => showPage('login')}
+              className="text-xs text-amber-600 hover:text-amber-500 transition-colors bg-transparent border-none cursor-pointer p-0"
+            >
+              Sign in to save →
+            </button>
+          )}
+
           <button onClick={() => showPage('cards')} className="text-xs text-primary hover:underline">
-            See all flashcards →
+            All flashcards →
           </button>
         </div>
       </div>
@@ -168,28 +241,35 @@ function WordOfTheDay({ showPage }) {
   );
 }
 
-// ── Hero illustration ─────────────────────────────────────────────
+// ── Hero illustration ──────────────────────────────────────────────
 function HeroIllustration() {
   return (
     <div className="relative shrink-0 select-none flex flex-col items-center" aria-hidden="true">
-      {/* Floating image */}
       <img
         src={`${import.meta.env.BASE_URL}hero-illustration.png`}
         alt=""
         width="380"
         height="380"
-        className="animate-hero-float w-[320px] md:w-[460px] drop-shadow-xl"
+        className="animate-hero-float w-[300px] md:w-[420px] drop-shadow-xl"
         draggable="false"
       />
-      {/* Ground shadow that shrinks as the image rises */}
-      <div
-        className="animate-hero-shadow -mt-4 w-48 h-4 rounded-full bg-foreground/20 blur-md"
-      />
+      <div className="animate-hero-shadow -mt-4 w-48 h-4 rounded-full bg-foreground/20 blur-md" />
     </div>
   );
 }
 
-// ── Feature card icons ────────────────────────────────────────────
+function GoogleIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+      <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+      <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/>
+      <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+    </svg>
+  );
+}
+
+// ── Feature icons ──────────────────────────────────────────────────
 function IcoCards() {
   return (
     <svg width="42" height="42" viewBox="0 0 42 42" fill="none">
@@ -272,22 +352,6 @@ function IcoScramble() {
     </svg>
   );
 }
-function IcoTones() {
-  return (
-    <svg width="42" height="42" viewBox="0 0 42 42" fill="none">
-      {/* staff lines */}
-      <line x1="4" y1="12" x2="38" y2="12" stroke="#e2e8f0" strokeWidth="1.2"/>
-      <line x1="4" y1="21" x2="38" y2="21" stroke="#e2e8f0" strokeWidth="1.2"/>
-      <line x1="4" y1="30" x2="38" y2="30" stroke="#e2e8f0" strokeWidth="1.2"/>
-      {/* mid tone — flat blue */}
-      <path d="M5,21 L15,21" stroke="#3b82f6" strokeWidth="2" strokeLinecap="round"/>
-      {/* falling tone — red */}
-      <path d="M17,13 C20,14 23,22 26,28" stroke="#ef4444" strokeWidth="2" strokeLinecap="round" fill="none"/>
-      {/* rising tone — green */}
-      <path d="M28,27 C30,22 33,16 37,13" stroke="#22c55e" strokeWidth="2" strokeLinecap="round" fill="none"/>
-    </svg>
-  );
-}
 function IcoClassifiers() {
   return (
     <svg width="42" height="42" viewBox="0 0 42 42" fill="none">
@@ -300,13 +364,10 @@ function IcoClassifiers() {
 function IcoClusters() {
   return (
     <svg width="42" height="42" viewBox="0 0 42 42" fill="none">
-      {/* Two consonant blocks side-by-side suggesting a cluster */}
       <rect x="4"  y="10" width="15" height="20" rx="3" fill="#fef9c3" stroke="#fde047" strokeWidth="1.3"/>
       <rect x="21" y="10" width="15" height="20" rx="3" fill="#dbeafe" stroke="#93c5fd" strokeWidth="1.3"/>
-      {/* Thai chars ก + ล */}
       <text x="11.5" y="25" textAnchor="middle" fontSize="11" fontFamily="'Sarabun',sans-serif" fill="#854d0e">ก</text>
       <text x="28.5" y="25" textAnchor="middle" fontSize="11" fontFamily="'Sarabun',sans-serif" fill="#1e40af">ล</text>
-      {/* small + between them, bottom */}
       <text x="21" y="36" textAnchor="middle" fontSize="8" fontFamily="sans-serif" fill="#94a3b8">→ kl</text>
     </svg>
   );
@@ -327,6 +388,10 @@ const FEATURES = [
 
 export default function HomePage({ showPage }) {
   const { user } = useAuth();
+
+  // user === undefined = auth loading; user === null = logged out; user = object = logged in
+  const loggedOut = user === null;
+
   return (
     <div className="relative max-w-[1200px] mx-auto px-5 pt-14 pb-20">
       {/* radial glow behind hero */}
@@ -342,22 +407,60 @@ export default function HomePage({ showPage }) {
             Learn Thai,<br/>
             <em className="text-primary not-italic font-medium">word by word.</em>
           </h1>
-          <p className="text-base text-muted-foreground mb-8 max-w-[420px] mx-auto md:mx-0 leading-relaxed">
-            Vocabulary cards, grammar patterns, reading passages, and games —
-            everything in one place for curious learners.
-          </p>
-          <div className="flex gap-3 flex-wrap justify-center md:justify-start">
-            <Button size="lg" onClick={() => showPage('cards')}>Start Studying →</Button>
-            <Button size="lg" variant="outline" onClick={() => showPage('grammar')}>Browse Grammar</Button>
-          </div>
-          {!user && (
-            <button
-              onClick={() => showPage('login')}
-              className="mt-4 inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors bg-transparent border-none cursor-pointer p-0"
-            >
-              <span className="text-amber-500">✦</span>
-              Sign in to track your progress and build streaks →
-            </button>
+
+          {loggedOut ? (
+            /* ── Logged-out: sign-in is primary CTA ── */
+            <>
+              <p className="text-base text-muted-foreground mb-8 max-w-[420px] mx-auto md:mx-0 leading-relaxed">
+                Track your progress across 313 vocabulary words, build daily streaks, and see exactly which words need review — free with a Google account.
+              </p>
+
+              {/* Primary CTA */}
+              <button
+                onClick={() => showPage('login')}
+                className="flex items-center justify-center gap-3 w-full sm:w-auto px-6 py-4 rounded-xl bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 text-sm font-semibold hover:opacity-90 transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5 cursor-pointer border-none mb-5"
+              >
+                <GoogleIcon />
+                Continue with Google — it's free
+              </button>
+
+              {/* Secondary study links */}
+              <div className="flex items-center gap-1 flex-wrap justify-center md:justify-start text-sm text-muted-foreground">
+                <span className="text-xs">or explore without an account:</span>
+                <button
+                  onClick={() => showPage('cards')}
+                  className="px-2 py-1 text-foreground hover:text-primary transition-colors bg-transparent border-none cursor-pointer text-sm"
+                >
+                  Flashcards
+                </button>
+                <span className="text-muted-foreground/40">·</span>
+                <button
+                  onClick={() => showPage('grammar')}
+                  className="px-2 py-1 text-foreground hover:text-primary transition-colors bg-transparent border-none cursor-pointer text-sm"
+                >
+                  Grammar
+                </button>
+                <span className="text-muted-foreground/40">·</span>
+                <button
+                  onClick={() => showPage('quiz')}
+                  className="px-2 py-1 text-foreground hover:text-primary transition-colors bg-transparent border-none cursor-pointer text-sm"
+                >
+                  Quiz
+                </button>
+              </div>
+            </>
+          ) : (
+            /* ── Logged-in (or loading) ── */
+            <>
+              <p className="text-base text-muted-foreground mb-8 max-w-[420px] mx-auto md:mx-0 leading-relaxed">
+                Vocabulary cards, grammar patterns, reading passages, and games —
+                everything in one place for curious learners.
+              </p>
+              <div className="flex gap-3 flex-wrap justify-center md:justify-start">
+                <Button size="lg" onClick={() => showPage('cards')}>Start Studying →</Button>
+                <Button size="lg" variant="outline" onClick={() => showPage('grammar')}>Browse Grammar</Button>
+              </div>
+            </>
           )}
         </div>
 

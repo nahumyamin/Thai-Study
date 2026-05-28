@@ -55,6 +55,42 @@ export async function recordSession(userId, sessionType, wordsStudied, correctCo
   await updateStreak(userId);
 }
 
+export async function submitDailyChallenge(userId, { sentence, word1Thai, word2Thai, day }) {
+  if (!userId || !supabase) return null;
+  const { data, error } = await supabase
+    .from('daily_challenges')
+    .upsert(
+      { user_id: userId, day, sentence, word1_thai: word1Thai, word2_thai: word2Thai },
+      { onConflict: 'user_id,day' }
+    )
+    .select()
+    .single();
+  if (error) { console.error('submitDailyChallenge:', error); return null; }
+  return data;
+}
+
+export async function getDailyChallenge(userId, day) {
+  if (!userId || !supabase) return null;
+  const { data } = await supabase
+    .from('daily_challenges')
+    .select('*')
+    .eq('user_id', userId)
+    .eq('day', day)
+    .maybeSingle();
+  return data ?? null;
+}
+
+export async function getDailyChallengeHistory(userId, limit = 14) {
+  if (!userId || !supabase) return [];
+  const { data } = await supabase
+    .from('daily_challenges')
+    .select('*')
+    .eq('user_id', userId)
+    .order('day', { ascending: false })
+    .limit(limit);
+  return data ?? [];
+}
+
 async function updateStreak(userId) {
   const today = new Date().toISOString().slice(0, 10);
 
