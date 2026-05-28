@@ -90,24 +90,25 @@ function StudyNudgeBanner({ onCta }) {
   };
 
   return (
-    <div className="flex items-center justify-between gap-3 px-4 py-2 bg-amber-50/80 dark:bg-amber-950/20 border-b border-amber-200/70 dark:border-amber-900/40 text-xs">
-      <p className="text-amber-900/70 dark:text-amber-200/60 leading-snug">
-        <span className="hidden sm:inline">Your progress isn't being saved — </span>
-        <span className="sm:hidden">Progress not saved — </span>
+    <div className="max-w-3xl mx-auto px-4 pt-6 pb-0">
+      <div className="inline-flex items-center gap-2.5 rounded-full bg-zinc-100 dark:bg-zinc-800/70 border border-zinc-200 dark:border-zinc-700/60 px-3.5 py-1.5">
+        <span className="text-xs text-zinc-400 dark:text-zinc-500 whitespace-nowrap">
+          Sign in to track your progress
+        </span>
         <button
           onClick={onCta}
-          className="font-semibold text-amber-700 dark:text-amber-400 hover:text-amber-600 dark:hover:text-amber-300 underline underline-offset-2 decoration-amber-400/50 transition-colors cursor-pointer bg-transparent border-none p-0 text-xs"
+          className="text-[0.7rem] font-medium text-zinc-600 dark:text-zinc-300 bg-white dark:bg-zinc-700 border border-zinc-200 dark:border-zinc-600 rounded-full px-2.5 py-0.5 hover:bg-zinc-50 dark:hover:bg-zinc-600 transition-colors cursor-pointer whitespace-nowrap"
         >
-          sign in free to track words, build streaks &amp; earn XP
+          Get started free
         </button>
-      </p>
-      <button
-        onClick={dismiss}
-        aria-label="Dismiss"
-        className="shrink-0 text-amber-400/60 hover:text-amber-400 transition-colors cursor-pointer bg-transparent border-none p-0 leading-none text-sm"
-      >
-        ✕
-      </button>
+        <button
+          onClick={dismiss}
+          aria-label="Dismiss"
+          className="text-zinc-300 dark:text-zinc-600 hover:text-zinc-500 dark:hover:text-zinc-400 transition-colors cursor-pointer bg-transparent border-none p-0 leading-none text-xs ml-0.5"
+        >
+          ✕
+        </button>
+      </div>
     </div>
   );
 }
@@ -225,14 +226,14 @@ function App() {
       <SearchOverlay open={searchOpen} onClose={() => setSearchOpen(false)} showPage={showPage} />
       <AuthModal open={authModalOpen} onClose={() => setAuthModalOpen(false)} initialMode={authModalMode} />
 
-      {/* Nudge logged-out users on every study/reference/culture page */}
-      {user === null && !NO_NUDGE_PAGES.has(activePage) && (
-        <StudyNudgeBanner
-          onCta={() => { setAuthModalMode('signup'); setAuthModalOpen(true); }}
-        />
-      )}
-
       <div key={activePage} className="animate-page-in">
+        {/* Nudge banner — above the page title, only for logged-out users on content pages */}
+        {user === null && !NO_NUDGE_PAGES.has(activePage) && (
+          <StudyNudgeBanner
+            onCta={() => { setAuthModalMode('signup'); setAuthModalOpen(true); }}
+          />
+        )}
+
         {activePage === 'dashboard'     && (user ? <DashboardPage showPage={showPage} /> : (
           <div className="min-h-[60vh] flex items-center justify-center px-4">
             <div className="text-center">
