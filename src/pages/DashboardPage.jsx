@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import { supabase } from '../lib/supabase.js';
-import { getDailyChallengeHistory } from '../lib/progress.js';
+import { getDailyChallengeHistory, updateDailyChallenge, deleteDailyChallenge } from '../lib/progress.js';
 import { useAuth } from '../context/AuthContext.jsx';
 import { cn } from '../lib/utils.js';
 
@@ -16,6 +16,38 @@ const MASTERY_COLORS = [
   'bg-emerald-500',
 ];
 
+// ── Icons ─────────────────────────────────────────────────────────
+function PencilIcon() {
+  return (
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+      <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+    </svg>
+  );
+}
+
+function TrashIcon() {
+  return (
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="3 6 5 6 21 6"/>
+      <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+    </svg>
+  );
+}
+
+function ChevronIcon({ open }) {
+  return (
+    <svg
+      width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+      className={cn('transition-transform duration-200', open ? 'rotate-180' : '')}
+    >
+      <polyline points="6 9 12 15 18 9"/>
+    </svg>
+  );
+}
+
+// ── Stat card ─────────────────────────────────────────────────────
 function StatCard({ label, value, sub }) {
   return (
     <div className="rounded-xl border border-border bg-card p-5">
@@ -26,6 +58,189 @@ function StatCard({ label, value, sub }) {
   );
 }
 
+// ── Daily challenges panel ────────────────────────────────────────
+const TODAY_DAY = Math.floor(Date.now() / 86_400_000);
+
+function DailyChallengesPanel({ challenges, setChallenges, user }) {
+  const [open, setOpen] = useState(false);
+  const [editingId, setEditingId] = useState(null);
+  const [editingText, setEditingText] = useState('');
+  const [saving, setSaving] = useState(false);
+  const [deletingId, setDeletingId] = useState(null);
+
+  // Last 7 days completion dots
+  const last7 = Array.from({ length: 7 }, (_, i) => TODAY_DAY - 6 + i);
+  const submittedDays = new Set(challenges.map(c => c.day));
+
+  const startEdit = (c) => {
+    setEditingId(c.id);
+    setEditingText(c.sentence);
+  };
+
+  const cancelEdit = () => {
+    setEditingId(null);
+    setEditingText('');
+  };
+
+  const handleSave = async (id) => {
+    if (!editingText.trim()) return;
+    setSaving(true);
+    const updated = await updateDailyChallenge(user.id, id, editingText.trim());
+    if (updated) {
+      setChallenges(prev => prev.map(c => c.id === id ? { ...c, sentence: updated.sentence } : c));
+      setEditingId(null);
+    }
+    setSaving(false);
+  };
+
+  const handleDelete = async (id) => {
+    setDeletingId(id);
+    const ok = await deleteDailyChallenge(user.id, id);
+    if (ok) setChallenges(prev => prev.filter(c => c.id !== id));
+    setDeletingId(null);
+  };
+
+  return (
+    <div className="rounded-xl border border-border bg-card mb-6 overflow-hidden">
+      {/* Summary row — always visible, click to expand */}
+      <button
+        onClick={() => setOpen(o => !o)}
+        className="w-full flex items-center justify-between px-5 py-4 text-left hover:bg-muted/40 transition-colors cursor-pointer bg-transparent border-none"
+      >
+        <div className="flex items-center gap-4">
+          <div>
+            <span className="text-sm font-semibold text-foreground">Daily Challenges</span>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              {challenges.length === 0
+                ? 'No submissions yet'
+                : `${challenges.length} sentence${challenges.length === 1 ? '' : 's'} completed`}
+            </p>
+          </div>
+
+          {/* Last 7 days dots */}
+          <div className="hidden sm:flex items-center gap-1" aria-label="Last 7 days">
+            {last7.map(day => {
+              const done = submittedDays.has(day);
+              const isToday = day === TODAY_DAY;
+              return (
+                <span
+                  key={day}
+                  title={done ? 'Submitted' : isToday ? 'Today' : 'Missed'}
+                  className={cn(
+                    'inline-block rounded-full transition-colors',
+                    done
+                      ? 'w-3 h-3 bg-amber-400'
+                      : isToday
+                        ? 'w-3 h-3 border-2 border-amber-400/60'
+                        : 'w-2.5 h-2.5 bg-muted-foreground/20'
+                  )}
+                />
+              );
+            })}
+          </div>
+        </div>
+
+        <div className="flex items-center gap-3 shrink-0">
+          {challenges.length > 0 && (
+            <span className="text-xl font-bold text-amber-500">{challenges.length}</span>
+          )}
+          <span className="text-muted-foreground">
+            <ChevronIcon open={open} />
+          </span>
+        </div>
+      </button>
+
+      {/* Expanded entries */}
+      {open && (
+        <div className="border-t border-border">
+          {challenges.length === 0 ? (
+            <p className="px-5 py-6 text-sm text-muted-foreground text-center">
+              No daily challenge submissions yet.{' '}
+              <span className="text-foreground">Complete today's challenge on the home page!</span>
+            </p>
+          ) : (
+            <div className="divide-y divide-border">
+              {challenges.map(c => (
+                <div key={c.id} className="px-5 py-4">
+                  {/* Entry header: date + words + action icons */}
+                  <div className="flex items-start justify-between gap-2 mb-2">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="text-[0.65rem] font-bold tracking-widest uppercase text-amber-600">
+                        {new Date(c.submitted_at).toLocaleDateString('en-US', {
+                          weekday: 'short', month: 'short', day: 'numeric',
+                        })}
+                      </span>
+                      <span className="text-[0.65rem] text-muted-foreground">
+                        · {c.word1_thai} + {c.word2_thai}
+                      </span>
+                    </div>
+
+                    {/* Edit / Delete icons */}
+                    {editingId !== c.id && (
+                      <div className="flex items-center gap-1 shrink-0">
+                        <button
+                          onClick={() => startEdit(c)}
+                          className="p-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors cursor-pointer bg-transparent border-none"
+                          aria-label="Edit"
+                          title="Edit"
+                        >
+                          <PencilIcon />
+                        </button>
+                        <button
+                          onClick={() => handleDelete(c.id)}
+                          disabled={deletingId === c.id}
+                          className="p-1.5 rounded-md text-muted-foreground hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors cursor-pointer bg-transparent border-none disabled:opacity-40"
+                          aria-label="Delete"
+                          title="Delete"
+                        >
+                          <TrashIcon />
+                        </button>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Sentence or inline editor */}
+                  {editingId === c.id ? (
+                    <div>
+                      <textarea
+                        value={editingText}
+                        onChange={e => setEditingText(e.target.value)}
+                        rows={3}
+                        autoFocus
+                        className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm font-thai-display text-foreground focus:outline-none focus:ring-1 focus:ring-primary/40 resize-none mb-2"
+                      />
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => handleSave(c.id)}
+                          disabled={saving || !editingText.trim()}
+                          className="text-xs font-semibold px-3 py-1.5 rounded-lg bg-primary text-primary-foreground hover:opacity-90 transition-opacity cursor-pointer border-none disabled:opacity-50"
+                        >
+                          {saving ? 'Saving…' : 'Save'}
+                        </button>
+                        <button
+                          onClick={cancelEdit}
+                          className="text-xs text-muted-foreground hover:text-foreground transition-colors cursor-pointer bg-transparent border-none px-2 py-1.5"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <p className="font-thai-display text-sm text-foreground leading-relaxed border-l-2 border-amber-400/40 pl-3">
+                      {c.sentence}
+                    </p>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ── Main dashboard ────────────────────────────────────────────────
 export default function DashboardPage({ showPage }) {
   const { user, signOut } = useAuth();
   const [profile, setProfile] = useState(null);
@@ -82,11 +297,7 @@ export default function DashboardPage({ showPage }) {
 
   const weakWords = [...progress]
     .filter(w => w.times_seen >= 2)
-    .sort((a, b) => {
-      const accA = a.times_correct / a.times_seen;
-      const accB = b.times_correct / b.times_seen;
-      return accA - accB;
-    })
+    .sort((a, b) => (a.times_correct / a.times_seen) - (b.times_correct / b.times_seen))
     .slice(0, 8);
 
   return (
@@ -109,52 +320,18 @@ export default function DashboardPage({ showPage }) {
 
       {/* Stats row */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8">
-        <StatCard
-          label="Day Streak"
-          value={profile?.streak_count ?? 0}
-          sub="days in a row"
-        />
-        <StatCard
-          label="Words Studied"
-          value={totalWords}
-          sub={`${mastered} mastered`}
-        />
-        <StatCard
-          label="Accuracy"
-          value={`${accuracy}%`}
-          sub={`${totalCorrect} / ${totalSeen} correct`}
-        />
-        <StatCard
-          label="Sessions"
-          value={sessions.length}
-          sub="recent activity"
-        />
+        <StatCard label="Day Streak"    value={profile?.streak_count ?? 0} sub="days in a row" />
+        <StatCard label="Words Studied" value={totalWords}                  sub={`${mastered} mastered`} />
+        <StatCard label="Accuracy"      value={`${accuracy}%`}             sub={`${totalCorrect} / ${totalSeen} correct`} />
+        <StatCard label="Sessions"      value={sessions.length}             sub="recent activity" />
       </div>
 
-      {/* Daily challenge streak / history */}
-      {challenges.length > 0 && (
-        <div className="rounded-xl border border-border bg-card p-5 mb-6">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-sm font-semibold text-foreground">Daily Challenge History</h2>
-            <span className="text-xs text-muted-foreground">{challenges.length} {challenges.length === 1 ? 'entry' : 'entries'}</span>
-          </div>
-          <div className="space-y-4">
-            {challenges.map(c => (
-              <div key={c.id} className="border-l-2 border-amber-400/50 pl-4">
-                <div className="flex items-center gap-2 mb-1 flex-wrap">
-                  <span className="text-[0.65rem] font-bold tracking-widest uppercase text-amber-600">
-                    {new Date(c.submitted_at).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
-                  </span>
-                  <span className="text-[0.65rem] text-muted-foreground">
-                    · {c.word1_thai} + {c.word2_thai}
-                  </span>
-                </div>
-                <p className="font-thai-display text-sm text-foreground leading-relaxed">{c.sentence}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
+      {/* Daily challenges — collapsible with edit/delete */}
+      <DailyChallengesPanel
+        challenges={challenges}
+        setChallenges={setChallenges}
+        user={user}
+      />
 
       {/* Mastery distribution */}
       <div className="rounded-xl border border-border bg-card p-5 mb-6">

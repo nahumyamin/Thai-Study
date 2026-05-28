@@ -80,6 +80,29 @@ export async function getDailyChallenge(userId, day) {
   return data ?? null;
 }
 
+export async function updateDailyChallenge(userId, id, sentence) {
+  if (!userId || !supabase) return null;
+  const { data, error } = await supabase
+    .from('daily_challenges')
+    .update({ sentence })
+    .eq('id', id)
+    .eq('user_id', userId)
+    .select()
+    .single();
+  if (error) { console.error('updateDailyChallenge:', error); return null; }
+  return data;
+}
+
+export async function deleteDailyChallenge(userId, id) {
+  if (!userId || !supabase) return false;
+  const { error } = await supabase
+    .from('daily_challenges')
+    .delete()
+    .eq('id', id)
+    .eq('user_id', userId);
+  return !error;
+}
+
 export async function getDailyChallengeHistory(userId, limit = 14) {
   if (!userId || !supabase) return [];
   const { data } = await supabase
