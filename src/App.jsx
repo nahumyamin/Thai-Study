@@ -81,8 +81,8 @@ function StudyNudgeBanner({ onCta }) {
   return (
     <div className="max-w-3xl mx-auto px-4 pt-6 pb-0">
       <div className="flex items-center justify-between gap-3 rounded-full bg-zinc-100 dark:bg-zinc-800/70 border border-zinc-200 dark:border-zinc-700/60 px-4 py-2">
-        <span className="text-xs text-zinc-400 dark:text-zinc-500">
-          Sign in to track your progress
+        <span className="text-xs text-zinc-600 dark:text-zinc-300">
+          Every word you study disappears when you close this tab — sign in and make it count.
         </span>
         <button
           onClick={onCta}
