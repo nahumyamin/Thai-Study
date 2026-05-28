@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { cn } from './lib/utils.js';
 import Nav from './components/Nav.jsx';
 import { track } from './lib/analytics.js';
 import SearchOverlay from './components/SearchOverlay.jsx';
@@ -71,6 +72,44 @@ const PAGE_TITLES = {
 function pageFromHash() {
   const hash = window.location.hash.slice(1);
   return VALID_PAGES.has(hash) ? hash : 'home';
+}
+
+// Pages where the nudge banner should never show
+const NO_NUDGE_PAGES = new Set(['home', 'dashboard']);
+
+function StudyNudgeBanner({ onCta }) {
+  const [dismissed, setDismissed] = useState(
+    () => sessionStorage.getItem('nudge-v1') === '1'
+  );
+
+  if (dismissed) return null;
+
+  const dismiss = () => {
+    sessionStorage.setItem('nudge-v1', '1');
+    setDismissed(true);
+  };
+
+  return (
+    <div className="flex items-center justify-between gap-3 px-4 py-2 bg-amber-50/80 dark:bg-amber-950/20 border-b border-amber-200/70 dark:border-amber-900/40 text-xs">
+      <p className="text-amber-900/70 dark:text-amber-200/60 leading-snug">
+        <span className="hidden sm:inline">Your progress isn't being saved — </span>
+        <span className="sm:hidden">Progress not saved — </span>
+        <button
+          onClick={onCta}
+          className="font-semibold text-amber-700 dark:text-amber-400 hover:text-amber-600 dark:hover:text-amber-300 underline underline-offset-2 decoration-amber-400/50 transition-colors cursor-pointer bg-transparent border-none p-0 text-xs"
+        >
+          sign in free to track words, build streaks &amp; earn XP
+        </button>
+      </p>
+      <button
+        onClick={dismiss}
+        aria-label="Dismiss"
+        className="shrink-0 text-amber-400/60 hover:text-amber-400 transition-colors cursor-pointer bg-transparent border-none p-0 leading-none text-sm"
+      >
+        ✕
+      </button>
+    </div>
+  );
 }
 
 function App() {
@@ -185,6 +224,13 @@ function App() {
       />
       <SearchOverlay open={searchOpen} onClose={() => setSearchOpen(false)} showPage={showPage} />
       <AuthModal open={authModalOpen} onClose={() => setAuthModalOpen(false)} initialMode={authModalMode} />
+
+      {/* Nudge logged-out users on every study/reference/culture page */}
+      {user === null && !NO_NUDGE_PAGES.has(activePage) && (
+        <StudyNudgeBanner
+          onCta={() => { setAuthModalMode('signup'); setAuthModalOpen(true); }}
+        />
+      )}
 
       <div key={activePage} className="animate-page-in">
         {activePage === 'dashboard'     && (user ? <DashboardPage showPage={showPage} /> : (
