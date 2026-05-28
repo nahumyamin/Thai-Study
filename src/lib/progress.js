@@ -1,4 +1,5 @@
 import { supabase } from './supabase.js';
+import { XP_VALUES } from './gamification.js';
 
 export async function recordAnswer(userId, thaiWord, correct) {
   if (!userId || !supabase) return;
@@ -53,10 +54,21 @@ export async function recordSession(userId, sessionType, wordsStudied, correctCo
     duration_secs: durationSecs,
   });
   await updateStreak(userId);
+
+  // Award XP: 1 per word + accuracy bonus
+  let xp = wordsStudied * XP_VALUES.PER_WORD;
+  if (wordsStudied >= 5 && correctCount === wordsStudied) {
+    xp += XP_VALUES.PERFECT_BONUS;
+  } else if (wordsStudied >= 5 && correctCount / wordsStudied >= 0.8) {
+    xp += XP_VALUES.ACCURACY_BONUS;
+  }
+  await awardXP(userId, xp);
 }
 
 export async function submitDailyChallenge(userId, { sentence, word1Thai, word2Thai, day }) {
   if (!userId || !supabase) return null;
+  // Check if this is a new submission (not an edit) to award XP once per day
+  const existing = await getDailyChallenge(userId, day);
   const { data, error } = await supabase
     .from('daily_challenges')
     .upsert(
@@ -66,6 +78,10 @@ export async function submitDailyChallenge(userId, { sentence, word1Thai, word2T
     .select()
     .single();
   if (error) { console.error('submitDailyChallenge:', error); return null; }
+  // Only award XP on first submission, not on edits
+  if (!existing) {
+    await awardXP(userId, XP_VALUES.DAILY_CHALLENGE);
+  }
   return data;
 }
 
@@ -119,7 +135,7 @@ async function updateStreak(userId) {
 
   const { data: profile } = await supabase
     .from('profiles')
-    .select('streak_count, last_active_date')
+    .select('streak_count, streak_best, last_active_date')
     .eq('id', userId)
     .single();
 
@@ -128,13 +144,54 @@ async function updateStreak(userId) {
   const last = profile.last_active_date;
   const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
 
-  let newStreak = profile.streak_count;
+  let newStreak = profile.streak_count ?? 0;
   if (last === today) return; // already counted today
   if (last === yesterday) newStreak += 1;
   else newStreak = 1; // streak broken
 
+  const newBest = Math.max(newStreak, profile.streak_best ?? 0);
+
   await supabase.from('profiles').update({
     streak_count: newStreak,
+    streak_best: newBest,
     last_active_date: today,
   }).eq('id', userId);
+}
+
+// ── XP & achievements ─────────────────────────────────────────────
+
+export async function awardXP(userId, amount) {
+  if (!userId || !supabase || !amount || amount <= 0) return;
+  const { data } = await supabase
+    .from('profiles').select('total_xp').eq('id', userId).single();
+  if (!data) return;
+  await supabase.from('profiles').update({
+    total_xp: (data.total_xp ?? 0) + amount,
+  }).eq('id', userId);
+}
+
+/**
+ * Inserts any achievements in earnedIds that aren't already in existingIds.
+ * Pass existingIds (array of achievement_id strings) to avoid an extra DB round-trip.
+ * Returns the list of newly inserted achievement IDs.
+ */
+export async function unlockAchievements(userId, earnedIds, existingIds = null) {
+  if (!userId || !supabase || !earnedIds?.size) return [];
+
+  let existingSet;
+  if (existingIds !== null) {
+    existingSet = new Set(existingIds);
+  } else {
+    const { data } = await supabase
+      .from('achievements').select('achievement_id').eq('user_id', userId);
+    existingSet = new Set(data?.map(a => a.achievement_id) ?? []);
+  }
+
+  const newIds = [...earnedIds].filter(id => !existingSet.has(id));
+  if (!newIds.length) return [];
+
+  await supabase.from('achievements').insert(
+    newIds.map(achievement_id => ({ user_id: userId, achievement_id }))
+  );
+  return newIds;
 }
