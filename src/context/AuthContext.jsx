@@ -39,7 +39,8 @@ export function AuthProvider({ children }) {
   const signInWithGoogle = () =>
     supabase?.auth.signInWithOAuth({
       provider: 'google',
-      options: { redirectTo: window.location.origin + import.meta.env.BASE_URL },
+      // pathname resolves to /Thai-Study/ on GitHub Pages and / on custom domain
+      options: { redirectTo: window.location.origin + window.location.pathname },
     });
 
   const signOut = async () => {
