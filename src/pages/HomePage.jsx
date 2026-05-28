@@ -4,6 +4,8 @@ import { allVocab, topics } from '../data/vocab.js';
 import { cn } from '@/lib/utils';
 import { useAuth } from '../context/AuthContext.jsx';
 import { submitDailyChallenge, getDailyChallenge } from '../lib/progress.js';
+import { supabase } from '../lib/supabase.js';
+import { getLevel } from '../lib/gamification.js';
 
 const DAILY_PROMPTS = [
   { topic: 'At a Thai temple',        prompt: 'You\'re visiting a famous temple with a friend. Describe what you see or do — using both words in one Thai sentence.' },
@@ -241,6 +243,140 @@ function WordOfTheDay({ showPage }) {
   );
 }
 
+// ── Dashboard summary card (shown in hero for logged-in users) ────
+function DashboardSummaryCard({ showPage }) {
+  const { user } = useAuth();
+  const [data, setData] = useState(null);
+
+  useEffect(() => {
+    if (!user || !supabase) return;
+    const todayStr = new Date().toISOString().slice(0, 10);
+    Promise.all([
+      supabase.from('profiles')
+        .select('display_name, streak_count, streak_best, total_xp, daily_goal')
+        .eq('id', user.id).single(),
+      supabase.from('vocab_progress')
+        .select('mastery_level')
+        .eq('user_id', user.id),
+      supabase.from('study_sessions')
+        .select('words_studied')
+        .eq('user_id', user.id)
+        .gte('created_at', todayStr),
+    ]).then(([p, v, s]) => {
+      const vocabRows  = v.data ?? [];
+      const todayWords = (s.data ?? []).reduce((n, r) => n + (r.words_studied || 0), 0);
+      setData({
+        name:       p.data?.display_name?.split(' ')[0] ?? null,
+        streak:     p.data?.streak_count  ?? 0,
+        streakBest: p.data?.streak_best   ?? 0,
+        xp:         p.data?.total_xp      ?? 0,
+        dailyGoal:  p.data?.daily_goal    ?? 10,
+        totalWords: vocabRows.length,
+        mastered:   vocabRows.filter(w => w.mastery_level === 5).length,
+        todayWords,
+      });
+    });
+  }, [user]);
+
+  // Skeleton while loading
+  if (!data) {
+    return (
+      <div className="w-full md:w-[320px] shrink-0 rounded-2xl border border-border bg-card p-5 space-y-4 animate-pulse">
+        <div className="h-4 bg-muted rounded w-2/3" />
+        <div className="h-2 bg-muted rounded w-full" />
+        <div className="grid grid-cols-3 gap-3">
+          {[0,1,2].map(i => <div key={i} className="h-10 bg-muted rounded" />)}
+        </div>
+        <div className="h-10 bg-muted rounded" />
+      </div>
+    );
+  }
+
+  const { name, streak, streakBest, xp, dailyGoal, totalWords, mastered, todayWords } = data;
+  const { level, label, progress, nextLevel } = getLevel(xp);
+  const goalPct  = dailyGoal > 0 ? Math.min(1, todayWords / dailyGoal) : 0;
+  const goalDone = todayWords >= dailyGoal && dailyGoal > 0;
+
+  return (
+    <div className="w-full md:w-[320px] shrink-0 rounded-2xl border border-border bg-card shadow-sm p-5 space-y-4">
+      {/* Name + level */}
+      <div className="flex items-start justify-between">
+        <div>
+          <p className="text-xs text-muted-foreground">Welcome back</p>
+          <h2 className="text-lg font-bold text-foreground leading-tight">
+            {name ?? user?.email?.split('@')[0] ?? 'Learner'}
+          </h2>
+        </div>
+        <div className="text-right">
+          <span className="text-[0.6rem] font-bold tracking-[0.12em] uppercase text-amber-600 block">
+            Level {level}
+          </span>
+          <span className="text-sm font-semibold text-foreground">{label}</span>
+        </div>
+      </div>
+
+      {/* XP progress bar */}
+      <div>
+        <div className="flex justify-between text-xs text-muted-foreground mb-1">
+          <span>{xp.toLocaleString()} XP</span>
+          {nextLevel && (
+            <span>{(nextLevel.minXp - xp).toLocaleString()} to {nextLevel.label}</span>
+          )}
+        </div>
+        <div className="h-1.5 bg-muted rounded-full overflow-hidden">
+          <div
+            className="h-full bg-amber-400 rounded-full transition-all duration-500"
+            style={{ width: `${progress * 100}%` }}
+          />
+        </div>
+      </div>
+
+      {/* Three quick stats */}
+      <div className="grid grid-cols-3 divide-x divide-border rounded-lg border border-border overflow-hidden">
+        <div className="px-3 py-2.5 text-center">
+          <div className="text-xl font-bold text-foreground">{streak}</div>
+          <div className="text-[0.6rem] text-muted-foreground leading-tight">
+            🔥 streak
+            {streakBest > 0 && <span className="block text-muted-foreground/60">best {streakBest}</span>}
+          </div>
+        </div>
+        <div className="px-3 py-2.5 text-center">
+          <div className="text-xl font-bold text-foreground">{totalWords}</div>
+          <div className="text-[0.6rem] text-muted-foreground leading-tight">words<br/>studied</div>
+        </div>
+        <div className="px-3 py-2.5 text-center">
+          <div className="text-xl font-bold text-foreground">{mastered}</div>
+          <div className="text-[0.6rem] text-muted-foreground leading-tight">words<br/>mastered</div>
+        </div>
+      </div>
+
+      {/* Today's goal */}
+      <div className="rounded-lg bg-muted/60 px-3.5 py-3">
+        <div className="flex items-center justify-between text-xs mb-1.5">
+          <span className="font-medium text-foreground">Today's goal</span>
+          <span className={cn('font-semibold tabular-nums', goalDone ? 'text-emerald-600' : 'text-muted-foreground')}>
+            {todayWords} / {dailyGoal} words{goalDone ? ' 🎉' : ''}
+          </span>
+        </div>
+        <div className="h-1.5 bg-background rounded-full overflow-hidden">
+          <div
+            className={cn('h-full rounded-full transition-all duration-500', goalDone ? 'bg-emerald-500' : 'bg-amber-400')}
+            style={{ width: `${goalPct * 100}%` }}
+          />
+        </div>
+      </div>
+
+      {/* Dashboard link */}
+      <button
+        onClick={() => showPage('dashboard')}
+        className="w-full text-sm font-semibold text-amber-600 hover:text-amber-500 transition-colors cursor-pointer bg-transparent border-none p-0 text-center"
+      >
+        View full dashboard →
+      </button>
+    </div>
+  );
+}
+
 // ── Hero illustration ──────────────────────────────────────────────
 function HeroIllustration() {
   return (
@@ -387,7 +523,10 @@ export default function HomePage({ showPage }) {
       <div className="pointer-events-none absolute inset-x-0 -top-8 h-[520px] -z-10 hero-glow" />
 
       {/* ── Hero ── */}
-      <div className="flex flex-col md:flex-row items-center gap-14 mb-16">
+      <div className={cn(
+        'flex gap-10 mb-16',
+        user ? 'flex-col md:flex-row items-start' : 'flex-col md:flex-row items-center gap-14'
+      )}>
         <div className="flex-1 text-center md:text-left">
           <p className="text-[0.68rem] font-bold tracking-[0.2em] uppercase text-muted-foreground mb-5">
             Thai language reference
@@ -401,7 +540,7 @@ export default function HomePage({ showPage }) {
             /* ── Logged-out: sign-up / login as primary CTAs ── */
             <>
               <p className="text-base text-muted-foreground mb-8 max-w-[420px] mx-auto md:mx-0 leading-relaxed">
-                Track your progress across 313 vocabulary words, build daily streaks, and see exactly which words need review.
+                Track your progress across 329 vocabulary words, build daily streaks, and see exactly which words need review.
               </p>
 
               {/* Primary CTAs */}
@@ -430,24 +569,38 @@ export default function HomePage({ showPage }) {
                 <button onClick={() => showPage('quiz')} className="px-2 py-0.5 text-sm text-foreground hover:text-primary transition-colors bg-transparent border-none cursor-pointer">Quiz</button>
               </div>
             </>
-          ) : (
-            /* ── Logged-in (or loading) ── */
+          ) : user ? (
+            /* ── Logged-in ── */
             <>
-              <p className="text-base text-muted-foreground mb-8 max-w-[420px] mx-auto md:mx-0 leading-relaxed">
-                Vocabulary cards, grammar patterns, reading passages, and games —
-                everything in one place for curious learners.
+              <p className="text-base text-muted-foreground mb-7 max-w-[380px] mx-auto md:mx-0 leading-relaxed">
+                Pick up where you left off. Your stats are waiting.
               </p>
               <div className="flex gap-3 flex-wrap justify-center md:justify-start">
-                <Button size="lg" onClick={() => showPage('cards')}>Start Studying →</Button>
-                <Button size="lg" variant="outline" onClick={() => showPage('grammar')}>Browse Grammar</Button>
+                <button
+                  onClick={() => showPage('cards')}
+                  className="flex items-center justify-center px-6 py-3.5 rounded-xl bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 text-sm font-semibold hover:opacity-90 transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5 cursor-pointer border-none"
+                >
+                  Continue Studying →
+                </button>
+                <button
+                  onClick={() => showPage('quiz')}
+                  className="flex items-center justify-center px-6 py-3.5 rounded-xl border border-border bg-transparent text-foreground text-sm font-medium hover:bg-muted transition-colors cursor-pointer"
+                >
+                  Quick Quiz
+                </button>
               </div>
             </>
-          )}
+          ) : null /* auth still loading — avoid flash */}
         </div>
 
-        <div className="hidden md:flex justify-center">
-          <HeroIllustration />
-        </div>
+        {/* Right column: illustration (logged-out/loading) or stats card (logged-in) */}
+        {user ? (
+          <DashboardSummaryCard showPage={showPage} />
+        ) : (
+          <div className="hidden md:flex justify-center">
+            <HeroIllustration />
+          </div>
+        )}
       </div>
 
       {/* ── Ornament divider ── */}
