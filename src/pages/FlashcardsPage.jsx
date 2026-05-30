@@ -152,7 +152,7 @@ export default function FlashcardsPage({ starred, toggleStar, showRomaji = true,
       </div>
 
       {/* Font toggle */}
-      <div className="flex items-center gap-2 mb-3">
+      <div className="flex flex-wrap items-center gap-2 mb-3">
         <span className="text-xs text-muted-foreground shrink-0">Thai font:</span>
         {FONT_OPTIONS.map(f => (
           <button
