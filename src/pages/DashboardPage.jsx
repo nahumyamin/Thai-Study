@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { supabase } from '../lib/supabase.js';
 import {
   getDailyChallengeHistory,
@@ -77,7 +78,7 @@ function ReminderModal({ reminders, saving, onSave, onClose, userEmail }) {
     return () => document.removeEventListener('keydown', onKey);
   }, [onClose]);
 
-  return (
+  return createPortal(
     <div
       ref={overlayRef}
       className="fixed inset-0 z-[200] flex items-center justify-center bg-black/40 backdrop-blur-sm px-4"
@@ -160,7 +161,8 @@ function ReminderModal({ reminders, saving, onSave, onClose, userEmail }) {
           Done
         </button>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
 
