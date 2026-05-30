@@ -764,7 +764,7 @@ function RecentSessions({ sessions }) {
 // Main dashboard
 // ─────────────────────────────────────────────────────────────────
 export default function DashboardPage({ showPage }) {
-  const { user, signOut } = useAuth();
+  const { user } = useAuth();
   const [profile, setProfile] = useState(null);
   const [progress, setProgress] = useState([]);
   const [sessions, setSessions] = useState([]);
@@ -939,13 +939,6 @@ export default function DashboardPage({ showPage }) {
               <span>{reminders.email_enabled ? 'On' : 'Off'}</span>
             </button>
           )}
-
-          <button
-            onClick={async () => { await signOut(); showPage('home'); }}
-            className="text-xs text-muted-foreground hover:text-foreground transition-colors border border-border rounded-lg px-3 py-1.5 cursor-pointer bg-transparent"
-          >
-            Sign out
-          </button>
         </div>
       </div>
 

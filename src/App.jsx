@@ -97,7 +97,7 @@ function StudyNudgeBanner({ onCta }) {
 }
 
 function App() {
-  const { user } = useAuth();
+  const { user, signOut } = useAuth();
   const [activePage, setActivePage] = useState(pageFromHash);
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [authModalMode, setAuthModalMode] = useState('signup');
@@ -205,6 +205,7 @@ function App() {
         showRomaji={showRomaji}
         onToggleRomaji={() => setShowRomaji(r => !r)}
         user={user}
+        onSignOut={async () => { await signOut(); showPage('home'); }}
       />
       <SearchOverlay open={searchOpen} onClose={() => setSearchOpen(false)} showPage={showPage} />
       <AuthModal open={authModalOpen} onClose={() => setAuthModalOpen(false)} initialMode={authModalMode} />

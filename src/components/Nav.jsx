@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { cn } from '@/lib/utils';
 import { supabase } from '../lib/supabase.js';
 import { getLevel } from '../lib/gamification.js';
@@ -71,9 +71,11 @@ function MoonIcon() {
   );
 }
 
-export default function Nav({ activePage, activeGroup, showPage, onSearch, theme, onToggleTheme, showRomaji, onToggleRomaji, user }) {
+export default function Nav({ activePage, activeGroup, showPage, onSearch, theme, onToggleTheme, showRomaji, onToggleRomaji, user, onSignOut }) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
   const [navProfile, setNavProfile] = useState(null);
+  const profileRef = useRef(null);
 
   const handleNav = (page) => {
     showPage(page);
@@ -95,6 +97,16 @@ export default function Nav({ activePage, activeGroup, showPage, onSearch, theme
     document.body.style.overflow = menuOpen ? 'hidden' : '';
     return () => { document.body.style.overflow = ''; };
   }, [menuOpen]);
+
+  // Close desktop profile dropdown on outside click
+  useEffect(() => {
+    if (!profileOpen) return;
+    function handler(e) {
+      if (profileRef.current && !profileRef.current.contains(e.target)) setProfileOpen(false);
+    }
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, [profileOpen]);
 
   const groupTabClass = (group) => cn(
     'text-xs font-semibold uppercase tracking-widest px-4 py-3 border-b-2 transition-all whitespace-nowrap bg-transparent border-x-0 border-t-0 cursor-pointer',
@@ -176,22 +188,41 @@ export default function Nav({ activePage, activeGroup, showPage, onSearch, theme
             {theme === 'dark' ? <SunIcon /> : <MoonIcon />}
           </button>
           {/* Profile / sign-in — far right on desktop, hidden on mobile */}
-          <div className="hidden sm:flex items-center ml-1">
+          <div className="hidden sm:flex items-center ml-1" ref={profileRef}>
             {user ? (
-              <button
-                onClick={() => handleNav('dashboard')}
-                className="p-1 rounded-full overflow-hidden border-2 border-transparent hover:border-amber-400 transition-colors cursor-pointer"
-                aria-label="Dashboard"
-                title="Dashboard"
-              >
-                {user.user_metadata?.avatar_url ? (
-                  <img src={user.user_metadata.avatar_url} alt="avatar" className="w-6 h-6 rounded-full" />
-                ) : (
-                  <div className="w-6 h-6 rounded-full bg-amber-400 flex items-center justify-center text-xs font-bold text-zinc-900">
-                    {(user.email?.[0] ?? '?').toUpperCase()}
+              <div className="relative">
+                <button
+                  onClick={() => setProfileOpen(o => !o)}
+                  className="p-1 rounded-full overflow-hidden border-2 border-transparent hover:border-amber-400 transition-colors cursor-pointer"
+                  aria-label="Account menu"
+                >
+                  {user.user_metadata?.avatar_url ? (
+                    <img src={user.user_metadata.avatar_url} alt="avatar" className="w-6 h-6 rounded-full" />
+                  ) : (
+                    <div className="w-6 h-6 rounded-full bg-amber-400 flex items-center justify-center text-xs font-bold text-zinc-900">
+                      {(user.email?.[0] ?? '?').toUpperCase()}
+                    </div>
+                  )}
+                </button>
+
+                {profileOpen && (
+                  <div className="absolute right-0 top-full mt-2 w-44 rounded-xl border border-white/10 bg-zinc-800 shadow-xl overflow-hidden z-50">
+                    <button
+                      onClick={() => { setProfileOpen(false); handleNav('dashboard'); }}
+                      className="w-full text-left px-4 py-2.5 text-sm text-white/80 hover:bg-white/10 hover:text-white transition-colors cursor-pointer bg-transparent border-none"
+                    >
+                      Dashboard
+                    </button>
+                    <div className="h-px bg-white/10" />
+                    <button
+                      onClick={() => { setProfileOpen(false); onSignOut(); }}
+                      className="w-full text-left px-4 py-2.5 text-sm text-white/50 hover:bg-white/10 hover:text-white transition-colors cursor-pointer bg-transparent border-none"
+                    >
+                      Sign out
+                    </button>
                   </div>
                 )}
-              </button>
+              </div>
             ) : (
               <button
                 onClick={() => handleNav('login')}
@@ -375,6 +406,18 @@ export default function Nav({ activePage, activeGroup, showPage, onSearch, theme
                       {p.label}
                     </button>
                   ))}
+
+                  {user && (
+                    <>
+                      <div className="h-px bg-white/[0.08] mx-5 my-1.5" />
+                      <button
+                        onClick={() => { setMenuOpen(false); onSignOut(); }}
+                        className="w-full text-left px-5 py-3.5 text-sm text-white/40 hover:text-white/70 transition-colors cursor-pointer bg-transparent border-none"
+                      >
+                        Sign out
+                      </button>
+                    </>
+                  )}
 
                 </div>
               </div>
