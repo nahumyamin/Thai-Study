@@ -157,6 +157,84 @@ function DailyGoalCard({ profile, sessions, onGoalChange }) {
 }
 
 // ─────────────────────────────────────────────────────────────────
+// Nickname card
+// ─────────────────────────────────────────────────────────────────
+const FRUIT_NAMES = [
+  'Mango','Durian','Rambutan','Longan','Lychee','Papaya','Tamarind','Pomelo',
+  'Jackfruit','Dragonfruit','Coconut','Pandan','Mangosteen','Starfruit','Guava',
+];
+
+function NicknameCard({ profile, onSave }) {
+  const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState('');
+  const [saving, setSaving] = useState(false);
+
+  const current = profile?.nickname || '—';
+
+  function startEdit() {
+    setDraft(profile?.nickname || '');
+    setEditing(true);
+  }
+
+  async function handleSave() {
+    setSaving(true);
+    await onSave(draft);
+    setSaving(false);
+    setEditing(false);
+  }
+
+  return (
+    <div className="rounded-xl border border-border bg-card p-4 mb-6 flex items-center gap-4">
+      {/* Fruit icon */}
+      <div className="text-3xl shrink-0">🍉</div>
+      <div className="flex-1 min-w-0">
+        <p className="text-[0.65rem] font-bold tracking-widest uppercase text-muted-foreground mb-0.5">
+          Your leaderboard nickname
+        </p>
+        {editing ? (
+          <div className="flex items-center gap-2 mt-1">
+            <input
+              autoFocus
+              value={draft}
+              onChange={e => setDraft(e.target.value)}
+              maxLength={32}
+              placeholder="Enter a nickname…"
+              className="flex-1 text-sm bg-background border border-border rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-primary/50 min-w-0"
+            />
+            <button
+              onClick={handleSave}
+              disabled={saving}
+              className="text-xs px-3 py-1.5 rounded-lg bg-primary text-primary-foreground font-semibold hover:opacity-90 disabled:opacity-50 transition-opacity shrink-0"
+            >
+              {saving ? '…' : 'Save'}
+            </button>
+            <button
+              onClick={() => setEditing(false)}
+              className="text-xs px-2 py-1.5 rounded-lg border border-border text-muted-foreground hover:text-foreground transition-colors shrink-0"
+            >
+              ✕
+            </button>
+          </div>
+        ) : (
+          <div className="flex items-center gap-2">
+            <span className="font-semibold text-foreground truncate">{current}</span>
+            <button
+              onClick={startEdit}
+              className="text-[0.65rem] text-muted-foreground hover:text-primary transition-colors border border-border/60 rounded px-1.5 py-0.5 shrink-0"
+            >
+              ✏️ edit
+            </button>
+          </div>
+        )}
+        <p className="text-[0.6rem] text-muted-foreground mt-0.5">
+          Shown publicly on the leaderboard · max 32 chars
+        </p>
+      </div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────
 // Spaced repetition card
 // ─────────────────────────────────────────────────────────────────
 function SpacedRepCard({ progress, showPage }) {
@@ -647,6 +725,13 @@ export default function DashboardPage({ showPage }) {
     await supabase.from('profiles').update({ daily_goal: clamped }).eq('id', user.id);
   }, [user]);
 
+  const handleNicknameChange = useCallback(async (newNick) => {
+    if (!user) return;
+    const trimmed = newNick.trim().slice(0, 32);
+    setProfile(prev => prev ? { ...prev, nickname: trimmed } : prev);
+    await supabase.from('profiles').update({ nickname: trimmed || null }).eq('id', user.id);
+  }, [user]);
+
   if (loading) {
     return (
       <div className="max-w-3xl mx-auto px-4 py-16 text-center text-muted-foreground text-sm">
@@ -694,6 +779,9 @@ export default function DashboardPage({ showPage }) {
 
       {/* Level banner */}
       <LevelBanner profile={profile} />
+
+      {/* Nickname card */}
+      <NicknameCard profile={profile} onSave={handleNicknameChange} />
 
       {/* Stats row */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">

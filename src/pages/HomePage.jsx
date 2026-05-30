@@ -6,6 +6,7 @@ import { useAuth } from '../context/AuthContext.jsx';
 import { submitDailyChallenge, getDailyChallenge } from '../lib/progress.js';
 import { supabase } from '../lib/supabase.js';
 import { getLevel } from '../lib/gamification.js';
+import Leaderboard from '../components/Leaderboard.jsx';
 
 const DAILY_PROMPTS = [
   { topic: 'At a Thai temple',        prompt: 'You\'re visiting a famous temple with a friend. Describe what you see or do — using both words in one Thai sentence.' },
@@ -613,6 +614,11 @@ export default function HomePage({ showPage }) {
       {/* ── Word of the Day ── */}
       <div className="mb-10">
         <WordOfTheDay showPage={showPage} />
+      </div>
+
+      {/* ── Leaderboard ── */}
+      <div className="mb-10">
+        <Leaderboard currentUserId={user?.id} />
       </div>
 
       {/* ── Features ── */}
