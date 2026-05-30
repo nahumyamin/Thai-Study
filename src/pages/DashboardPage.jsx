@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import { supabase } from '../lib/supabase.js';
 import {
   getDailyChallengeHistory,
@@ -46,6 +46,121 @@ function ChevronIcon({ open }) {
     >
       <polyline points="6 9 12 15 18 9"/>
     </svg>
+  );
+}
+
+function BellIcon({ filled }) {
+  return filled ? (
+    <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+      <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+    </svg>
+  ) : (
+    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+      <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+    </svg>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────
+// Bell / Reminder modal
+// ─────────────────────────────────────────────────────────────────
+const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+function ReminderModal({ reminders, saving, onSave, onClose, userEmail }) {
+  const overlayRef = useRef(null);
+
+  useEffect(() => {
+    function onKey(e) { if (e.key === 'Escape') onClose(); }
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [onClose]);
+
+  return (
+    <div
+      ref={overlayRef}
+      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/40 backdrop-blur-sm px-4 pb-6 sm:pb-0"
+      onClick={e => { if (e.target === overlayRef.current) onClose(); }}
+    >
+      <div className="w-full max-w-sm rounded-2xl border border-border bg-card shadow-xl p-6">
+        <div className="flex items-center justify-between mb-5">
+          <div>
+            <h2 className="text-base font-semibold text-foreground">Email Reminders</h2>
+            <p className="text-xs text-muted-foreground mt-0.5">Sent to {userEmail}</p>
+          </div>
+          <button
+            onClick={() => onSave({ ...reminders, email_enabled: !reminders.email_enabled })}
+            className={cn(
+              'relative inline-flex h-5 w-9 items-center rounded-full transition-colors cursor-pointer border-none shrink-0',
+              reminders.email_enabled ? 'bg-amber-400' : 'bg-muted-foreground/30'
+            )}
+            aria-label="Toggle reminders"
+          >
+            <span className={cn(
+              'inline-block h-4 w-4 rounded-full bg-white shadow transition-transform',
+              reminders.email_enabled ? 'translate-x-4' : 'translate-x-0.5'
+            )} />
+          </button>
+        </div>
+
+        {reminders.email_enabled && (
+          <div className="space-y-4">
+            <div>
+              <label className="text-xs text-muted-foreground mb-2 block">Remind me at</label>
+              <select
+                value={reminders.reminder_hour}
+                onChange={e => onSave({ ...reminders, reminder_hour: Number(e.target.value) })}
+                className="text-sm border border-border rounded-lg px-3 py-1.5 bg-background text-foreground cursor-pointer w-full"
+              >
+                {Array.from({ length: 24 }, (_, h) => (
+                  <option key={h} value={h}>
+                    {h === 0 ? '12:00 AM' : h < 12 ? `${h}:00 AM` : h === 12 ? '12:00 PM' : `${h - 12}:00 PM`}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="text-xs text-muted-foreground mb-2 block">On these days</label>
+              <div className="flex gap-1.5 flex-wrap">
+                {DAYS.map((day, i) => {
+                  const active = reminders.reminder_days.includes(i);
+                  return (
+                    <button
+                      key={day}
+                      onClick={() => {
+                        const days = active
+                          ? reminders.reminder_days.filter(d => d !== i)
+                          : [...reminders.reminder_days, i].sort();
+                        onSave({ ...reminders, reminder_days: days });
+                      }}
+                      className={cn(
+                        'px-2.5 py-1 rounded-md text-xs font-medium transition-colors cursor-pointer border',
+                        active
+                          ? 'bg-amber-400 text-zinc-900 border-amber-400'
+                          : 'bg-transparent text-muted-foreground border-border hover:border-amber-400/50'
+                      )}
+                    >
+                      {day}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {saving && <p className="text-xs text-muted-foreground">Saving…</p>}
+          </div>
+        )}
+
+        <button
+          onClick={onClose}
+          className="mt-5 w-full text-sm font-medium text-muted-foreground hover:text-foreground transition-colors cursor-pointer bg-transparent border border-border rounded-xl py-2"
+        >
+          Done
+        </button>
+      </div>
+    </div>
   );
 }
 
@@ -157,84 +272,6 @@ function DailyGoalCard({ profile, sessions, onGoalChange }) {
 }
 
 // ─────────────────────────────────────────────────────────────────
-// Nickname card
-// ─────────────────────────────────────────────────────────────────
-const FRUIT_NAMES = [
-  'Mango','Durian','Rambutan','Longan','Lychee','Papaya','Tamarind','Pomelo',
-  'Jackfruit','Dragonfruit','Coconut','Pandan','Mangosteen','Starfruit','Guava',
-];
-
-function NicknameCard({ profile, onSave }) {
-  const [editing, setEditing] = useState(false);
-  const [draft, setDraft] = useState('');
-  const [saving, setSaving] = useState(false);
-
-  const current = profile?.nickname || '—';
-
-  function startEdit() {
-    setDraft(profile?.nickname || '');
-    setEditing(true);
-  }
-
-  async function handleSave() {
-    setSaving(true);
-    await onSave(draft);
-    setSaving(false);
-    setEditing(false);
-  }
-
-  return (
-    <div className="rounded-xl border border-border bg-card p-4 mb-6 flex items-center gap-4">
-      {/* Fruit icon */}
-      <div className="text-3xl shrink-0">🍉</div>
-      <div className="flex-1 min-w-0">
-        <p className="text-[0.65rem] font-bold tracking-widest uppercase text-muted-foreground mb-0.5">
-          Your leaderboard nickname
-        </p>
-        {editing ? (
-          <div className="flex items-center gap-2 mt-1">
-            <input
-              autoFocus
-              value={draft}
-              onChange={e => setDraft(e.target.value)}
-              maxLength={32}
-              placeholder="Enter a nickname…"
-              className="flex-1 text-sm bg-background border border-border rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-primary/50 min-w-0"
-            />
-            <button
-              onClick={handleSave}
-              disabled={saving}
-              className="text-xs px-3 py-1.5 rounded-lg bg-primary text-primary-foreground font-semibold hover:opacity-90 disabled:opacity-50 transition-opacity shrink-0"
-            >
-              {saving ? '…' : 'Save'}
-            </button>
-            <button
-              onClick={() => setEditing(false)}
-              className="text-xs px-2 py-1.5 rounded-lg border border-border text-muted-foreground hover:text-foreground transition-colors shrink-0"
-            >
-              ✕
-            </button>
-          </div>
-        ) : (
-          <div className="flex items-center gap-2">
-            <span className="font-semibold text-foreground truncate">{current}</span>
-            <button
-              onClick={startEdit}
-              className="text-[0.65rem] text-muted-foreground hover:text-primary transition-colors border border-border/60 rounded px-1.5 py-0.5 shrink-0"
-            >
-              ✏️ edit
-            </button>
-          </div>
-        )}
-        <p className="text-[0.6rem] text-muted-foreground mt-0.5">
-          Shown publicly on the leaderboard · max 32 chars
-        </p>
-      </div>
-    </div>
-  );
-}
-
-// ─────────────────────────────────────────────────────────────────
 // Spaced repetition card
 // ─────────────────────────────────────────────────────────────────
 function SpacedRepCard({ progress, showPage }) {
@@ -282,10 +319,9 @@ function StudyHeatmap({ sessions }) {
   today.setUTCHours(0, 0, 0, 0);
   const todayStr = today.toISOString().slice(0, 10);
 
-  // Align start to the nearest past Sunday (up to 90 days back)
   const start = new Date(today);
   start.setDate(today.getDate() - 89);
-  start.setDate(start.getDate() - start.getDay()); // back to Sunday
+  start.setDate(start.getDate() - start.getDay());
 
   const weeks = [];
   const d = new Date(start);
@@ -336,7 +372,6 @@ function StudyHeatmap({ sessions }) {
         ))}
       </div>
 
-      {/* Legend */}
       <div className="flex items-center gap-1.5 mt-2.5">
         <span className="text-[0.6rem] text-muted-foreground mr-0.5">Less</span>
         {['bg-muted', 'bg-amber-200 dark:bg-amber-900/80', 'bg-amber-400 dark:bg-amber-700', 'bg-amber-500', 'bg-amber-600 dark:bg-amber-400'].map((cls, i) => (
@@ -540,7 +575,6 @@ function DailyChallengesPanel({ challenges, setChallenges, user }) {
             </p>
           </div>
 
-          {/* Last 7 days dots */}
           <div className="hidden sm:flex items-center gap-1" aria-label="Last 7 days">
             {last7.map(day => {
               const done = submittedDays.has(day);
@@ -639,7 +673,7 @@ function DailyChallengesPanel({ challenges, setChallenges, user }) {
 }
 
 // ─────────────────────────────────────────────────────────────────
-// Mastery breakdown bar chart
+// Mastery breakdown bar chart (collapsible)
 // ─────────────────────────────────────────────────────────────────
 const MASTERY_LABELS = ['Unseen', 'Seen', 'Learning', 'Familiar', 'Proficient', 'Mastered'];
 const MASTERY_COLORS = [
@@ -651,7 +685,80 @@ const MASTERY_COLORS = [
   'bg-emerald-500',
 ];
 
-const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+function MasteryBreakdown({ masteryBuckets, totalWords }) {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <div className="rounded-xl border border-border bg-card mb-6 overflow-hidden">
+      <button
+        onClick={() => setOpen(o => !o)}
+        className="w-full flex items-center justify-between px-5 py-4 text-left hover:bg-muted/40 transition-colors cursor-pointer bg-transparent border-none"
+      >
+        <span className="text-sm font-semibold text-foreground">Mastery Breakdown</span>
+        <ChevronIcon open={open} />
+      </button>
+      {open && (
+        <div className="border-t border-border px-5 py-4 space-y-2">
+          {masteryBuckets.map(({ level, count }) => (
+            <div key={level} className="flex items-center gap-3">
+              <span className="text-xs text-muted-foreground w-20 shrink-0">{MASTERY_LABELS[level]}</span>
+              <div className="flex-1 bg-muted rounded-full h-2 overflow-hidden">
+                <div
+                  className={cn('h-2 rounded-full transition-all', MASTERY_COLORS[level])}
+                  style={{ width: totalWords > 0 ? `${(count / totalWords) * 100}%` : '0%' }}
+                />
+              </div>
+              <span className="text-xs text-muted-foreground w-6 text-right">{count}</span>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────
+// Recent sessions (collapsible)
+// ─────────────────────────────────────────────────────────────────
+function RecentSessions({ sessions }) {
+  const [open, setOpen] = useState(false);
+  const recent = sessions.slice(0, 10);
+
+  return (
+    <div className="rounded-xl border border-border bg-card mb-6 overflow-hidden">
+      <button
+        onClick={() => setOpen(o => !o)}
+        className="w-full flex items-center justify-between px-5 py-4 text-left hover:bg-muted/40 transition-colors cursor-pointer bg-transparent border-none"
+      >
+        <div>
+          <span className="text-sm font-semibold text-foreground">Recent Sessions</span>
+          <p className="text-xs text-muted-foreground mt-0.5">{sessions.length} total</p>
+        </div>
+        <ChevronIcon open={open} />
+      </button>
+      {open && (
+        <div className="border-t border-border px-5 py-4 space-y-2">
+          {recent.map(s => (
+            <div key={s.id} className="flex items-center justify-between text-sm">
+              <div className="flex items-center gap-2">
+                <span className="capitalize text-foreground">{s.session_type}</span>
+                <span className="text-muted-foreground">· {s.words_studied} words</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <span className="text-muted-foreground">
+                  {s.words_studied > 0 ? Math.round((s.correct_count / s.words_studied) * 100) : 0}%
+                </span>
+                <span className="text-xs text-muted-foreground">
+                  {new Date(s.created_at).toLocaleDateString()}
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
 
 // ─────────────────────────────────────────────────────────────────
 // Main dashboard
@@ -663,9 +770,15 @@ export default function DashboardPage({ showPage }) {
   const [sessions, setSessions] = useState([]);
   const [reminders, setReminders] = useState(null);
   const [reminderSaving, setReminderSaving] = useState(false);
+  const [reminderOpen, setReminderOpen] = useState(false);
   const [challenges, setChallenges] = useState([]);
   const [dbAchievements, setDbAchievements] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  // Inline nickname editing
+  const [editingNick, setEditingNick] = useState(false);
+  const [nickDraft, setNickDraft] = useState('');
+  const [nickSaving, setNickSaving] = useState(false);
 
   useEffect(() => {
     if (!user) return;
@@ -684,7 +797,6 @@ export default function DashboardPage({ showPage }) {
       const challengesData = c;
       const achievementsData = a.data ?? [];
 
-      // Lazy-unlock newly earned achievements
       const earned = computeEarnedAchievements({
         progress: progressData,
         sessions: sessionsData,
@@ -725,12 +837,15 @@ export default function DashboardPage({ showPage }) {
     await supabase.from('profiles').update({ daily_goal: clamped }).eq('id', user.id);
   }, [user]);
 
-  const handleNicknameChange = useCallback(async (newNick) => {
+  const handleNicknameSave = useCallback(async () => {
     if (!user) return;
-    const trimmed = newNick.trim().slice(0, 32);
+    setNickSaving(true);
+    const trimmed = nickDraft.trim().slice(0, 32);
     setProfile(prev => prev ? { ...prev, nickname: trimmed } : prev);
     await supabase.from('profiles').update({ nickname: trimmed || null }).eq('id', user.id);
-  }, [user]);
+    setNickSaving(false);
+    setEditingNick(false);
+  }, [user, nickDraft]);
 
   if (loading) {
     return (
@@ -757,31 +872,96 @@ export default function DashboardPage({ showPage }) {
     .sort((a, b) => (a.times_correct / a.times_seen) - (b.times_correct / b.times_seen))
     .slice(0, 8);
 
-  const recentSessions = sessions.slice(0, 10);
+  const firstName = profile?.display_name?.split(' ')[0];
+  const nickname = profile?.nickname;
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-8">
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
-        <div>
+      <div className="flex items-start justify-between mb-6 gap-3">
+        <div className="min-w-0">
           <h1 className="text-2xl font-bold text-foreground">
-            {profile?.display_name ? `สวัสดี, ${profile.display_name.split(' ')[0]}` : 'Dashboard'}
+            {firstName ? `สวัสดี, ${firstName}` : 'Dashboard'}
           </h1>
-          <p className="text-sm text-muted-foreground mt-0.5">{user.email}</p>
+
+          {/* Inline nickname */}
+          {editingNick ? (
+            <div className="flex items-center gap-2 mt-1.5">
+              <input
+                autoFocus
+                value={nickDraft}
+                onChange={e => setNickDraft(e.target.value)}
+                maxLength={32}
+                placeholder="Leaderboard nickname…"
+                className="text-xs bg-background border border-border rounded-lg px-2.5 py-1 focus:outline-none focus:ring-1 focus:ring-primary/40 w-40"
+              />
+              <button
+                onClick={handleNicknameSave}
+                disabled={nickSaving}
+                className="text-xs px-2.5 py-1 rounded-lg bg-primary text-primary-foreground font-semibold hover:opacity-90 disabled:opacity-50 transition-opacity border-none cursor-pointer"
+              >
+                {nickSaving ? '…' : 'Save'}
+              </button>
+              <button
+                onClick={() => setEditingNick(false)}
+                className="text-xs text-muted-foreground hover:text-foreground transition-colors border-none bg-transparent cursor-pointer"
+              >
+                ✕
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={() => { setNickDraft(nickname || ''); setEditingNick(true); }}
+              className="flex items-center gap-1.5 mt-1 text-xs text-muted-foreground hover:text-foreground transition-colors bg-transparent border-none cursor-pointer p-0 group"
+            >
+              <span className="text-[0.65rem]">🍉</span>
+              <span>{nickname || 'Set leaderboard nickname'}</span>
+              <span className="opacity-0 group-hover:opacity-60 transition-opacity"><PencilIcon /></span>
+            </button>
+          )}
         </div>
-        <button
-          onClick={async () => { await signOut(); showPage('home'); }}
-          className="text-xs text-muted-foreground hover:text-foreground transition-colors border border-border rounded-lg px-3 py-1.5 cursor-pointer bg-transparent"
-        >
-          Sign out
-        </button>
+
+        {/* Right-side actions */}
+        <div className="flex items-center gap-2 shrink-0">
+          {/* Bell button */}
+          {reminders && (
+            <button
+              onClick={() => setReminderOpen(true)}
+              className={cn(
+                'flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border transition-colors cursor-pointer text-xs font-medium',
+                reminders.email_enabled
+                  ? 'border-amber-400/50 bg-amber-400/10 text-amber-600 hover:bg-amber-400/20'
+                  : 'border-border bg-transparent text-muted-foreground hover:text-foreground hover:bg-muted'
+              )}
+              aria-label="Email reminder settings"
+            >
+              <BellIcon filled={reminders.email_enabled} />
+              <span>{reminders.email_enabled ? 'On' : 'Off'}</span>
+            </button>
+          )}
+
+          <button
+            onClick={async () => { await signOut(); showPage('home'); }}
+            className="text-xs text-muted-foreground hover:text-foreground transition-colors border border-border rounded-lg px-3 py-1.5 cursor-pointer bg-transparent"
+          >
+            Sign out
+          </button>
+        </div>
       </div>
+
+      {/* Reminder modal */}
+      {reminderOpen && reminders && (
+        <ReminderModal
+          reminders={reminders}
+          saving={reminderSaving}
+          onSave={saveReminders}
+          onClose={() => setReminderOpen(false)}
+          userEmail={user.email}
+        />
+      )}
 
       {/* Level banner */}
       <LevelBanner profile={profile} />
-
-      {/* Nickname card */}
-      <NicknameCard profile={profile} onSave={handleNicknameChange} />
 
       {/* Stats row */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
@@ -807,7 +987,7 @@ export default function DashboardPage({ showPage }) {
         />
       </div>
 
-      {/* Goal + Spaced rep (2-col on desktop) */}
+      {/* Goal + Spaced rep */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
         <DailyGoalCard profile={profile} sessions={sessions} onGoalChange={handleGoalChange} />
         <SpacedRepCard progress={progress} showPage={showPage} />
@@ -829,24 +1009,8 @@ export default function DashboardPage({ showPage }) {
       {/* Achievement grid */}
       <AchievementGrid dbAchievements={dbAchievements} />
 
-      {/* Mastery breakdown */}
-      <div className="rounded-xl border border-border bg-card p-5 mb-6">
-        <h2 className="text-sm font-semibold text-foreground mb-4">Mastery Breakdown</h2>
-        <div className="space-y-2">
-          {masteryBuckets.map(({ level, count }) => (
-            <div key={level} className="flex items-center gap-3">
-              <span className="text-xs text-muted-foreground w-20 shrink-0">{MASTERY_LABELS[level]}</span>
-              <div className="flex-1 bg-muted rounded-full h-2 overflow-hidden">
-                <div
-                  className={cn('h-2 rounded-full transition-all', MASTERY_COLORS[level])}
-                  style={{ width: totalWords > 0 ? `${(count / totalWords) * 100}%` : '0%' }}
-                />
-              </div>
-              <span className="text-xs text-muted-foreground w-6 text-right">{count}</span>
-            </div>
-          ))}
-        </div>
-      </div>
+      {/* Mastery breakdown (collapsed) */}
+      <MasteryBreakdown masteryBuckets={masteryBuckets} totalWords={totalWords} />
 
       {/* Words to practice */}
       {weakWords.length > 0 && (
@@ -871,29 +1035,9 @@ export default function DashboardPage({ showPage }) {
         </div>
       )}
 
-      {/* Recent sessions */}
-      {recentSessions.length > 0 && (
-        <div className="rounded-xl border border-border bg-card p-5 mb-6">
-          <h2 className="text-sm font-semibold text-foreground mb-4">Recent Sessions</h2>
-          <div className="space-y-2">
-            {recentSessions.map(s => (
-              <div key={s.id} className="flex items-center justify-between text-sm">
-                <div className="flex items-center gap-2">
-                  <span className="capitalize text-foreground">{s.session_type}</span>
-                  <span className="text-muted-foreground">· {s.words_studied} words</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <span className="text-muted-foreground">
-                    {s.words_studied > 0 ? Math.round((s.correct_count / s.words_studied) * 100) : 0}%
-                  </span>
-                  <span className="text-xs text-muted-foreground">
-                    {new Date(s.created_at).toLocaleDateString()}
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+      {/* Recent sessions (collapsed) */}
+      {sessions.length > 0 && (
+        <RecentSessions sessions={sessions} />
       )}
 
       {sessions.length === 0 && progress.length === 0 && (
@@ -906,80 +1050,6 @@ export default function DashboardPage({ showPage }) {
           >
             Start with Flashcards →
           </button>
-        </div>
-      )}
-
-      {/* Email reminders */}
-      {reminders && (
-        <div className="rounded-xl border border-border bg-card p-5">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-sm font-semibold text-foreground">Email Reminders</h2>
-            <button
-              onClick={() => saveReminders({ ...reminders, email_enabled: !reminders.email_enabled })}
-              className={cn(
-                'relative inline-flex h-5 w-9 items-center rounded-full transition-colors cursor-pointer border-none',
-                reminders.email_enabled ? 'bg-amber-400' : 'bg-muted-foreground/30'
-              )}
-              aria-label="Toggle reminders"
-            >
-              <span className={cn(
-                'inline-block h-4 w-4 rounded-full bg-white shadow transition-transform',
-                reminders.email_enabled ? 'translate-x-4' : 'translate-x-0.5'
-              )} />
-            </button>
-          </div>
-
-          {reminders.email_enabled && (
-            <div className="space-y-4">
-              <div>
-                <label className="text-xs text-muted-foreground mb-2 block">Remind me at</label>
-                <select
-                  value={reminders.reminder_hour}
-                  onChange={e => saveReminders({ ...reminders, reminder_hour: Number(e.target.value) })}
-                  className="text-sm border border-border rounded-lg px-3 py-1.5 bg-background text-foreground cursor-pointer"
-                >
-                  {Array.from({ length: 24 }, (_, h) => (
-                    <option key={h} value={h}>
-                      {h === 0 ? '12:00 AM' : h < 12 ? `${h}:00 AM` : h === 12 ? '12:00 PM' : `${h - 12}:00 PM`}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div>
-                <label className="text-xs text-muted-foreground mb-2 block">On these days</label>
-                <div className="flex gap-1.5 flex-wrap">
-                  {DAYS.map((day, i) => {
-                    const active = reminders.reminder_days.includes(i);
-                    return (
-                      <button
-                        key={day}
-                        onClick={() => {
-                          const days = active
-                            ? reminders.reminder_days.filter(d => d !== i)
-                            : [...reminders.reminder_days, i].sort();
-                          saveReminders({ ...reminders, reminder_days: days });
-                        }}
-                        className={cn(
-                          'px-2.5 py-1 rounded-md text-xs font-medium transition-colors cursor-pointer border',
-                          active
-                            ? 'bg-amber-400 text-zinc-900 border-amber-400'
-                            : 'bg-transparent text-muted-foreground border-border hover:border-amber-400/50'
-                        )}
-                      >
-                        {day}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-
-              {reminderSaving && <p className="text-xs text-muted-foreground">Saving…</p>}
-              <p className="text-xs text-muted-foreground">
-                Reminders will be sent to <span className="text-foreground">{user.email}</span>
-              </p>
-            </div>
-          )}
         </div>
       )}
     </div>
