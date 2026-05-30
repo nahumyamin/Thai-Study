@@ -80,7 +80,7 @@ function ReminderModal({ reminders, saving, onSave, onClose, userEmail }) {
   return (
     <div
       ref={overlayRef}
-      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/40 backdrop-blur-sm px-4 pb-6 sm:pb-0"
+      className="fixed inset-0 z-[200] flex items-end sm:items-center justify-center bg-black/40 backdrop-blur-sm px-4 pb-6 sm:pb-0"
       onClick={e => { if (e.target === overlayRef.current) onClose(); }}
     >
       <div className="w-full max-w-sm rounded-2xl border border-border bg-card shadow-xl p-6">
