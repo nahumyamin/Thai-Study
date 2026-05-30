@@ -14,7 +14,9 @@ const STUDY_PAGES = [
   { id: 'cards',    label: 'Flashcards' },
   { id: 'quiz',     label: 'Quiz' },
   { id: 'rush',     label: 'Class Rush' },
-  { id: 'scramble', label: 'Scramble' },
+  { id: 'scramble',         label: 'Scramble' },
+  { id: 'classifier-drop', label: 'Classifier Drop' },
+  { id: 'mistake-hunter',  label: 'Mistake Hunter' },
   { id: 'passages', label: 'Passages' },
   { id: 'months',   label: 'Months' },
 ];

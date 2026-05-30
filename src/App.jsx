@@ -12,6 +12,8 @@ import ClassifiersPage from './pages/ClassifiersPage.jsx';
 import NumbersPage from './pages/NumbersPage.jsx';
 import ClassRushPage from './pages/ClassRushPage.jsx';
 import ScramblePage from './pages/ScramblePage.jsx';
+import ClassifierDropPage from './pages/ClassifierDropPage.jsx';
+import MistakeHunterPage from './pages/MistakeHunterPage.jsx';
 import ReadingPassagesPage from './pages/ReadingPassagesPage.jsx';
 import MonthsPage from './pages/MonthsPage.jsx';
 import ConsonantClustersPage from './pages/ConsonantClustersPage.jsx';
@@ -31,6 +33,8 @@ const GROUP_MAP = {
   quiz: 'study',
   rush: 'study',
   scramble: 'study',
+  'classifier-drop': 'study',
+  'mistake-hunter':  'study',
   passages: 'study',
   months: 'study',
   grammar: 'reference',
@@ -54,8 +58,10 @@ const PAGE_TITLES = {
   cards:        'Flashcards — Thai Study',
   quiz:         'Vocabulary Quiz — Thai Study',
   rush:         'Class Rush — Thai Study',
-  scramble:     'Scramble — Thai Study',
-  passages:     'Reading Passages — Thai Study',
+  scramble:          'Scramble — Thai Study',
+  'classifier-drop': 'Classifier Drop — Thai Study',
+  'mistake-hunter':  'Mistake Hunter — Thai Study',
+  passages:          'Reading Passages — Thai Study',
   months:       'Thai Months — Thai Study',
   grammar:      'Grammar Patterns — Thai Study',
   pronunciation:'Pronunciation & Tones — Thai Study',
@@ -240,7 +246,9 @@ function App() {
         {activePage === 'reading'       && <ReadingStrategiesPage showPage={showPage} />}
         {activePage === 'numbers'       && <NumbersPage />}
         {activePage === 'rush'          && <ClassRushPage showPage={showPage} />}
-        {activePage === 'scramble'      && <ScramblePage showPage={showPage} />}
+        {activePage === 'scramble'          && <ScramblePage showPage={showPage} />}
+        {activePage === 'classifier-drop'  && <ClassifierDropPage />}
+        {activePage === 'mistake-hunter'   && <MistakeHunterPage />}
         {activePage === 'passages'      && <ReadingPassagesPage showPage={showPage} />}
         {activePage === 'months'        && <MonthsPage />}
         {activePage === 'clusters'      && <ConsonantClustersPage />}

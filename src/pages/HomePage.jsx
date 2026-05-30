@@ -498,13 +498,37 @@ function IcoClusters() {
     </svg>
   );
 }
+function IcoClassifierDrop() {
+  return (
+    <svg width="42" height="42" viewBox="0 0 42 42" fill="none">
+      <rect x="6" y="7" width="30" height="18" rx="4" fill="#fef3c7" stroke="#fbbf24" strokeWidth="1.4"/>
+      <text x="21" y="21" textAnchor="middle" fontSize="13" fontFamily="'Sarabun',sans-serif" fill="#92400e">หนังสือ</text>
+      <path d="M21 28 L21 35" stroke="#fbbf24" strokeWidth="2" strokeLinecap="round"/>
+      <path d="M15 32 L21 38 L27 32" fill="none" stroke="#fbbf24" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+      <rect x="13" y="35" width="7" height="5" rx="1.5" fill="#bbf7d0" stroke="#4ade80" strokeWidth="1"/>
+      <rect x="22" y="35" width="7" height="5" rx="1.5" fill="#fecaca" stroke="#f87171" strokeWidth="1"/>
+    </svg>
+  );
+}
+function IcoMistakeHunter() {
+  return (
+    <svg width="42" height="42" viewBox="0 0 42 42" fill="none">
+      <circle cx="21" cy="21" r="15" fill="#fef2f2" stroke="#fca5a5" strokeWidth="1.4"/>
+      <path d="M13 14 L29 28M29 14 L13 28" stroke="#ef4444" strokeWidth="2.2" strokeLinecap="round"/>
+      <circle cx="21" cy="21" r="4" fill="white" stroke="#ef4444" strokeWidth="1.4"/>
+      <circle cx="21" cy="21" r="1.5" fill="#ef4444"/>
+    </svg>
+  );
+}
 
 const FEATURES = [
   { id: 'cards',         label: 'Flashcards',        desc: '313 vocabulary words across 18 topics',               Ico: IcoCards },
   { id: 'grammar',       label: 'Grammar',            desc: '20 core patterns explained with examples',            Ico: IcoGrammar },
   { id: 'passages',      label: 'Reading',            desc: 'Real Thai texts with comprehension questions',        Ico: IcoPassages },
   { id: 'rush',          label: 'Class Rush',         desc: 'Sort consonants by class against the clock',          Ico: IcoRush },
-  { id: 'scramble',      label: 'Scramble',           desc: 'Reorder scrambled Thai words into the right sentence', Ico: IcoScramble },
+  { id: 'scramble',          label: 'Scramble',           desc: 'Reorder scrambled sentences — grammar tips revealed on correct answers', Ico: IcoScramble },
+  { id: 'classifier-drop',  label: 'Classifier Drop',    desc: 'Pick the right noun classifier in a fast 30-question game',             Ico: IcoClassifierDrop },
+  { id: 'mistake-hunter',   label: 'Mistake Hunter',     desc: 'Find the grammar error hiding in each Thai sentence',                   Ico: IcoMistakeHunter },
   { id: 'quiz',          label: 'Vocabulary Quiz',    desc: 'Test recall with multiple choice questions',          Ico: IcoQuiz },
   { id: 'months',        label: 'Months',             desc: 'All 12 Thai months with a built-in quiz',             Ico: IcoMonths },
   { id: 'pronunciation', label: 'Pronunciation',      desc: 'Tones, vowels, and consonant classes',                Ico: IcoPronunciation },

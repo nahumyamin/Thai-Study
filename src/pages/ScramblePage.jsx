@@ -150,6 +150,30 @@ function SetupScreen({ count, setCount, mode, setMode, onStart, showPage }) {
   );
 }
 
+// ── Grammar tip card ─────────────────────────────────────────────
+function GrammarTip({ rule }) {
+  const [open, setOpen] = useState(true);
+  return (
+    <div className="rounded-xl border border-amber-400/40 bg-amber-500/10 p-4 mb-4">
+      <button
+        className="flex items-center gap-2 w-full text-left"
+        onClick={() => setOpen(o => !o)}
+      >
+        <span className="text-base">💡</span>
+        <span className="text-xs font-semibold uppercase tracking-widest text-amber-700 dark:text-amber-400 flex-1">
+          Grammar tip
+        </span>
+        <span className="text-amber-600 dark:text-amber-400 text-xs">{open ? '▲' : '▼'}</span>
+      </button>
+      {open && (
+        <p className="mt-2 text-sm text-amber-900 dark:text-amber-200 leading-relaxed">
+          {rule}
+        </p>
+      )}
+    </div>
+  );
+}
+
 // ── Play screen ───────────────────────────────────────────────────
 function PlayScreen({ sentences, mode, onFinish }) {
   const [current, setCurrent] = useState(0);
@@ -231,20 +255,23 @@ function PlayScreen({ sentences, mode, onFinish }) {
 
       {/* Feedback */}
       {checked && (
-        <div className={cn(
-          'rounded-xl border border-border bg-card p-4 mb-4 text-sm border-l-4',
-          checked.ok ? 'border-l-green-500' : 'border-l-red-500',
-        )}>
-          {checked.ok ? (
-            <span className="font-semibold text-green-600 dark:text-green-400">✓ Correct!</span>
-          ) : (
-            <>
-              <div className="font-semibold text-red-600 dark:text-red-400 mb-2">✗ Not quite</div>
-              <div className="text-muted-foreground text-xs mb-0.5">Correct answer:</div>
-              <div className="font-medium text-base text-foreground">{checked.correct}</div>
-            </>
-          )}
-        </div>
+        <>
+          <div className={cn(
+            'rounded-xl border border-border bg-card p-4 mb-4 text-sm border-l-4',
+            checked.ok ? 'border-l-green-500' : 'border-l-red-500',
+          )}>
+            {checked.ok ? (
+              <span className="font-semibold text-green-600 dark:text-green-400">✓ Correct!</span>
+            ) : (
+              <>
+                <div className="font-semibold text-red-600 dark:text-red-400 mb-2">✗ Not quite</div>
+                <div className="text-muted-foreground text-xs mb-0.5">Correct answer:</div>
+                <div className="font-medium text-base text-foreground">{checked.correct}</div>
+              </>
+            )}
+          </div>
+          {checked.ok && sentence.rule && <GrammarTip rule={sentence.rule} />}
+        </>
       )}
 
       {/* Action */}
