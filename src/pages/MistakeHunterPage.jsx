@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { MISTAKE_SENTENCES } from '../data/mistakeHunter.js';
+import ExitButton from '@/components/ExitButton';
 import { cn } from '@/lib/utils';
 
 const ROUND_SIZE = 20;
@@ -77,14 +78,60 @@ function RoundSummary({ questions, results, onPlayAgain }) {
   );
 }
 
+// ── Instructions screen ──────────────────────────────────────────
+function IntroScreen({ onStart, showPage }) {
+  return (
+    <div className="max-w-xl mx-auto px-4 py-8">
+      <h1 className="text-3xl font-serif font-normal mb-1">
+        Mistake <em className="text-primary not-italic font-medium">Hunter</em>
+      </h1>
+      <div className="h-px bg-border my-4" />
+      <p className="text-sm text-muted-foreground leading-relaxed mb-2">
+        Each sentence contains exactly one grammar error — a wrong classifier, misplaced negation,
+        bad adjective order, and so on. Tap the word you think is wrong, then read why. Each round
+        has up to {ROUND_SIZE} sentences across several error types.
+      </p>
+      {showPage && (
+        <p className="text-xs text-muted-foreground mb-6">
+          Want a refresher first?{' '}
+          <button
+            className="underline underline-offset-2 hover:text-foreground transition-colors"
+            onClick={() => showPage('grammar')}
+          >
+            Browse the Grammar guide
+          </button>
+          .
+        </p>
+      )}
+      <button
+        onClick={onStart}
+        className="px-8 py-3 rounded-xl bg-primary text-primary-foreground font-medium hover:opacity-90 transition-opacity"
+      >
+        Start →
+      </button>
+    </div>
+  );
+}
+
 // ── Main game ────────────────────────────────────────────────────
-export default function MistakeHunterPage() {
-  const [questions, setQuestions] = useState(() => buildRound());
+export default function MistakeHunterPage({ showPage }) {
+  const [questions, setQuestions] = useState([]);
   const [current, setCurrent]     = useState(0);
   const [score, setScore]         = useState(0);
   const [tapped, setTapped]       = useState(null); // index tapped, or null
   const [results, setResults]     = useState([]);
-  const [phase, setPhase]         = useState('playing'); // 'playing' | 'done'
+  const [phase, setPhase]         = useState('intro'); // 'intro' | 'playing' | 'done'
+
+  const handleStart = () => {
+    setQuestions(buildRound());
+    setCurrent(0);
+    setScore(0);
+    setTapped(null);
+    setResults([]);
+    setPhase('playing');
+  };
+
+  const handleExit = () => setPhase('intro');
 
   const q = questions[current];
   const revealed = tapped !== null;
@@ -117,6 +164,10 @@ export default function MistakeHunterPage() {
     setPhase('playing');
   };
 
+  if (phase === 'intro') {
+    return <IntroScreen onStart={handleStart} showPage={showPage} />;
+  }
+
   if (phase === 'done') {
     return <RoundSummary questions={questions} results={results} onPlayAgain={handlePlayAgain} />;
   }
@@ -127,13 +178,16 @@ export default function MistakeHunterPage() {
   return (
     <div className="max-w-xl mx-auto px-4 py-8">
       {/* Header */}
-      <div className="flex items-center justify-between mb-2">
+      <div className="flex items-center justify-between mb-1">
         <h1 className="text-2xl font-serif font-normal">
           Mistake <em className="text-primary not-italic font-medium">Hunter</em>
         </h1>
         <span className="text-sm font-semibold text-foreground">
           <span className="text-amber-500">★</span> {score}
         </span>
+      </div>
+      <div className="mb-2">
+        <ExitButton onClick={handleExit} />
       </div>
 
       {/* Progress bar */}

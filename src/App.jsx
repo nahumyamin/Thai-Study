@@ -255,8 +255,8 @@ function App() {
         {activePage === 'numbers'       && <NumbersPage />}
         {activePage === 'rush'          && <ClassRushPage showPage={showPage} />}
         {activePage === 'scramble'          && <ScramblePage showPage={showPage} />}
-        {activePage === 'classifier-drop'  && <ClassifierDropPage />}
-        {activePage === 'mistake-hunter'   && <MistakeHunterPage />}
+        {activePage === 'classifier-drop'  && <ClassifierDropPage showPage={showPage} />}
+        {activePage === 'mistake-hunter'   && <MistakeHunterPage showPage={showPage} />}
         {activePage === 'passages'      && <ReadingPassagesPage showPage={showPage} />}
         {activePage === 'months'        && <MonthsPage />}
         {activePage === 'clusters'      && <ConsonantClustersPage />}

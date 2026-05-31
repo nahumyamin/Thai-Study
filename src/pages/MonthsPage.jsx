@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Separator } from '@/components/ui/separator';
+import ExitButton from '@/components/ExitButton';
 import { cn } from '@/lib/utils';
 
 function shuffle(arr) {
@@ -77,14 +78,19 @@ function MonthQuiz() {
   const [score, setScore] = useState(0);
   const [done, setDone] = useState(false);
 
-  const start = useCallback((m) => {
-    setMode(m);
+  const start = useCallback(() => {
     setQuestions(buildQuestions());
     setCurrent(0);
     setSelected(null);
     setScore(0);
     setDone(false);
   }, []);
+
+  const exitToSetup = () => {
+    setQuestions(null);
+    setDone(false);
+    setSelected(null);
+  };
 
   const handleChoice = (choice) => {
     if (selected) return;
@@ -109,18 +115,30 @@ function MonthQuiz() {
         <CardHeader>
           <CardTitle className="text-xl">Month Quiz</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <p className="text-muted-foreground">Choose a quiz mode to test your knowledge of Thai months.</p>
-          <div className="flex flex-col sm:flex-row gap-3">
-            <Button className="flex-1 h-auto py-4 flex flex-col gap-1" onClick={() => start('en-to-thai')}>
-              <span className="font-semibold">English → Thai</span>
-              <span className="text-xs opacity-70 font-normal">See the English month, pick the Thai</span>
-            </Button>
-            <Button variant="outline" className="flex-1 h-auto py-4 flex flex-col gap-1" onClick={() => start('thai-to-en')}>
-              <span className="font-semibold">Thai → English</span>
-              <span className="text-xs opacity-70 font-normal">See the Thai month, pick the English</span>
-            </Button>
+        <CardContent className="space-y-5">
+          <p className="text-muted-foreground">Choose a quiz mode to test your knowledge of Thai months, then start.</p>
+          <div>
+            <span className="block text-xs font-semibold tracking-widest uppercase text-muted-foreground mb-3">Mode</span>
+            <div className="flex flex-col sm:flex-row gap-3">
+              <Button
+                variant={mode === 'en-to-thai' ? 'default' : 'outline'}
+                className="flex-1 h-auto py-4 flex flex-col gap-1"
+                onClick={() => setMode('en-to-thai')}
+              >
+                <span className="font-semibold">English → Thai</span>
+                <span className="text-xs opacity-70 font-normal">See the English month, pick the Thai</span>
+              </Button>
+              <Button
+                variant={mode === 'thai-to-en' ? 'default' : 'outline'}
+                className="flex-1 h-auto py-4 flex flex-col gap-1"
+                onClick={() => setMode('thai-to-en')}
+              >
+                <span className="font-semibold">Thai → English</span>
+                <span className="text-xs opacity-70 font-normal">See the Thai month, pick the English</span>
+              </Button>
+            </div>
           </div>
+          <Button className="w-full" onClick={start}>Start →</Button>
         </CardContent>
       </Card>
     );
@@ -137,8 +155,8 @@ function MonthQuiz() {
             {pct === 100 ? '🎉 Perfect score!' : pct >= 75 ? 'Great work!' : pct >= 50 ? 'Keep practicing!' : "Keep going, you'll get there!"}
           </p>
           <div className="flex gap-3 justify-center pt-2">
-            <Button onClick={() => start(mode)}>Try Again</Button>
-            <Button variant="outline" onClick={() => setQuestions(null)}>Change Mode</Button>
+            <Button onClick={start}>Try Again</Button>
+            <Button variant="outline" onClick={exitToSetup}>Change Mode</Button>
           </div>
         </CardContent>
       </Card>
@@ -151,6 +169,9 @@ function MonthQuiz() {
   return (
     <Card>
       <CardContent className="pt-6 space-y-5">
+        <div className="flex justify-end">
+          <ExitButton onClick={exitToSetup} />
+        </div>
         <div className="space-y-1.5">
           <div className="flex justify-between text-sm text-muted-foreground">
             <span>{current + 1} / {questions.length}</span>

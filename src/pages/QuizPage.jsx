@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Progress } from '@/components/ui/progress';
 import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
+import ExitButton from '@/components/ExitButton';
 import { cn } from '@/lib/utils';
 
 function shuffle(arr) {
@@ -151,6 +152,11 @@ export default function QuizPage({ starred, showRomaji = true, showPage }) {
     const w = questions[qIdx].word;
     setFeedback(`Answer: ${w.thai}${showRomaji ? ` (${w.rom})` : ''} — ${w.en}`);
     setStreak(0);
+  };
+
+  const exitToSetup = () => {
+    window.speechSynthesis?.cancel();
+    setScreen('setup');
   };
 
   const retryMissed = () => {
@@ -342,6 +348,9 @@ export default function QuizPage({ starred, showRomaji = true, showPage }) {
       <Separator className="mb-6" />
 
       <div className="max-w-[520px]">
+        <div className="flex justify-end mb-2">
+          <ExitButton onClick={exitToSetup} />
+        </div>
         <Progress value={progress} className="h-1 mb-6 rounded-sm" />
         <div className="flex justify-between items-baseline mb-4 text-sm text-muted-foreground">
           <span>Question {qIdx + 1} of {questions.length}</span>

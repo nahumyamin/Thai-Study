@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Progress } from '@/components/ui/progress';
 import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
+import ExitButton from '@/components/ExitButton';
 import { cn } from '@/lib/utils';
 
 // Only words whose example sentence contains the word verbatim can be "blanked".
@@ -114,6 +115,8 @@ export default function ClozePage({ starred, showRomaji = true, showPage }) {
     setTypeState('wrong');
     setStreak(0);
   };
+
+  const exitToSetup = () => setScreen('setup');
 
   const retryMissed = () => {
     if (missed.length === 0) return;
@@ -257,6 +260,9 @@ export default function ClozePage({ starred, showRomaji = true, showPage }) {
       )}
 
       <div className="max-w-[520px]">
+        <div className="flex justify-end mb-2">
+          <ExitButton onClick={exitToSetup} />
+        </div>
         <Progress value={progress} className="h-1 mb-6 rounded-sm" />
         <div className="flex justify-between items-baseline mb-4 text-sm text-muted-foreground">
           <span>Sentence {qIdx + 1} of {questions.length}</span>

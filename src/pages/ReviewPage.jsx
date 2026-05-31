@@ -1,10 +1,11 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useRef } from 'react';
 import { allVocab, topics } from '../data/vocab.js';
 import { track } from '@/lib/analytics.js';
 import { useAuth } from '../context/AuthContext.jsx';
 import { supabase } from '../lib/supabase.js';
 import { recordAnswer, recordSession } from '../lib/progress.js';
 import { REVIEW_INTERVALS } from '../lib/gamification.js';
+import ExitButton from '@/components/ExitButton';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Card, CardContent } from '@/components/ui/card';
@@ -35,23 +36,22 @@ export default function ReviewPage({ showRomaji = true, showPage }) {
   const { user } = useAuth();
   const startTime = useRef(null);
 
-  // 'loading' | 'empty' | 'review' | 'done'
-  const [screen, setScreen] = useState('loading');
+  // 'intro' | 'loading' | 'empty' | 'review' | 'done'
+  const [screen, setScreen] = useState('intro');
   const [queue, setQueue] = useState([]);     // full vocab entries, most-overdue first
   const [idx, setIdx] = useState(0);
   const [revealed, setRevealed] = useState(false);
   const [recalled, setRecalled] = useState(0);
 
-  // Load due words from saved progress
-  useEffect(() => {
+  // Load due words from saved progress (triggered from the intro screen)
+  const loadDue = () => {
     if (!user || !supabase) { setScreen('empty'); return; }
-    let cancelled = false;
+    setScreen('loading');
     supabase
       .from('vocab_progress')
       .select('thai_word, mastery_level, last_seen_at')
       .eq('user_id', user.id)
       .then(({ data }) => {
-        if (cancelled) return;
         const now = Date.now();
         const due = (data ?? [])
           .map(row => {
@@ -74,8 +74,12 @@ export default function ReviewPage({ showRomaji = true, showPage }) {
         startTime.current = Date.now();
         track('review_start', { due: due.length });
       });
-    return () => { cancelled = true; };
-  }, [user]);
+  };
+
+  const exitToIntro = () => {
+    window.speechSynthesis?.cancel();
+    setScreen('intro');
+  };
 
   const current = queue[idx];
 
@@ -99,6 +103,38 @@ export default function ReviewPage({ showRomaji = true, showPage }) {
       setRevealed(false);
     }
   };
+
+  // ── Instructions ─────────────────────────────────────────────────
+  if (screen === 'intro') {
+    return (
+      <Shell>
+        <div className="max-w-[520px]">
+          <p className="text-sm text-muted-foreground leading-relaxed mb-2">
+            Spaced review brings back words you've already studied right as you're about to forget them.
+            You'll see the English, try to recall the Thai from memory, then reveal the answer and rate
+            yourself — words you recall are pushed further out, words you forget come back sooner.
+          </p>
+          <p className="text-xs text-muted-foreground mb-6">
+            Only words that are <em>due</em> today appear here. Keep studying with{' '}
+            <button className="underline underline-offset-2 hover:text-foreground transition-colors" onClick={() => showPage('quiz')}>Quiz</button>
+            {' '}or{' '}
+            <button className="underline underline-offset-2 hover:text-foreground transition-colors" onClick={() => showPage('cards')}>Flashcards</button>
+            {' '}to add more to the rotation.
+          </p>
+          {user ? (
+            <Button onClick={loadDue}>Start review →</Button>
+          ) : (
+            <div>
+              <p className="text-sm text-muted-foreground mb-4">
+                Spaced review needs an account so your schedule can be saved between sessions.
+              </p>
+              <Button onClick={() => showPage('login')}>Sign in to start reviewing →</Button>
+            </div>
+          )}
+        </div>
+      </Shell>
+    );
+  }
 
   // ── Not signed in ────────────────────────────────────────────────
   if (screen === 'empty' && !user) {
@@ -172,6 +208,9 @@ export default function ReviewPage({ showRomaji = true, showPage }) {
   return (
     <Shell>
       <div className="max-w-[520px]">
+        <div className="flex justify-end mb-2">
+          <ExitButton onClick={exitToIntro} />
+        </div>
         <Progress value={progress} className="h-1 mb-6 rounded-sm" />
         <div className="flex justify-between items-baseline mb-4 text-sm text-muted-foreground">
           <span>Card {idx + 1} of {queue.length}</span>

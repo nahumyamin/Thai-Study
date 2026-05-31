@@ -3,6 +3,7 @@ import { SCRAMBLE_SENTENCES } from '../data/scramble.js';
 import { track } from '@/lib/analytics.js';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
+import ExitButton from '@/components/ExitButton';
 import { cn } from '@/lib/utils';
 
 function shuffle(arr) {
@@ -175,7 +176,7 @@ function GrammarTip({ rule }) {
 }
 
 // ── Play screen ───────────────────────────────────────────────────
-function PlayScreen({ sentences, mode, onFinish }) {
+function PlayScreen({ sentences, mode, onFinish, onExit }) {
   const [current, setCurrent] = useState(0);
   const [words, setWords] = useState(sentences[0].scrambled);
   const [input, setInput] = useState('');
@@ -210,6 +211,9 @@ function PlayScreen({ sentences, mode, onFinish }) {
 
   return (
     <div className="max-w-[800px] mx-auto px-5 py-8">
+      <div className="flex justify-end mb-2">
+        <ExitButton onClick={onExit} />
+      </div>
       {/* Progress */}
       <div className="flex items-center gap-3 mb-6">
         <span className="text-sm text-muted-foreground whitespace-nowrap">
@@ -369,7 +373,7 @@ export default function ScramblePage({ showPage }) {
     <SetupScreen count={count} setCount={setCount} mode={mode} setMode={setMode} onStart={handleStart} showPage={showPage} />
   );
   if (phase === 'playing') return (
-    <PlayScreen sentences={sentences} mode={mode} onFinish={scores => {
+    <PlayScreen sentences={sentences} mode={mode} onExit={() => setPhase('setup')} onFinish={scores => {
       setFinalScores(scores);
       setPhase('results');
       const correct = scores.filter(s => s.ok).length;

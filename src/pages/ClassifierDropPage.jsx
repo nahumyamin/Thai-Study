@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react';
 import { CLASSIFIER_QUESTIONS } from '../data/classifierDrop.js';
+import ExitButton from '@/components/ExitButton';
 import { cn } from '@/lib/utils';
 
 const ROUND_SIZE = 30;
@@ -56,20 +57,65 @@ function RoundComplete({ score, total, onPlayAgain }) {
   );
 }
 
+// ── Instructions screen ──────────────────────────────────────────
+function IntroScreen({ onStart, showPage }) {
+  return (
+    <div className="max-w-xl mx-auto px-4 py-8">
+      <h1 className="text-3xl font-serif font-normal mb-1">
+        Classifier <em className="text-primary not-italic font-medium">Drop</em>
+      </h1>
+      <div className="h-px bg-border my-4" />
+      <p className="text-sm text-muted-foreground leading-relaxed mb-2">
+        A Thai noun appears with four classifier options. Tap the correct classifier (ลักษณนาม)
+        for that noun before moving on. Each round has {ROUND_SIZE} nouns, with a hint after every answer.
+      </p>
+      {showPage && (
+        <p className="text-xs text-muted-foreground mb-6">
+          Want a refresher first?{' '}
+          <button
+            className="underline underline-offset-2 hover:text-foreground transition-colors"
+            onClick={() => showPage('classifiers')}
+          >
+            Browse the Numbers &amp; Classifiers guide
+          </button>
+          .
+        </p>
+      )}
+      <button
+        onClick={onStart}
+        className="px-8 py-3 rounded-xl bg-primary text-primary-foreground font-medium hover:opacity-90 transition-opacity"
+      >
+        Start →
+      </button>
+    </div>
+  );
+}
+
 // ── Main game ────────────────────────────────────────────────────
-export default function ClassifierDropPage() {
-  const [questions, setQuestions] = useState(() => buildRound());
+export default function ClassifierDropPage({ showPage }) {
+  const [questions, setQuestions] = useState([]);
   const [current, setCurrent]     = useState(0);
   const [score, setScore]         = useState(0);
   const [streak, setStreak]       = useState(0);
   const [choice, setChoice]       = useState(null); // null | { selected, correct, hint }
-  const [phase, setPhase]         = useState('playing'); // 'playing' | 'done'
+  const [phase, setPhase]         = useState('intro'); // 'intro' | 'playing' | 'done'
+
+  const handleStart = () => {
+    setQuestions(buildRound());
+    setCurrent(0);
+    setScore(0);
+    setStreak(0);
+    setChoice(null);
+    setPhase('playing');
+  };
+
+  const handleExit = () => setPhase('intro');
 
   const q = questions[current];
 
   // Build shuffled options for this question
   const options = useCallback(() => {
-    return shuffle([q.correct, ...q.distractors]);
+    return q ? shuffle([q.correct, ...q.distractors]) : [];
   }, [q])();
 
   const handleChoice = (opt) => {
@@ -103,6 +149,10 @@ export default function ClassifierDropPage() {
     setPhase('playing');
   };
 
+  if (phase === 'intro') {
+    return <IntroScreen onStart={handleStart} showPage={showPage} />;
+  }
+
   if (phase === 'done') {
     return <RoundComplete score={score} total={questions.length} onPlayAgain={handlePlayAgain} />;
   }
@@ -112,7 +162,7 @@ export default function ClassifierDropPage() {
   return (
     <div className="max-w-xl mx-auto px-4 py-8">
       {/* Header */}
-      <div className="flex items-center justify-between mb-2">
+      <div className="flex items-center justify-between mb-1">
         <h1 className="text-2xl font-serif font-normal">
           Classifier <em className="text-primary not-italic font-medium">Drop</em>
         </h1>
@@ -126,6 +176,9 @@ export default function ClassifierDropPage() {
             </span>
           )}
         </div>
+      </div>
+      <div className="mb-2">
+        <ExitButton onClick={handleExit} />
       </div>
 
       {/* Progress bar */}

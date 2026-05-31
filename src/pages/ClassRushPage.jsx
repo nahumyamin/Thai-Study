@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
+import ExitButton from '@/components/ExitButton';
 import { cn } from '@/lib/utils';
 
 function shuffle(arr) {
@@ -41,6 +42,11 @@ export default function ClassRushPage({ showPage }) {
   const endGame = useCallback(() => {
     clearInterval(timerRef.current);
     setScreen('results');
+  }, []);
+
+  const exitToIntro = useCallback(() => {
+    clearInterval(timerRef.current);
+    setScreen('intro');
   }, []);
 
   const nextLetter = useCallback((newDeck, newIdx, newLives, newScore, newStreak, newCorrect, newMissed) => {
@@ -350,6 +356,9 @@ export default function ClassRushPage({ showPage }) {
       </h1>
       <Separator className="mb-4" />
       <div className="max-w-[480px]">
+        <div className="flex justify-end mb-2">
+          <ExitButton onClick={exitToIntro} />
+        </div>
         {/* HUD */}
         <div className="flex justify-between items-center mb-3 px-4 py-3 bg-foreground text-background rounded">
           <div>
