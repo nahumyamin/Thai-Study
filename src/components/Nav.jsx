@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { cn } from '@/lib/utils';
 import { supabase } from '../lib/supabase.js';
 import { getLevel } from '../lib/gamification.js';
+import { STUDY_HUBS, hubForPage } from '../data/studyHubs.js';
 
 const CULTURE_PAGES = [
   { id: 'culture',   label: 'Anthems'   },
@@ -10,18 +11,7 @@ const CULTURE_PAGES = [
   { id: 'food',      label: 'Food'      },
 ];
 
-const STUDY_PAGES = [
-  { id: 'cards',    label: 'Flashcards' },
-  { id: 'quiz',     label: 'Quiz' },
-  { id: 'review',   label: 'Review' },
-  { id: 'cloze',    label: 'Fill the Blank' },
-  { id: 'rush',     label: 'Class Rush' },
-  { id: 'scramble',         label: 'Scramble' },
-  { id: 'classifier-drop', label: 'Classifier Drop' },
-  { id: 'mistake-hunter',  label: 'Mistake Hunter' },
-  { id: 'passages', label: 'Passages' },
-  { id: 'months',   label: 'Months' },
-];
+const STUDY_PAGES = STUDY_HUBS.map(h => ({ id: h.id, label: h.label }));
 
 const REFERENCE_PAGES = [
   { id: 'grammar',       label: 'Grammar' },
@@ -119,9 +109,12 @@ export default function Nav({ activePage, activeGroup, showPage, onSearch, theme
       : 'text-white/50 hover:text-white/85 border-transparent'
   );
 
+  // In the Study group, a tool page (e.g. quiz) should light up its parent hub tab.
+  const subActivePage = activeGroup === 'study' ? hubForPage(activePage) : activePage;
+
   const subTabClass = (pageId) => cn(
     'text-xs uppercase tracking-wide px-[0.9rem] py-[0.6rem] border-b-2 transition-all whitespace-nowrap bg-transparent border-x-0 border-t-0 cursor-pointer',
-    activePage === pageId
+    subActivePage === pageId
       ? 'text-white border-amber-400'
       : 'text-white/50 hover:text-white/85 border-transparent'
   );
@@ -143,7 +136,7 @@ export default function Nav({ activePage, activeGroup, showPage, onSearch, theme
 
         {/* Desktop group tabs */}
         <div className="hidden sm:flex items-center">
-          <button className={groupTabClass('study')} onClick={() => handleNav('cards')}>
+          <button className={groupTabClass('study')} onClick={() => handleNav(STUDY_PAGES[0].id)}>
             Study
           </button>
           <button className={groupTabClass('reference')} onClick={() => handleNav('grammar')}>
@@ -355,7 +348,7 @@ export default function Nav({ activePage, activeGroup, showPage, onSearch, theme
                       key={p.id}
                       className={cn(
                         'w-full text-left px-7 py-[0.75rem] text-sm tracking-[0.02em] border-l-[3px] transition-all bg-transparent',
-                        activePage === p.id
+                        hubForPage(activePage) === p.id
                           ? 'text-white border-amber-400 bg-white/[0.06]'
                           : 'text-white/65 border-transparent'
                       )}

@@ -10,6 +10,8 @@ import PronunciationPage from './pages/PronunciationPage.jsx';
 import QuizPage from './pages/QuizPage.jsx';
 import ReviewPage from './pages/ReviewPage.jsx';
 import ClozePage from './pages/ClozePage.jsx';
+import StudyHubPage from './pages/StudyHubPage.jsx';
+import { STUDY_HUBS } from './data/studyHubs.js';
 import ClassifiersPage from './pages/ClassifiersPage.jsx';
 import NumbersPage from './pages/NumbersPage.jsx';
 import ClassRushPage from './pages/ClassRushPage.jsx';
@@ -31,6 +33,9 @@ import { useAuth } from './context/AuthContext.jsx';
 const GROUP_MAP = {
   home: null,
   dashboard: null,
+  words: 'study',
+  sentences: 'study',
+  script: 'study',
   cards: 'study',
   quiz: 'study',
   review: 'study',
@@ -59,6 +64,9 @@ const VALID_PAGES = new Set(Object.keys(GROUP_MAP));
 const PAGE_TITLES = {
   home:         'Thai Study — Learn Thai Vocabulary, Grammar & Pronunciation',
   dashboard:    'Dashboard — Thai Study',
+  words:        'Vocabulary Practice — Thai Study',
+  sentences:    'Grammar Practice — Thai Study',
+  script:       'Reading & Script — Thai Study',
   cards:        'Flashcards — Thai Study',
   quiz:         'Vocabulary Quiz — Thai Study',
   review:       'Spaced Review — Thai Study',
@@ -244,6 +252,7 @@ function App() {
           </div>
         ))}
         {activePage === 'home'          && <HomePage showPage={showPage} />}
+        {STUDY_HUBS.some(h => h.id === activePage) && <StudyHubPage hub={activePage} showPage={showPage} />}
         {activePage === 'cards'         && <FlashcardsPage starred={starred} toggleStar={toggleStar} showRomaji={showRomaji} showPage={showPage} />}
         {activePage === 'grammar'       && <GrammarPage showPage={showPage} />}
         {activePage === 'pronunciation' && <PronunciationPage showPage={showPage} />}
