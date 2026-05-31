@@ -65,3 +65,13 @@ export function hubForPage(pageId) {
 export function getHub(hubId) {
   return STUDY_HUBS.find(h => h.id === hubId) ?? null;
 }
+
+// Breadcrumb metadata for a tool page: which hub owns it and its display name.
+// Returns null for hub pages themselves and any non-study page.
+export function toolMeta(pageId) {
+  for (const h of STUDY_HUBS) {
+    const tool = h.tools.find(t => t.page === pageId);
+    if (tool) return { hubId: h.id, hubLabel: h.label, name: tool.name };
+  }
+  return null;
+}

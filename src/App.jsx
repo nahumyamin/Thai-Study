@@ -11,7 +11,7 @@ import QuizPage from './pages/QuizPage.jsx';
 import ReviewPage from './pages/ReviewPage.jsx';
 import ClozePage from './pages/ClozePage.jsx';
 import StudyHubPage from './pages/StudyHubPage.jsx';
-import { STUDY_HUBS } from './data/studyHubs.js';
+import { STUDY_HUBS, toolMeta } from './data/studyHubs.js';
 import ClassifiersPage from './pages/ClassifiersPage.jsx';
 import NumbersPage from './pages/NumbersPage.jsx';
 import ClassRushPage from './pages/ClassRushPage.jsx';
@@ -112,6 +112,27 @@ function StudyNudgeBanner({ onCta }) {
           Get started free
         </button>
       </div>
+    </div>
+  );
+}
+
+// Breadcrumb shown above any practice tool, linking back to its category hub.
+function StudyBreadcrumb({ activePage, showPage }) {
+  const meta = toolMeta(activePage);
+  if (!meta) return null;
+  return (
+    <div className="border-b border-border/60 bg-muted/30">
+      <nav className="max-w-[1200px] mx-auto px-5 py-2 flex items-center gap-1.5 text-xs" aria-label="Breadcrumb">
+        <button
+          onClick={() => showPage(meta.hubId)}
+          className="inline-flex items-center gap-1 text-muted-foreground hover:text-foreground transition-colors bg-transparent border-none cursor-pointer p-0"
+        >
+          <span aria-hidden className="text-sm leading-none">←</span>
+          {meta.hubLabel}
+        </button>
+        <span className="text-muted-foreground/40" aria-hidden>/</span>
+        <span className="text-foreground font-medium">{meta.name}</span>
+      </nav>
     </div>
   );
 }
@@ -231,6 +252,9 @@ function App() {
       <AuthModal open={authModalOpen} onClose={() => setAuthModalOpen(false)} initialMode={authModalMode} />
 
       <div key={activePage} className="animate-page-in">
+        {/* Breadcrumb back to the category hub — shown on every practice tool */}
+        <StudyBreadcrumb activePage={activePage} showPage={showPage} />
+
         {/* Nudge banner — above the page title, only for logged-out users on content pages */}
         {user === null && !NO_NUDGE_PAGES.has(activePage) && (
           <StudyNudgeBanner
