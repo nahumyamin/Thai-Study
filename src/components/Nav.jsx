@@ -13,6 +13,8 @@ const CULTURE_PAGES = [
 const STUDY_PAGES = [
   { id: 'cards',    label: 'Flashcards' },
   { id: 'quiz',     label: 'Quiz' },
+  { id: 'review',   label: 'Review' },
+  { id: 'cloze',    label: 'Fill the Blank' },
   { id: 'rush',     label: 'Class Rush' },
   { id: 'scramble',         label: 'Scramble' },
   { id: 'classifier-drop', label: 'Classifier Drop' },

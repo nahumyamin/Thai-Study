@@ -297,7 +297,7 @@ function SpacedRepCard({ progress, showPage }) {
 
       {dueCount > 0 && (
         <button
-          onClick={() => showPage('quiz')}
+          onClick={() => showPage('review')}
           className="mt-3 text-xs font-semibold text-amber-600 hover:text-amber-500 transition-colors cursor-pointer bg-transparent border-none p-0"
         >
           Review now →

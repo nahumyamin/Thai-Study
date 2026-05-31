@@ -8,6 +8,8 @@ import FlashcardsPage from './pages/FlashcardsPage.jsx';
 import GrammarPage from './pages/GrammarPage.jsx';
 import PronunciationPage from './pages/PronunciationPage.jsx';
 import QuizPage from './pages/QuizPage.jsx';
+import ReviewPage from './pages/ReviewPage.jsx';
+import ClozePage from './pages/ClozePage.jsx';
 import ClassifiersPage from './pages/ClassifiersPage.jsx';
 import NumbersPage from './pages/NumbersPage.jsx';
 import ClassRushPage from './pages/ClassRushPage.jsx';
@@ -31,6 +33,8 @@ const GROUP_MAP = {
   dashboard: null,
   cards: 'study',
   quiz: 'study',
+  review: 'study',
+  cloze: 'study',
   rush: 'study',
   scramble: 'study',
   'classifier-drop': 'study',
@@ -57,6 +61,8 @@ const PAGE_TITLES = {
   dashboard:    'Dashboard — Thai Study',
   cards:        'Flashcards — Thai Study',
   quiz:         'Vocabulary Quiz — Thai Study',
+  review:       'Spaced Review — Thai Study',
+  cloze:        'Fill the Blank — Thai Study',
   rush:         'Class Rush — Thai Study',
   scramble:          'Scramble — Thai Study',
   'classifier-drop': 'Classifier Drop — Thai Study',
@@ -242,6 +248,8 @@ function App() {
         {activePage === 'grammar'       && <GrammarPage showPage={showPage} />}
         {activePage === 'pronunciation' && <PronunciationPage showPage={showPage} />}
         {activePage === 'quiz'          && <QuizPage starred={starred} showRomaji={showRomaji} showPage={showPage} />}
+        {activePage === 'review'        && <ReviewPage showRomaji={showRomaji} showPage={showPage} />}
+        {activePage === 'cloze'         && <ClozePage starred={starred} showRomaji={showRomaji} showPage={showPage} />}
         {activePage === 'classifiers'   && <ClassifiersPage showPage={showPage} />}
         {activePage === 'reading'       && <ReadingStrategiesPage showPage={showPage} />}
         {activePage === 'numbers'       && <NumbersPage />}
