@@ -79,7 +79,7 @@ export default function ClozePage({ starred, showRomaji = true, showPage }) {
       val === word.thai ||
       val.toLowerCase() === word.rom.toLowerCase() ||
       val.toLowerCase() === word.en.toLowerCase().split(',')[0].trim();
-    recordAnswer(user?.id, word.thai, isCorrect);
+    recordAnswer(user?.id, word, isCorrect);
     setTypeState(isCorrect ? 'correct' : 'wrong');
     setAnswered(true);
     if (isCorrect) {

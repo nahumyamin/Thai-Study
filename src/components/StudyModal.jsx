@@ -30,7 +30,7 @@ export default function StudyModal({ words, initialIndex, starred, onToggleStar,
 
   const handleKnowIt = useCallback(() => {
     if (!current) return;
-    recordAnswer(user?.id, current.thai, true);
+    recordAnswer(user?.id, current, true);
     resultsRef.current.correct += 1;
     resultsRef.current.seen.add(current.thai);
     setIdx(i => (i + 1) % words.length);
@@ -39,7 +39,7 @@ export default function StudyModal({ words, initialIndex, starred, onToggleStar,
 
   const handleStillLearning = useCallback(() => {
     if (!current) return;
-    recordAnswer(user?.id, current.thai, false);
+    recordAnswer(user?.id, current, false);
     resultsRef.current.incorrect += 1;
     resultsRef.current.seen.add(current.thai);
     setIdx(i => (i + 1) % words.length);

@@ -12,6 +12,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
 
+const vocabById = new Map(allVocab.map(w => [w.id, w]));
 const vocabByThai = new Map(allVocab.map(w => [w.thai, w]));
 
 function speakThai(text) {
@@ -49,13 +50,13 @@ export default function ReviewPage({ showRomaji = true, showPage }) {
     setScreen('loading');
     supabase
       .from('vocab_progress')
-      .select('thai_word, mastery_level, last_seen_at')
+      .select('word_id, thai_word, mastery_level, last_seen_at')
       .eq('user_id', user.id)
       .then(({ data }) => {
         const now = Date.now();
         const due = (data ?? [])
           .map(row => {
-            const word = vocabByThai.get(row.thai_word);
+            const word = vocabById.get(row.word_id) ?? vocabByThai.get(row.thai_word);
             if (!word) return null;
             const intervalMs = (REVIEW_INTERVALS[row.mastery_level] ?? 0) * 3_600_000;
             const overdueBy = now - new Date(row.last_seen_at).getTime() - intervalMs;
@@ -90,7 +91,7 @@ export default function ReviewPage({ showRomaji = true, showPage }) {
 
   const grade = (gotIt) => {
     const word = queue[idx];
-    recordAnswer(user?.id, word.thai, gotIt);
+    recordAnswer(user?.id, word, gotIt);
     if (gotIt) setRecalled(r => r + 1);
     if (idx + 1 >= queue.length) {
       const correct = recalled + (gotIt ? 1 : 0);

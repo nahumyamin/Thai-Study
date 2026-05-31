@@ -389,14 +389,16 @@ function StudyHeatmap({ sessions }) {
 // Topic mastery map
 // ─────────────────────────────────────────────────────────────────
 function TopicMasteryMap({ progress }) {
-  const progressMap = {};
-  progress.forEach(p => { progressMap[p.thai_word] = p; });
+  // Match progress to vocab by stable word_id, falling back to thai_word for legacy rows.
+  const byId = {}, byThai = {};
+  progress.forEach(p => { if (p.word_id) byId[p.word_id] = p; byThai[p.thai_word] = p; });
+  const progressFor = (w) => byId[w.id] ?? byThai[w.thai];
 
   const topicStats = Object.entries(topics).map(([id, { label }]) => {
     const words = allVocab.filter(w => w.topic === id);
     const total    = words.length;
-    const studied  = words.filter(w => (progressMap[w.thai]?.mastery_level ?? 0) >= 1).length;
-    const mastered = words.filter(w => (progressMap[w.thai]?.mastery_level ?? 0) === 5).length;
+    const studied  = words.filter(w => (progressFor(w)?.mastery_level ?? 0) >= 1).length;
+    const mastered = words.filter(w => (progressFor(w)?.mastery_level ?? 0) === 5).length;
     const pct = total > 0 ? studied / total : 0;
     return { id, label, total, studied, mastered, pct };
   }).sort((a, b) => b.pct - a.pct || b.mastered - a.mastered);

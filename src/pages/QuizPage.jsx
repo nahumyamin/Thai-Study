@@ -85,7 +85,7 @@ export default function QuizPage({ starred, showRomaji = true, showPage }) {
     if (answered) return;
     const correct = questions[qIdx].word;
     const isCorrect = choice.thai === correct.thai;
-    recordAnswer(user?.id, correct.thai, isCorrect);
+    recordAnswer(user?.id, correct, isCorrect);
     setSelectedChoice(choice.thai);
     setAnswered(true);
     if (isCorrect) {
@@ -112,7 +112,7 @@ export default function QuizPage({ starred, showRomaji = true, showPage }) {
     const isCorrect = val === correct.thai ||
       val.toLowerCase() === correct.rom.toLowerCase() ||
       val.toLowerCase() === correct.en.toLowerCase().split(',')[0].trim();
-    recordAnswer(user?.id, correct.thai, isCorrect);
+    recordAnswer(user?.id, correct, isCorrect);
     setTypeState(isCorrect ? 'correct' : 'wrong');
     setAnswered(true);
     if (isCorrect) {

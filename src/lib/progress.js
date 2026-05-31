@@ -1,15 +1,19 @@
 import { supabase } from './supabase.js';
 import { XP_VALUES } from './gamification.js';
 
-export async function recordAnswer(userId, thaiWord, correct) {
+// `word` is a vocab item ({ id, thai }). A bare Thai string is also accepted
+// for backwards compatibility, in which case progress is keyed by thai_word.
+export async function recordAnswer(userId, word, correct) {
   if (!userId || !supabase) return;
 
-  const { data: existing } = await supabase
-    .from('vocab_progress')
-    .select('*')
-    .eq('user_id', userId)
-    .eq('thai_word', thaiWord)
-    .single();
+  const wordId   = typeof word === 'object' && word ? word.id   : undefined;
+  const thaiWord = typeof word === 'object' && word ? word.thai : word;
+  if (!thaiWord && !wordId) return;
+
+  // Prefer the stable word_id; fall back to thai_word for legacy callers/rows.
+  let lookup = supabase.from('vocab_progress').select('*').eq('user_id', userId);
+  lookup = wordId ? lookup.eq('word_id', wordId) : lookup.eq('thai_word', thaiWord);
+  const { data: existing } = await lookup.maybeSingle();
 
   const now = new Date().toISOString();
 
@@ -25,6 +29,9 @@ export async function recordAnswer(userId, thaiWord, correct) {
       : newSeen >= 1 ? 1 : 0;
 
     await supabase.from('vocab_progress').update({
+      // keep word_id / thai_word current in case the word was re-keyed or respelled
+      ...(wordId ? { word_id: wordId } : {}),
+      ...(thaiWord ? { thai_word: thaiWord } : {}),
       times_seen: newSeen,
       times_correct: newCorrect,
       times_incorrect: newIncorrect,
@@ -34,6 +41,7 @@ export async function recordAnswer(userId, thaiWord, correct) {
   } else {
     await supabase.from('vocab_progress').insert({
       user_id: userId,
+      word_id: wordId ?? null,
       thai_word: thaiWord,
       times_seen: 1,
       times_correct: correct ? 1 : 0,
