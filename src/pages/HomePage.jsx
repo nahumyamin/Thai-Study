@@ -57,6 +57,25 @@ function saveSentence(text) {
   localStorage.setItem('wotd-challenge', JSON.stringify({ day: DAY, text }));
 }
 
+// ── Text-to-speech ─────────────────────────────────────────────────
+function speakThai(text) {
+  if (!('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+  const utt = new SpeechSynthesisUtterance(text);
+  utt.lang = 'th-TH';
+  utt.rate = 0.85;
+  window.speechSynthesis.speak(utt);
+}
+
+function SpeakerIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 14 14" fill="none">
+      <path d="M2 5H4.5L8 2V12L4.5 9H2V5Z" fill="currentColor" stroke="currentColor" strokeWidth="1.2" strokeLinejoin="round" />
+      <path d="M10 4.5C10.8 5.3 11.3 6.1 11.3 7C11.3 7.9 10.8 8.7 10 9.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+    </svg>
+  );
+}
+
 // ── Word chip ──────────────────────────────────────────────────────
 function WordChip({ word }) {
   const topic = topics[word.topic];
@@ -70,7 +89,16 @@ function WordChip({ word }) {
           </span>
         )}
       </div>
-      <div className="font-thai-display text-3xl text-foreground leading-none mb-1">{word.thai}</div>
+      <div className="flex items-center justify-between gap-2 mb-1">
+        <div className="font-thai-display text-3xl text-foreground leading-none">{word.thai}</div>
+        <button
+          onClick={() => speakThai(word.thai)}
+          className="text-primary/70 hover:text-primary transition-colors shrink-0"
+          aria-label={`Play pronunciation of ${word.thai}`}
+        >
+          <SpeakerIcon />
+        </button>
+      </div>
       <div className="text-xs italic text-muted-foreground mb-1">{word.rom}</div>
       <div className="text-sm font-medium text-foreground">{word.en}</div>
     </div>
