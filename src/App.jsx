@@ -302,7 +302,7 @@ function App() {
         {activePage === 'register'      && <RegisterPage showPage={showPage} />}
         {activePage === 'fonts'         && <FontGamePage showPage={showPage} />}
         {activePage === 'playbooks'     && <PlaybooksPage />}
-        {activePage === 'about'         && <AboutPage />}
+        {activePage === 'about'         && <AboutPage showPage={showPage} />}
         {activePage === 'numbers'       && <NumbersPage />}
         {activePage === 'rush'          && <ClassRushPage showPage={showPage} />}
         {activePage === 'scramble'          && <ScramblePage showPage={showPage} />}
