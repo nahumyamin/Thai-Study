@@ -33,6 +33,7 @@ import PlaybooksPage from './pages/PlaybooksPage.jsx';
 import AboutPage from './pages/AboutPage.jsx';
 import AuthModal from './components/AuthModal.jsx';
 import FeedbackButton from './components/FeedbackButton.jsx';
+import Footer from './components/Footer.jsx';
 import { useAuth } from './context/AuthContext.jsx';
 
 const GROUP_MAP = {
@@ -316,6 +317,8 @@ function App() {
         {activePage === 'festivals'     && <FestivalsPage />}
         {activePage === 'food'          && <FoodPage />}
       </div>
+
+      <Footer showPage={showPage} />
     </div>
   );
 }
