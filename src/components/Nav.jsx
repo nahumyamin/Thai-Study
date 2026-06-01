@@ -18,6 +18,7 @@ const REFERENCE_PAGES = [
   { id: 'pronunciation', label: 'Pronunciation' },
   { id: 'classifiers',   label: 'Numbers & Classifiers' },
   { id: 'reading',       label: 'Reading Strategies' },
+  { id: 'register',      label: 'Registers' },
 ];
 
 function CoffeeIcon() {

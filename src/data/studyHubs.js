@@ -45,9 +45,10 @@ export const STUDY_HUBS = [
       'Build the literacy fundamentals. Drill consonant classes for speed, read graded passages ' +
       'with discussion questions, and master the Thai calendar — the building blocks for reading real Thai.',
     tools: [
-      { page: 'rush',     emoji: '⚡', name: 'Class Rush',       desc: 'Race to tag each consonant’s class before the timer runs out.' },
-      { page: 'passages', emoji: '📖', name: 'Reading Passages', desc: 'Read real graded texts with comprehension questions.' },
-      { page: 'months',   emoji: '📅', name: 'Months',           desc: 'Learn and quiz the twelve Thai months.' },
+      { page: 'rush',      emoji: '⚡', name: 'Class Rush',        desc: "Race to tag each consonant's class before the timer runs out." },
+      { page: 'passages', emoji: '📖', name: 'Reading Passages',  desc: 'Read real graded texts with comprehension questions.' },
+      { page: 'months',   emoji: '📅', name: 'Months',            desc: 'Learn and quiz the twelve Thai months.' },
+      { page: 'fonts',    emoji: '🔤', name: 'Font Recognition',  desc: 'Identify Thai words across five very different typefaces.' },
     ],
   },
 ];
