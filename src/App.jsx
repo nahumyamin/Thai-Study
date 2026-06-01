@@ -29,6 +29,7 @@ import FoodPage from './pages/FoodPage.jsx';
 import DashboardPage from './pages/DashboardPage.jsx';
 import RegisterPage from './pages/RegisterPage.jsx';
 import FontGamePage from './pages/FontGamePage.jsx';
+import PlaybooksPage from './pages/PlaybooksPage.jsx';
 import AuthModal from './components/AuthModal.jsx';
 import FeedbackButton from './components/FeedbackButton.jsx';
 import { useAuth } from './context/AuthContext.jsx';
@@ -53,8 +54,9 @@ const GROUP_MAP = {
   pronunciation: 'reference',
   classifiers: 'reference',
   reading: 'reference',
-  register: 'reference',
-  fonts: 'script',
+  register:  'reference',
+  fonts:     'script',
+  playbooks: 'reference',
   culture: 'culture',
   idioms:    'culture',
   festivals: 'culture',
@@ -88,6 +90,7 @@ const PAGE_TITLES = {
   reading:      'Reading & Writing Strategies — Thai Study',
   register:     'Thai Registers — Thai Study',
   fonts:        'Font Recognition — Thai Study',
+  playbooks:    'Study Playbooks — Thai Study',
   culture:      'Thai Anthems — Thai Study',
   idioms:       'Thai Idioms — Thai Study',
   festivals:    'Festivals & Calendar — Thai Study',
@@ -295,6 +298,7 @@ function App() {
         {activePage === 'reading'       && <ReadingStrategiesPage showPage={showPage} />}
         {activePage === 'register'      && <RegisterPage showPage={showPage} />}
         {activePage === 'fonts'         && <FontGamePage showPage={showPage} />}
+        {activePage === 'playbooks'     && <PlaybooksPage />}
         {activePage === 'numbers'       && <NumbersPage />}
         {activePage === 'rush'          && <ClassRushPage showPage={showPage} />}
         {activePage === 'scramble'          && <ScramblePage showPage={showPage} />}

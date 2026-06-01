@@ -19,6 +19,7 @@ const REFERENCE_PAGES = [
   { id: 'classifiers',   label: 'Numbers & Classifiers' },
   { id: 'reading',       label: 'Reading Strategies' },
   { id: 'register',      label: 'Registers' },
+  { id: 'playbooks',    label: 'Playbooks' },
 ];
 
 function KofiIcon() {
