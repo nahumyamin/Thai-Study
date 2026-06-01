@@ -90,28 +90,29 @@ export default function FeedbackButton() {
 
   return (
     <>
-      {/* Floating action button — circle by default, pill on hover/pulse */}
+      {/* Floating action button — circle by default, pill on hover/pulse.
+          Padding is constant so no class switching happens on the button —
+          only the span's max-width animates, driving a flicker-free expansion. */}
       <button
         onClick={handleOpen}
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
         aria-label="Give feedback"
         className={cn(
-          'fixed bottom-6 right-6 z-40 flex items-center justify-center rounded-full',
+          'fixed bottom-6 right-6 z-40 h-12 flex items-center justify-center rounded-full',
           'bg-primary text-primary-foreground shadow-lg cursor-pointer',
-          'active:scale-95 transition-all duration-300 ease-in-out',
-          isExpanded ? 'px-4' : 'w-12',
-          'h-12',
+          'active:scale-95 transition-transform',
+          'px-[9px]',
         )}
       >
-        <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden className="shrink-0">
+        <svg width="30" height="30" viewBox="0 0 15 15" fill="none" aria-hidden className="shrink-0">
           <path d="M7.5 1C3.91 1 1 3.69 1 7c0 1.73.8 3.28 2.08 4.38L2.5 14l2.9-1.45C5.9 12.84 6.69 13 7.5 13c3.59 0 6.5-2.69 6.5-6S11.09 1 7.5 1z" fill="currentColor"/>
         </svg>
         <span
           style={{
-            maxWidth:    isExpanded ? '5rem'   : '0',
-            opacity:     isExpanded ? 1        : 0,
-            marginLeft:  isExpanded ? '0.4rem' : '0',
+            maxWidth:   isExpanded ? '5rem'    : '0',
+            opacity:    isExpanded ? 1         : 0,
+            marginLeft: isExpanded ? '0.45rem' : '0',
           }}
           className="text-sm font-medium whitespace-nowrap overflow-hidden transition-all duration-300 ease-in-out"
         >
