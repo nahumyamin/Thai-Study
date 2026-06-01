@@ -23,7 +23,7 @@ export default function AboutPage({ showPage }) {
       <h1 className="text-4xl font-serif font-normal mb-2">
         Thai <em className="text-primary not-italic font-medium">Study</em>
       </h1>
-      <div className="flex items-center justify-between gap-4 mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1.5 sm:gap-4 mb-6">
         <p className="text-base text-muted-foreground">
           A free Thai learning tool, built in the browser, open to everyone.
         </p>
@@ -31,7 +31,7 @@ export default function AboutPage({ showPage }) {
           href="https://ko-fi.com/thaistudy"
           target="_blank"
           rel="noopener noreferrer"
-          className="shrink-0 inline-flex items-center gap-1.5 text-xs text-muted-foreground/70 hover:text-[#FF5E5B] transition-colors whitespace-nowrap"
+          className="self-start shrink-0 inline-flex items-center gap-1.5 text-xs text-muted-foreground/70 hover:text-[#FF5E5B] transition-colors whitespace-nowrap"
         >
           <KofiHeart />
           Support on Ko-fi ↗
@@ -56,7 +56,7 @@ export default function AboutPage({ showPage }) {
             <div className="text-2xl font-serif font-normal text-foreground mb-0.5">{f.stat}</div>
             <div className="text-xs font-medium text-foreground leading-tight">{f.label}</div>
             <div className="text-[0.65rem] text-muted-foreground mt-0.5">{f.sub}</div>
-            <div className="text-[0.6rem] text-primary opacity-0 group-hover:opacity-100 transition-opacity mt-1">
+            <div className="text-[0.6rem] text-primary mt-1 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
               Open →
             </div>
           </button>
