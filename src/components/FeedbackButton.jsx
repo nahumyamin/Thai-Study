@@ -102,10 +102,10 @@ export default function FeedbackButton() {
           'fixed bottom-6 right-6 z-40 h-12 flex items-center justify-center rounded-full',
           'bg-primary text-primary-foreground shadow-lg cursor-pointer',
           'active:scale-95 transition-transform',
-          'px-[9px]',
+          'px-4',
         )}
       >
-        <svg width="30" height="30" viewBox="0 0 15 15" fill="none" aria-hidden className="shrink-0">
+        <svg width="21" height="21" viewBox="0 0 15 15" fill="none" aria-hidden className="shrink-0">
           <path d="M7.5 1C3.91 1 1 3.69 1 7c0 1.73.8 3.28 2.08 4.38L2.5 14l2.9-1.45C5.9 12.84 6.69 13 7.5 13c3.59 0 6.5-2.69 6.5-6S11.09 1 7.5 1z" fill="currentColor"/>
         </svg>
         <span
