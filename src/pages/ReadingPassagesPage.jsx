@@ -237,7 +237,7 @@ export default function ReadingPassagesPage({ showPage }) {
               className={cn(
                 'flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-sm font-medium transition-all',
                 diffFilter === id
-                  ? 'bg-primary text-primary-foreground border-primary'
+                  ? 'bg-zinc-900 text-white border-zinc-900 dark:bg-primary dark:text-primary-foreground dark:border-primary'
                   : 'border-border bg-card text-muted-foreground hover:border-primary/40 hover:text-foreground'
               )}
             >

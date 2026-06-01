@@ -105,7 +105,7 @@ function SetupScreen({ count, setCount, mode, setMode, onStart, showPage }) {
               className={cn(
                 'px-5 py-2.5 rounded-lg border text-sm font-medium transition-all flex flex-col items-center gap-0.5 min-w-[90px]',
                 count === n
-                  ? 'bg-primary text-primary-foreground border-primary'
+                  ? 'bg-zinc-900 text-white border-zinc-900 dark:bg-primary dark:text-primary-foreground dark:border-primary'
                   : 'border-border bg-card hover:border-primary/40',
               )}
             >
@@ -131,7 +131,7 @@ function SetupScreen({ count, setCount, mode, setMode, onStart, showPage }) {
               className={cn(
                 'px-6 py-2.5 rounded-lg border text-sm font-medium transition-all',
                 mode === m.id
-                  ? 'bg-primary text-primary-foreground border-primary'
+                  ? 'bg-zinc-900 text-white border-zinc-900 dark:bg-primary dark:text-primary-foreground dark:border-primary'
                   : 'border-border bg-card hover:border-primary/40',
               )}
             >
