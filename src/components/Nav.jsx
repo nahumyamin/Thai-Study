@@ -117,8 +117,9 @@ export default function Nav({ activePage, activeGroup, showPage, onSearch, theme
       : 'text-white/50 hover:text-white/85 border-transparent'
   );
 
-  const subPages = activeGroup === 'study' ? STUDY_PAGES
-    : activeGroup === 'culture' ? CULTURE_PAGES
+  const subPages = activeGroup === 'study'    ? STUDY_PAGES
+    : activeGroup === 'culture'   ? CULTURE_PAGES
+    : activeGroup === 'about'     ? []
     : REFERENCE_PAGES;
 
   return (
@@ -143,20 +144,21 @@ export default function Nav({ activePage, activeGroup, showPage, onSearch, theme
           <button className={groupTabClass('culture')} onClick={() => handleNav('culture')}>
             Culture
           </button>
+          <button className={groupTabClass('about')} onClick={() => handleNav('about')}>
+            About
+          </button>
         </div>
 
         {/* Search + mobile hamburger */}
         <div className="ml-auto flex items-center gap-1">
-          <a
-            href="https://ko-fi.com/thaistudy"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="p-2.5 text-amber-400/70 hover:text-amber-400 transition-colors"
-            aria-label="Support on Ko-fi"
-            title="Support on Ko-fi"
+          <button
+            onClick={() => handleNav('about')}
+            className="p-2.5 text-amber-400/70 hover:text-amber-400 transition-colors cursor-pointer bg-transparent border-none"
+            aria-label="About"
+            title="About"
           >
             <KofiIcon />
-          </a>
+          </button>
           <button
             onClick={onSearch}
             className="p-2.5 text-white/60 hover:text-white transition-colors"
@@ -402,6 +404,19 @@ export default function Nav({ activePage, activeGroup, showPage, onSearch, theme
                     </button>
                   ))}
 
+                  <div className="h-px bg-white/[0.08] my-1.5" />
+                  <button
+                    className={cn(
+                      'w-full text-left px-7 py-[0.75rem] text-sm tracking-[0.02em] border-l-[3px] transition-all bg-transparent',
+                      activePage === 'about'
+                        ? 'text-white border-amber-400 bg-white/[0.06]'
+                        : 'text-white/65 border-transparent'
+                    )}
+                    onClick={() => handleNav('about')}
+                  >
+                    About
+                  </button>
+
                   {user && (
                     <>
                       <div className="h-px bg-white/[0.08] mx-5 my-1.5" />
@@ -421,8 +436,8 @@ export default function Nav({ activePage, activeGroup, showPage, onSearch, theme
         </div>
       </div>
 
-      {/* Row 2: sub-tabs (desktop only, hidden on home) */}
-      <div className={cn('items-center px-5 bg-black/[0.18] overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden', activePage === 'home' ? 'hidden' : 'hidden sm:flex')} aria-hidden={activePage === 'home'}>
+      {/* Row 2: sub-tabs (desktop only, hidden on home + about) */}
+      <div className={cn('items-center px-5 bg-black/[0.18] overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden', (activePage === 'home' || activeGroup === 'about') ? 'hidden' : 'hidden sm:flex')} aria-hidden={activePage === 'home'}>
         {subPages.map(p => (
           <button key={p.id} className={subTabClass(p.id)} onClick={() => handleNav(p.id)}>
             {p.label}

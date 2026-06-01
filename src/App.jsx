@@ -30,6 +30,7 @@ import DashboardPage from './pages/DashboardPage.jsx';
 import RegisterPage from './pages/RegisterPage.jsx';
 import FontGamePage from './pages/FontGamePage.jsx';
 import PlaybooksPage from './pages/PlaybooksPage.jsx';
+import AboutPage from './pages/AboutPage.jsx';
 import AuthModal from './components/AuthModal.jsx';
 import FeedbackButton from './components/FeedbackButton.jsx';
 import { useAuth } from './context/AuthContext.jsx';
@@ -37,6 +38,7 @@ import { useAuth } from './context/AuthContext.jsx';
 const GROUP_MAP = {
   home: null,
   dashboard: null,
+  about: 'about',
   words: 'study',
   sentences: 'study',
   script: 'study',
@@ -91,6 +93,7 @@ const PAGE_TITLES = {
   register:     'Thai Registers — Thai Study',
   fonts:        'Font Recognition — Thai Study',
   playbooks:    'Study Playbooks — Thai Study',
+  about:        'About — Thai Study',
   culture:      'Thai Anthems — Thai Study',
   idioms:       'Thai Idioms — Thai Study',
   festivals:    'Festivals & Calendar — Thai Study',
@@ -299,6 +302,7 @@ function App() {
         {activePage === 'register'      && <RegisterPage showPage={showPage} />}
         {activePage === 'fonts'         && <FontGamePage showPage={showPage} />}
         {activePage === 'playbooks'     && <PlaybooksPage />}
+        {activePage === 'about'         && <AboutPage />}
         {activePage === 'numbers'       && <NumbersPage />}
         {activePage === 'rush'          && <ClassRushPage showPage={showPage} />}
         {activePage === 'scramble'          && <ScramblePage showPage={showPage} />}
