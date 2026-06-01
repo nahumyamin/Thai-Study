@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription,
@@ -32,6 +32,8 @@ function StarRating({ value, onChange }) {
   );
 }
 
+const PULSE_KEY = 'feedback-pulse-done';
+
 export default function FeedbackButton() {
   const [open, setOpen]         = useState(false);
   const [rating, setRating]     = useState(0);
@@ -39,6 +41,24 @@ export default function FeedbackButton() {
   const [level, setLevel]       = useState('');
   const [message, setMessage]   = useState('');
   const [status, setStatus]     = useState('idle'); // idle | submitting | success | error
+  const [hovered, setHovered]   = useState(false);
+  const [pulsed, setPulsed]     = useState(false);
+
+  const isExpanded = hovered || pulsed;
+
+  // One-time first-visit pulse for discoverability
+  useEffect(() => {
+    if (localStorage.getItem(PULSE_KEY)) return;
+    const expand = setTimeout(() => {
+      setPulsed(true);
+      const collapse = setTimeout(() => {
+        setPulsed(false);
+        localStorage.setItem(PULSE_KEY, '1');
+      }, 1800);
+      return () => clearTimeout(collapse);
+    }, 1500);
+    return () => clearTimeout(expand);
+  }, []);
 
   const togglePurpose = (p) =>
     setPurposes(prev => prev.includes(p) ? prev.filter(x => x !== p) : [...prev, p]);
@@ -70,20 +90,33 @@ export default function FeedbackButton() {
 
   return (
     <>
-      {/* Floating action button */}
+      {/* Floating action button — circle by default, pill on hover/pulse */}
       <button
         onClick={handleOpen}
-        className={cn(
-          'fixed bottom-6 right-6 z-40 flex items-center gap-2 rounded-full px-4 py-2.5',
-          'bg-primary text-primary-foreground shadow-lg',
-          'hover:opacity-90 hover:scale-105 active:scale-95 transition-all text-sm font-medium',
-        )}
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
         aria-label="Give feedback"
+        className={cn(
+          'fixed bottom-6 right-6 z-40 flex items-center justify-center rounded-full',
+          'bg-primary text-primary-foreground shadow-lg cursor-pointer',
+          'active:scale-95 transition-all duration-300 ease-in-out',
+          isExpanded ? 'px-4' : 'w-12',
+          'h-12',
+        )}
       >
-        <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden>
+        <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden className="shrink-0">
           <path d="M7.5 1C3.91 1 1 3.69 1 7c0 1.73.8 3.28 2.08 4.38L2.5 14l2.9-1.45C5.9 12.84 6.69 13 7.5 13c3.59 0 6.5-2.69 6.5-6S11.09 1 7.5 1z" fill="currentColor"/>
         </svg>
-        Feedback
+        <span
+          style={{
+            maxWidth:    isExpanded ? '5rem'   : '0',
+            opacity:     isExpanded ? 1        : 0,
+            marginLeft:  isExpanded ? '0.4rem' : '0',
+          }}
+          className="text-sm font-medium whitespace-nowrap overflow-hidden transition-all duration-300 ease-in-out"
+        >
+          Feedback
+        </span>
       </button>
 
       <Dialog open={open} onOpenChange={setOpen}>
