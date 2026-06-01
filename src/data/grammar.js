@@ -6,6 +6,7 @@ export const GRAMMAR_CATEGORIES = [
   { id: 'questions', label: 'Negation & Questions',  short: 'Questions' },
   { id: 'verbs',     label: 'Verbs & Particles',     short: 'Verbs'     },
   { id: 'complex',   label: 'Complex Sentences',     short: 'Complex'   },
+  { id: 'fluency',   label: 'Fluency & Naturalness', short: 'Fluency'   },
 ];
 
 export const GRAMMAR_RULES = [
@@ -742,6 +743,140 @@ export const GRAMMAR_RULES = [
       { thai: '<mark>ไม่ว่า</mark>จะยากแค่ไหนก็ตาม เขาก็ไม่ยอมแพ้', rom: '<mark>mai wa</mark> cha yak khae nai ko tam khao ko mai yom phae', en: '<mark>No matter how</mark> hard it is, he never gives up.' },
       { thai: '<mark>ไม่ว่า</mark>ใครจะพูดอะไร ฉันก็ไม่เปลี่ยนใจ', rom: '<mark>mai wa</mark> khrai cha phut a rai chan ko mai plian chai', en: '<mark>No matter what</mark> anyone says, I won\'t change my mind.' },
       { thai: '<mark>ไม่ว่า</mark>ที่ไหนก็มีปัญหา', rom: '<mark>mai wa</mark> thi nai ko mi pan ha', en: '<mark>No matter where</mark> you go, there are problems.' },
+    ],
+  },
+
+  // ── GRAMMAR CORRECTIONS (rules 51–55) ──────────────────────────────────
+  {
+    num: 51,
+    category: 'questions',
+    title: '"Whether" uses ว่า…ไหม — not ถ้า',
+    pattern: 'verb of knowing/asking + ว่า + clause + ไหม / หรือไม่ / หรือเปล่า',
+    desc: `To ask or report <em>whether</em> something is the case, embed the question with <strong>ว่า…ไหม</strong> or <strong>ว่า…หรือไม่</strong>. Do <em>not</em> use <strong>ถ้า</strong> — ถ้า introduces real conditions ("if…then"), not reported questions. Common error: <em>ไม่รู้ถ้าเขาจะมา</em> is wrong. Correct: <em>ไม่รู้ว่าเขาจะมาไหม</em>. The ว่า connects the outer verb to the embedded question; ไหม / หรือไม่ closes it at the end (see also Rule 40).`,
+    key: 'highlighted = ว่า…ไหม pair',
+    examples: [
+      { thai: 'ไม่รู้<mark>ว่า</mark>เขาจะมา<mark>ไหม</mark>', rom: 'mai ru <mark>wa</mark> khao cha ma <mark>mai</mark>', en: 'I don\'t know <mark>whether</mark> he will come.' },
+      { thai: 'ถามเขา<mark>ว่า</mark>ราคาถูก<mark>หรือไม่</mark>', rom: 'tham khao <mark>wa</mark> ra kha thuk <mark>rue mai</mark>', en: 'Ask him <mark>whether</mark> the price is cheap.' },
+      { thai: 'ไม่แน่ใจ<mark>ว่า</mark>จะผ่าน<mark>หรือเปล่า</mark>', rom: 'mai nae chai <mark>wa</mark> cha phan <mark>rue plao</mark>', en: 'Not sure <mark>whether</mark> it will pass.' },
+    ],
+  },
+  {
+    num: 52,
+    category: 'complex',
+    title: 'จะ in the result clause — not the condition clause',
+    pattern: 'ถ้า + condition (no จะ) + ก็ + จะ + result',
+    desc: `In a conditional sentence, <strong>จะ</strong> marks a future result and belongs in the <em>result clause</em> after ก็ — not inside the ถ้า clause. Placing จะ inside the condition changes the meaning: <em>ถ้าจะ + verb</em> means "if (you) are going to…" (the intention is the condition). For a neutral future conditional, keep จะ in the result: <em>ถ้าฝนตกก็จะหนาว</em> = "if it rains, it will be cold." The condition names a scenario; จะ labels the consequence.`,
+    key: 'highlighted = จะ in result',
+    examples: [
+      { thai: 'ถ้าฝนตกก็<mark>จะ</mark>ไม่ไป', rom: 'tha fon tok ko <mark>cha</mark> mai pai', en: 'If it rains, (I) <mark>will</mark> not go. (จะ in result ✓)' },
+      { thai: 'ถ้าไม่จ่ายก็<mark>จะ</mark>ถูกตัดไฟ', rom: 'tha mai chai ko <mark>cha</mark> thuk tat fai', en: 'If you don\'t pay, the power <mark>will</mark> be cut.' },
+      { thai: 'ถ้าเสร็จก็<mark>จะ</mark>โทรบอก', rom: 'tha set ko <mark>cha</mark> tho bok', en: 'If (I\'m) done, (I) <mark>will</mark> call.' },
+    ],
+  },
+  {
+    num: 53,
+    category: 'verbs',
+    title: 'One certainty word at a time — don\'t mix opposites',
+    pattern: 'อาจจะ (uncertain) OR คงจะ (probable) OR ต้อง / แน่นอน (certain) — not combined',
+    desc: `Thai has a scale of certainty words: <strong>อาจจะ</strong> = might/possibly (low certainty); <strong>คงจะ</strong> = probably (medium); <strong>ต้อง</strong> = must/surely (high); <strong>แน่นอน</strong> = definitely (full certainty). Pick <em>one</em> level per idea. Combining opposite ends contradicts itself: <em>อาจจะ…แน่นอน</em> says "possibly…certainly" at once. Stacking same-direction words is redundant: <em>ต้อง…แน่นอน</em> says "must…definitely" twice. Choose the word that matches your confidence and stop there.`,
+    key: 'highlighted = certainty word',
+    examples: [
+      { thai: 'เขา<mark>อาจจะ</mark>มา', rom: 'khao <mark>at cha</mark> ma', en: 'He <mark>might</mark> come. (uncertain — don\'t add แน่นอน)' },
+      { thai: 'เขา<mark>คงจะ</mark>เหนื่อย', rom: 'khao <mark>khong cha</mark> nueai', en: 'He is <mark>probably</mark> tired.' },
+      { thai: '<mark>แน่นอน</mark>ว่าต้องใช้เวลา', rom: '<mark>nae non</mark> wa tong chai we la', en: 'It will <mark>definitely</mark> take time.' },
+    ],
+  },
+  {
+    num: 54,
+    category: 'basics',
+    title: 'เป็น before adjectives — don\'t add it',
+    pattern: 'adjective alone as predicate | เป็น only before nouns / roles',
+    desc: `Thai adjectives serve directly as predicates without any linking verb: <em>งานนี้ยาก</em> = "this work is hard." Adding <strong>เป็น</strong> before an adjective — mirroring English "to be + adjective" — is an error: <em>*เป็นยาก</em> is wrong. Reserve เป็น for nouns, roles, and nationalities (see Rule 12). The exceptions are fixed noun phrases: <strong>เป็นประโยชน์</strong> (useful), <strong>เป็นอันตราย</strong> (dangerous), <strong>เป็นไปได้</strong> (possible) — these are correct because the word after เป็น is a noun, not an adjective.`,
+    key: 'highlighted = adjective used directly',
+    examples: [
+      { thai: 'งานนี้<mark>ซับซ้อน</mark>มาก', rom: 'ngan ni <mark>sap son</mark> mak', en: 'This work is very <mark>complex</mark>. (no เป็น needed)' },
+      { thai: 'เรื่องนี้<mark>สำคัญ</mark>', rom: 'rueang ni <mark>sam khan</mark>', en: 'This matter is <mark>important</mark>.' },
+      { thai: 'การสูบบุหรี่<mark>เป็น</mark>อันตรายต่อสุขภาพ', rom: 'kan sup bu ri <mark>pen</mark> an ta rai to su kha phap', en: 'Smoking <mark>is</mark> dangerous to health. (เป็น + noun phrase ✓)' },
+    ],
+  },
+  {
+    num: 55,
+    category: 'questions',
+    title: 'ไม่ได้ vs ยังไม่ vs ยังไม่ได้',
+    pattern: 'ไม่ได้ + verb (didn\'t/couldn\'t) · ยังไม่ + verb (not yet) · ยังไม่ได้ + verb (haven\'t gotten to yet)',
+    desc: `Three negation patterns that are easy to confuse. <strong>ไม่ได้ + verb</strong>: the action did not happen — it was prevented, or you are denying it occurred. <strong>ยังไม่ + verb</strong>: hasn't happened yet — there is an expectation it will or may. <strong>ยังไม่ได้ + verb</strong>: hasn't been gotten around to / managed yet — the opportunity existed but the action wasn't taken. <strong>ยัง</strong> signals "still pending"; adding <strong>ได้</strong> adds the idea of readiness or opportunity not yet used.`,
+    key: 'highlighted = negation pattern',
+    examples: [
+      { thai: 'เขา<mark>ไม่ได้</mark>ไป', rom: 'khao <mark>mai dai</mark> pai', en: 'He didn\'t go / He couldn\'t go. (the trip did not happen)' },
+      { thai: 'เขา<mark>ยังไม่</mark>ไป', rom: 'khao <mark>yang mai</mark> pai', en: 'He hasn\'t gone yet. (but may still go)' },
+      { thai: 'เขา<mark>ยังไม่ได้</mark>ไป', rom: 'khao <mark>yang mai dai</mark> pai', en: 'He still hasn\'t gotten around to going.' },
+    ],
+  },
+
+  // ── FLUENCY & NATURALNESS (rules 56–60) ──────────────────────────────
+  {
+    num: 56,
+    category: 'fluency',
+    title: 'Verb collocations — learn verb + noun pairs as fixed chunks',
+    pattern: 'ดื่มกาแฟ · ให้อาหาร · ตัดสินคดี · กังวลเรื่อง · เป็นอันตรายต่อ',
+    desc: `Thai (like all languages) has preferred verb-noun pairings. Using the wrong verb — even a close synonym — sounds unnatural. Learn these as fixed chunks rather than translating word-for-word. Key collocations: <strong>ดื่ม</strong> for fluids (coffee, water, beer) — not กิน; <strong>ให้อาหาร / ให้ข้าว</strong> to feed an animal or person; <strong>ตัดสินคดี</strong> to rule on a case; <strong>กังวลเรื่อง</strong> to worry about; <strong>เป็นอันตรายต่อ</strong> to be dangerous to; <strong>ออกกำลังกาย</strong> to exercise; <strong>ทำร้าย</strong> to harm.`,
+    key: 'highlighted = collocation pair',
+    examples: [
+      { thai: 'เขา<mark>ดื่มกาแฟ</mark>ทุกเช้า', rom: 'khao <mark>dueam ka fae</mark> thuk chao', en: 'He <mark>drinks coffee</mark> every morning. (ดื่ม, not กิน)' },
+      { thai: '<mark>กังวลเรื่อง</mark>สุขภาพ', rom: '<mark>kang won rueang</mark> su kha phap', en: '<mark>Worried about</mark> health. (กังวลเรื่อง as a chunk)' },
+      { thai: 'บุหรี่<mark>เป็นอันตรายต่อ</mark>ปอด', rom: 'bu ri <mark>pen an ta rai to</mark> pot', en: 'Cigarettes <mark>are dangerous to</mark> the lungs.' },
+    ],
+  },
+  {
+    num: 57,
+    category: 'fluency',
+    title: 'Avoid การ+verb and มีความ+adjective overuse',
+    pattern: 'simple verb or adjective · การ+verb only when it\'s the subject · skip มีความ+adjective',
+    desc: `Two patterns that make Thai sound stiff. <strong>การ + verb</strong> nominalises a verb ("the act of…") and is correct only when that phrase is the <em>subject</em>: <em>การออกกำลังกายทำให้ร่างกายแข็งแรง</em>. As a predicate or object, the plain verb is more natural: <em>ออกกำลังกายทุกวัน</em>, not <em>การออกกำลังกายทุกวัน</em>. <strong>มีความ + adjective</strong> (e.g. <em>มีความสำคัญ</em>) is a formal nominalisation that rarely adds anything — use the adjective directly: <em>สำคัญ</em>, <em>สนใจ</em>, <em>มั่นใจ</em>.`,
+    key: 'highlighted = simpler direct form',
+    examples: [
+      { thai: 'เรื่องนี้<mark>สำคัญ</mark>มาก', rom: 'rueang ni <mark>sam khan</mark> mak', en: 'This matter is very <mark>important</mark>. (not มีความสำคัญ)' },
+      { thai: 'เขา<mark>สนใจ</mark>ดนตรี', rom: 'khao <mark>son chai</mark> don tri', en: 'He is <mark>interested</mark> in music. (not มีความสนใจใน)' },
+      { thai: '<mark>การออกกำลังกาย</mark>ทำให้ร่างกายแข็งแรง', rom: '<mark>kan ok kam lang kai</mark> tham hai rang kai khaeng raeng', en: '<mark>Exercising</mark> makes the body strong. (การ correct — it\'s the subject)' },
+    ],
+  },
+  {
+    num: 58,
+    category: 'fluency',
+    title: 'Softeners: one at a time — never stack',
+    pattern: 'ยัง · อาจจะ · ค่อนข้าง — pick one; ค่อนข้าง + มาก is contradictory',
+    desc: `Thai uses hedging words to soften statements: <strong>ยัง</strong> (still/somewhat), <strong>อาจจะ</strong> (perhaps), <strong>ค่อนข้าง</strong> (quite/rather). Each works alone. Stacking a softener with an intensifier creates a contradiction: <em>ค่อนข้างซับซ้อนมาก</em> says "rather complex…very" in the same breath — ค่อนข้าง dials down while มาก cranks up. Pick one direction: <em>ค่อนข้างซับซ้อน</em> (rather complex) or <em>ซับซ้อนมาก</em> (very complex). The same applies to stacking two softeners together — use one.`,
+    key: 'highlighted = softener or intensifier (pick one)',
+    examples: [
+      { thai: '<mark>ค่อนข้าง</mark>ยาก', rom: '<mark>khon khat</mark> yak', en: '<mark>Rather</mark> difficult. (not ค่อนข้างยากมาก)' },
+      { thai: '<mark>อาจจะ</mark>ใช้เวลานาน', rom: '<mark>at cha</mark> chai we la nan', en: '<mark>Might</mark> take a long time.' },
+      { thai: 'ยากมาก', rom: 'yak mak', en: 'Very difficult. (intensifier alone — no ค่อนข้าง)' },
+    ],
+  },
+  {
+    num: 59,
+    category: 'fluency',
+    title: 'Match register: spoken connectors vs formal connectors',
+    pattern: 'everyday → เลย · ก็เลย · แล้วก็ · อีกอย่าง | formal → ดังนั้น · จึง · นอกจากนั้น · อย่างไรก็ตาม',
+    desc: `Thai has two sets of connectors that do similar logical jobs but belong to different registers. <strong>Spoken / informal</strong>: <strong>เลย</strong> (so/then), <strong>ก็เลย</strong> (and so), <strong>แล้วก็</strong> (and then), <strong>อีกอย่าง</strong> (another thing is…). <strong>Formal / written</strong>: <strong>ดังนั้น</strong> (therefore), <strong>จึง</strong> (thus — placed directly before the verb, not at clause start), <strong>นอกจากนั้น</strong> (furthermore), <strong>อย่างไรก็ตาม</strong> (however). Mixing the two in one sentence sounds inconsistent — match the connector to the overall tone.`,
+    key: 'highlighted = register-matched connector',
+    examples: [
+      { thai: 'เขาไม่สบาย <mark>เลย</mark>ไม่มา', rom: 'khao mai sa bai <mark>loei</mark> mai ma', en: 'He wasn\'t well, <mark>so</mark> he didn\'t come. (spoken)' },
+      { thai: 'ผู้ป่วยเดินทางไม่ได้ <mark>จึง</mark>ต้องส่งแพทย์ไป', rom: 'phu puai doen thang mai dai <mark>chueng</mark> tong song phaet pai', en: 'The patient could not travel; a doctor <mark>thus</mark> had to be sent. (formal)' },
+      { thai: '<mark>อีกอย่าง</mark> ฉันไม่มีเวลา', rom: '<mark>ik yang</mark> chan mai mi we la', en: '<mark>Also</mark>, I don\'t have time. (spoken)' },
+    ],
+  },
+  {
+    num: 60,
+    category: 'fluency',
+    title: 'Write the simple version first — connect only when needed',
+    pattern: 'idea. idea. — two short sentences · add one connector only if the link isn\'t obvious',
+    desc: `A common learner habit is chaining every idea with connectors, producing heavy sentences. Thai prefers short, direct units. Write the main point first; add a connector only when the logical relationship is not obvious from context. Two short sentences are almost always cleaner than one long sentence joined by <strong>เพราะว่า / ซึ่ง / ดังนั้น / อย่างไรก็ตาม</strong>. Also avoid overusing <strong>ซึ่ง</strong> (formal relative clause marker) when <strong>ที่</strong> or a new sentence works. When you do connect, use one connector per sentence.`,
+    key: 'highlighted = natural break point',
+    examples: [
+      { thai: 'เขาไม่มา<mark>.</mark> เขาป่วย', rom: 'khao mai ma. khao puai', en: 'He didn\'t come. He was sick. (cleaner than a เพราะว่า chain)' },
+      { thai: 'งานนี้ยาก<mark> แต่</mark>ทำได้', rom: 'ngan ni yak <mark>tae</mark> tham dai', en: 'This work is hard<mark> but</mark> doable. (one connector is fine)' },
+      { thai: 'ฉันชอบกาแฟ<mark>.</mark> ดื่มทุกวัน', rom: 'chan chop ka fae. dueam thuk wan', en: 'I like coffee. (I) drink it every day. (subject dropped naturally in second sentence)' },
     ],
   },
 ];
