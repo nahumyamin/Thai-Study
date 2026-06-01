@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react';
 import { CLASSIFIER_QUESTIONS } from '../data/classifierDrop.js';
 import ExitButton from '@/components/ExitButton';
+import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
 const ROUND_SIZE = 30;
@@ -46,12 +47,7 @@ function RoundComplete({ score, total, onPlayAgain }) {
       </div>
 
       <div className="flex justify-center">
-        <button
-          onClick={onPlayAgain}
-          className="px-8 py-3 rounded-xl bg-primary text-primary-foreground font-medium hover:opacity-90 transition-opacity"
-        >
-          Play again
-        </button>
+        <Button onClick={onPlayAgain}>Play again</Button>
       </div>
     </div>
   );
@@ -81,12 +77,7 @@ function IntroScreen({ onStart, showPage }) {
           .
         </p>
       )}
-      <button
-        onClick={onStart}
-        className="px-8 py-3 rounded-xl bg-primary text-primary-foreground font-medium hover:opacity-90 transition-opacity"
-      >
-        Start →
-      </button>
+      <Button onClick={onStart}>Start →</Button>
     </div>
   );
 }
@@ -254,12 +245,9 @@ export default function ClassifierDropPage({ showPage }) {
 
       {/* Next button */}
       {choice && (
-        <button
-          onClick={handleNext}
-          className="w-full py-3 rounded-xl bg-primary text-primary-foreground font-medium hover:opacity-90 transition-opacity"
-        >
+        <Button className="w-full" onClick={handleNext}>
           {current + 1 >= questions.length ? 'See results →' : 'Next →'}
-        </button>
+        </Button>
       )}
     </div>
   );

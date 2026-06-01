@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { MISTAKE_SENTENCES } from '../data/mistakeHunter.js';
 import ExitButton from '@/components/ExitButton';
+import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
 const ROUND_SIZE = 20;
@@ -68,12 +69,7 @@ function RoundSummary({ questions, results, onPlayAgain }) {
         </div>
       </div>
 
-      <button
-        onClick={onPlayAgain}
-        className="px-8 py-3 rounded-xl bg-primary text-primary-foreground font-medium hover:opacity-90 transition-opacity"
-      >
-        Play again
-      </button>
+      <Button onClick={onPlayAgain}>Play again</Button>
     </div>
   );
 }
@@ -103,12 +99,7 @@ function IntroScreen({ onStart, showPage }) {
           .
         </p>
       )}
-      <button
-        onClick={onStart}
-        className="px-8 py-3 rounded-xl bg-primary text-primary-foreground font-medium hover:opacity-90 transition-opacity"
-      >
-        Start →
-      </button>
+      <Button onClick={onStart}>Start →</Button>
     </div>
   );
 }
@@ -282,12 +273,9 @@ export default function MistakeHunterPage({ showPage }) {
 
       {/* Next button */}
       {revealed && (
-        <button
-          onClick={handleNext}
-          className="w-full py-3 rounded-xl bg-primary text-primary-foreground font-medium hover:opacity-90 transition-opacity"
-        >
+        <Button className="w-full" onClick={handleNext}>
           {current + 1 >= questions.length ? 'See results →' : 'Next →'}
-        </button>
+        </Button>
       )}
     </div>
   );

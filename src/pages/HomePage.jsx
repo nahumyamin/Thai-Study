@@ -233,7 +233,7 @@ function WordOfTheDay({ showPage }) {
                 'text-xs font-semibold px-3 py-1.5 rounded-lg transition-all cursor-pointer border-none',
                 isCompleted
                   ? 'bg-emerald-500/10 text-emerald-600 hover:bg-emerald-500/20'
-                  : 'bg-primary text-primary-foreground hover:opacity-90',
+                  : 'bg-zinc-900 text-white hover:bg-zinc-800 dark:bg-primary dark:text-primary-foreground dark:hover:bg-primary/90',
                 submitting && 'opacity-50 cursor-not-allowed'
               )}
             >

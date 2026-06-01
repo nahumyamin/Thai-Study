@@ -16,6 +16,7 @@ import {
   computeEarnedAchievements,
 } from '../lib/gamification.js';
 import { allVocab, topics } from '../data/vocab.js';
+import { Button } from '@/components/ui/button.jsx';
 
 // ─────────────────────────────────────────────────────────────────
 // Tiny icon helpers
@@ -653,9 +654,9 @@ function DailyChallengesPanel({ challenges, setChallenges, user }) {
                         className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm font-thai-display text-foreground focus:outline-none focus:ring-1 focus:ring-primary/40 resize-none mb-2"
                       />
                       <div className="flex items-center gap-2">
-                        <button onClick={() => handleSave(c.id)} disabled={saving || !editingText.trim()} className="text-xs font-semibold px-3 py-1.5 rounded-lg bg-primary text-primary-foreground hover:opacity-90 transition-opacity cursor-pointer border-none disabled:opacity-50">
+                        <Button size="xs" onClick={() => handleSave(c.id)} disabled={saving || !editingText.trim()}>
                           {saving ? 'Saving…' : 'Save'}
-                        </button>
+                        </Button>
                         <button onClick={cancelEdit} className="text-xs text-muted-foreground hover:text-foreground transition-colors cursor-pointer bg-transparent border-none px-2 py-1.5">
                           Cancel
                         </button>
@@ -899,13 +900,9 @@ export default function DashboardPage({ showPage }) {
                 placeholder="Leaderboard nickname…"
                 className="text-xs bg-background border border-border rounded-lg px-2.5 py-1 focus:outline-none focus:ring-1 focus:ring-primary/40 w-40"
               />
-              <button
-                onClick={handleNicknameSave}
-                disabled={nickSaving}
-                className="text-xs px-2.5 py-1 rounded-lg bg-primary text-primary-foreground font-semibold hover:opacity-90 disabled:opacity-50 transition-opacity border-none cursor-pointer"
-              >
+              <Button size="xs" onClick={handleNicknameSave} disabled={nickSaving}>
                 {nickSaving ? '…' : 'Save'}
-              </button>
+              </Button>
               <button
                 onClick={() => setEditingNick(false)}
                 className="text-xs text-muted-foreground hover:text-foreground transition-colors border-none bg-transparent cursor-pointer"

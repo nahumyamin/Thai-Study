@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext.jsx';
 import { supabase } from '../lib/supabase.js';
+import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
 function GoogleIcon() {
@@ -186,13 +187,9 @@ export default function AuthModal({ open, onClose, initialMode = 'signup' }) {
             </p>
           )}
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full py-3 rounded-xl bg-primary text-primary-foreground text-sm font-semibold hover:opacity-90 transition-opacity cursor-pointer border-none disabled:opacity-50"
-          >
+          <Button type="submit" disabled={loading} className="w-full">
             {loading ? '…' : mode === 'signup' ? 'Create account' : 'Sign in'}
-          </button>
+          </Button>
         </form>
 
         {/* Switch mode */}
