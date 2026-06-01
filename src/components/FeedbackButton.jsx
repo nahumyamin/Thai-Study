@@ -43,6 +43,7 @@ export default function FeedbackButton() {
   const [status, setStatus]     = useState('idle'); // idle | submitting | success | error
   const [hovered, setHovered]   = useState(false);
   const [pulsed, setPulsed]     = useState(false);
+  const [onFooter, setOnFooter] = useState(false);
 
   const isExpanded = hovered || pulsed;
 
@@ -58,6 +59,18 @@ export default function FeedbackButton() {
       return () => clearTimeout(collapse);
     }, 1500);
     return () => clearTimeout(expand);
+  }, []);
+
+  // Invert button colors when it overlaps the footer
+  useEffect(() => {
+    const check = () => {
+      const footer = document.querySelector('footer');
+      if (!footer) return;
+      setOnFooter(footer.getBoundingClientRect().top < window.innerHeight - 24);
+    };
+    check();
+    window.addEventListener('scroll', check, { passive: true });
+    return () => window.removeEventListener('scroll', check);
   }, []);
 
   const togglePurpose = (p) =>
@@ -100,8 +113,10 @@ export default function FeedbackButton() {
         aria-label="Give feedback"
         className={cn(
           'fixed bottom-6 right-6 z-40 h-12 flex items-center justify-center rounded-full',
-          'bg-zinc-900 text-white shadow-lg cursor-pointer dark:bg-primary dark:text-primary-foreground',
-          'active:scale-95 transition-transform',
+          onFooter
+            ? 'bg-white text-zinc-900 shadow-lg cursor-pointer'
+            : 'bg-zinc-900 text-white shadow-lg cursor-pointer dark:bg-primary dark:text-primary-foreground',
+          'active:scale-95 transition-all duration-200',
           'px-4',
         )}
       >
