@@ -110,7 +110,7 @@ function SetupScreen({ count, setCount, mode, setMode, onStart, showPage }) {
               )}
             >
               <span>{label}</span>
-              <span className={cn('text-xs font-normal', count === n ? 'text-primary-foreground/70' : 'text-muted-foreground')}>{sub}</span>
+              <span className={cn('text-xs font-normal', count === n ? 'text-white/60 dark:text-primary-foreground/70' : 'text-muted-foreground')}>{sub}</span>
             </button>
           ))}
         </div>
