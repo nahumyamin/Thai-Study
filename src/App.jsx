@@ -28,6 +28,7 @@ import FestivalsPage from './pages/FestivalsPage.jsx';
 import FoodPage from './pages/FoodPage.jsx';
 import DashboardPage from './pages/DashboardPage.jsx';
 import AuthModal from './components/AuthModal.jsx';
+import FeedbackButton from './components/FeedbackButton.jsx';
 import { useAuth } from './context/AuthContext.jsx';
 
 const GROUP_MAP = {
@@ -250,6 +251,7 @@ function App() {
       />
       <SearchOverlay open={searchOpen} onClose={() => setSearchOpen(false)} showPage={showPage} />
       <AuthModal open={authModalOpen} onClose={() => setAuthModalOpen(false)} initialMode={authModalMode} />
+      <FeedbackButton />
 
       <div key={activePage} className="animate-page-in">
         {/* Breadcrumb back to the category hub — shown on every practice tool */}
