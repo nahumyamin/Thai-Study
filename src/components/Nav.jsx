@@ -21,14 +21,10 @@ const REFERENCE_PAGES = [
   { id: 'register',      label: 'Registers' },
 ];
 
-function CoffeeIcon() {
+function KofiIcon() {
   return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M18 8h1a4 4 0 0 1 0 8h-1" />
-      <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z" />
-      <line x1="6" y1="1" x2="6" y2="4" />
-      <line x1="10" y1="1" x2="10" y2="4" />
-      <line x1="14" y1="1" x2="14" y2="4" />
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M12 21.593c-5.63-5.539-11-10.297-11-14.402 0-3.791 3.068-5.191 5.281-5.191 1.312 0 4.151.501 5.719 4.457 1.59-3.968 4.464-4.447 5.726-4.447 2.54 0 5.274 1.621 5.274 5.181 0 4.069-5.136 8.625-11 14.402z" />
     </svg>
   );
 }
@@ -151,14 +147,14 @@ export default function Nav({ activePage, activeGroup, showPage, onSearch, theme
         {/* Search + mobile hamburger */}
         <div className="ml-auto flex items-center gap-1">
           <a
-            href="https://buymeacoffee.com/randomnoise"
+            href="https://ko-fi.com/thaistudy"
             target="_blank"
             rel="noopener noreferrer"
             className="p-2.5 text-amber-400/70 hover:text-amber-400 transition-colors"
-            aria-label="Buy me a coffee"
-            title="Buy me a coffee"
+            aria-label="Support on Ko-fi"
+            title="Support on Ko-fi"
           >
-            <CoffeeIcon />
+            <KofiIcon />
           </a>
           <button
             onClick={onSearch}

@@ -701,12 +701,12 @@ export default function HomePage({ showPage }) {
           Created by <span className="font-medium text-foreground">Random Noise</span>
         </p>
         <a
-          href="https://buymeacoffee.com/randomnoise"
+          href="https://ko-fi.com/thaistudy"
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-amber-400 hover:bg-amber-300 text-amber-950 font-semibold text-sm transition-colors shadow-sm hover:shadow-md"
+          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#FF5E5B] hover:bg-[#e54e4b] text-white font-semibold text-sm transition-colors shadow-sm hover:shadow-md"
         >
-          <span>☕</span> Buy me a coffee
+          <span>❤️</span> Support on Ko-fi
         </a>
       </div>
     </div>
