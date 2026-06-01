@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { cn } from './lib/utils.js';
 import Nav from './components/Nav.jsx';
 import { track } from './lib/analytics.js';
@@ -64,48 +65,68 @@ const GROUP_MAP = {
   idioms:    'culture',
   festivals: 'culture',
   food:      'culture',
-  // legacy routes — still work via hash but not in nav
   numbers: 'reference',
   clusters: 'reference',
 };
 
 const VALID_PAGES = new Set(Object.keys(GROUP_MAP));
 
-const PAGE_TITLES = {
-  home:         'Thai Study — Learn Thai Vocabulary, Grammar & Pronunciation',
-  dashboard:    'Dashboard — Thai Study',
-  words:        'Vocabulary Practice — Thai Study',
-  sentences:    'Grammar Practice — Thai Study',
-  script:       'Reading & Script — Thai Study',
-  cards:        'Flashcards — Thai Study',
-  quiz:         'Vocabulary Quiz — Thai Study',
-  review:       'Spaced Review — Thai Study',
-  cloze:        'Fill the Blank — Thai Study',
-  rush:         'Class Rush — Thai Study',
-  scramble:          'Scramble — Thai Study',
-  'classifier-drop': 'Classifier Drop — Thai Study',
-  'mistake-hunter':  'Mistake Hunter — Thai Study',
-  passages:          'Reading Passages — Thai Study',
-  months:       'Thai Months — Thai Study',
-  grammar:      'Grammar Patterns — Thai Study',
-  pronunciation:'Pronunciation & Tones — Thai Study',
-  classifiers:  'Numbers & Classifiers — Thai Study',
-  reading:      'Reading & Writing Strategies — Thai Study',
-  register:     'Thai Registers — Thai Study',
-  fonts:        'Font Recognition — Thai Study',
-  playbooks:    'Study Playbooks — Thai Study',
-  about:        'About — Thai Study',
-  culture:      'Thai Anthems — Thai Study',
-  idioms:       'Thai Idioms — Thai Study',
-  festivals:    'Festivals & Calendar — Thai Study',
-  food:         'Thai Food — Thai Study',
-  numbers:      'Numbers — Thai Study',
-  clusters:     'Consonant Clusters — Thai Study',
+const BASE_URL = 'https://thai-study.com';
+
+const PAGE_META = {
+  home:         { title: 'Thai Study — Learn Thai Vocabulary, Grammar & Pronunciation', description: 'Free Thai language learning app with 329 vocabulary flashcards, 20 grammar patterns, reading passages, tones, classifiers, idioms, festivals, and interactive games. Study Thai online at your own pace.' },
+  dashboard:    { title: 'Dashboard — Thai Study', description: 'Track your Thai language learning progress, streaks, XP, and mastery across all vocabulary and practice tools on Thai Study.' },
+  words:        { title: 'Vocabulary Practice — Thai Study', description: 'Practice Thai vocabulary with flashcards, quizzes, spaced repetition review, and fill-in-the-blank exercises. 329 words across 18 topics.' },
+  sentences:    { title: 'Grammar Practice — Thai Study', description: 'Practice Thai grammar with word scramble, mistake hunter, and classifier drop games. Build correct Thai sentences through interactive exercises.' },
+  script:       { title: 'Reading & Script — Thai Study', description: 'Build Thai reading skills with consonant class drills, graded reading passages, Thai months, and font recognition. Master the Thai alphabet and script.' },
+  cards:        { title: 'Flashcards — Thai Study', description: 'Learn Thai vocabulary with 329 interactive flashcards across 18 topics including food, travel, emotions, and everyday conversation.' },
+  quiz:         { title: 'Vocabulary Quiz — Thai Study', description: 'Test your Thai vocabulary knowledge with multiple-choice and typed recall quizzes. Choose any topic or mix all 329 words.' },
+  review:       { title: 'Spaced Review — Thai Study', description: 'Review Thai vocabulary with spaced repetition — focus on the words due today based on your personal memory schedule.' },
+  cloze:        { title: 'Fill the Blank — Thai Study', description: 'Practice Thai vocabulary in context by filling in missing words inside real example sentences.' },
+  rush:         { title: 'Class Rush — Thai Study', description: 'Sort Thai consonants into their correct classes (high, mid, low) against the clock in this fast-paced flashcard game.' },
+  scramble:         { title: 'Scramble — Thai Study', description: 'Reorder scrambled Thai words into grammatically correct sentences. Grammar tips are revealed with every correct answer.' },
+  'classifier-drop':{ title: 'Classifier Drop — Thai Study', description: 'Pick the correct Thai noun classifier for each word in this fast 30-question game. Master Thai noun classifiers through repetition.' },
+  'mistake-hunter': { title: 'Mistake Hunter — Thai Study', description: 'Find the single grammar mistake hidden in each Thai sentence and sharpen your eye for correct Thai structure.' },
+  passages:     { title: 'Reading Passages — Thai Study', description: 'Read graded Thai texts with vocabulary support and comprehension questions. Build real reading fluency with authentic Thai content.' },
+  months:       { title: 'Thai Months — Thai Study', description: 'Learn all 12 Thai months in Thai script with pronunciation, romanization, and a built-in quiz. Master the Thai calendar.' },
+  grammar:      { title: 'Grammar Patterns — Thai Study', description: 'Study 20 core Thai grammar patterns with example sentences, English explanations, and usage notes. Essential grammar for speaking and reading Thai.' },
+  pronunciation:{ title: 'Pronunciation & Tones — Thai Study', description: 'Master Thai tones, vowel sounds, and consonant classes with visual guides and interactive reference tables.' },
+  classifiers:  { title: 'Numbers & Classifiers — Thai Study', description: 'Complete reference for Thai numbers (0–1,000,000) and noun classifiers grouped by category with examples.' },
+  reading:      { title: 'Reading & Writing Strategies — Thai Study', description: 'Learn strategies for decoding Thai script: vowel placement, silent letters, tone marks, and reading flow for beginners and intermediate learners.' },
+  register:     { title: 'Thai Registers — Thai Study', description: 'Understand Thai speech registers — formal, polite, colloquial, and regal — with vocabulary comparisons and usage guidance.' },
+  fonts:        { title: 'Font Recognition — Thai Study', description: 'Train your eye to recognise Thai words across five very different typefaces: Sriracha, Charmonman, Srisakdi, Mali, and Chonburi.' },
+  playbooks:    { title: 'Study Playbooks — Thai Study', description: 'Structured study plans for learning Thai systematically — whether you are a complete beginner or working towards reading fluency.' },
+  about:        { title: 'About — Thai Study', description: 'Thai Study is a free Thai language learning app. Learn about the project and support its development on Ko-fi.' },
+  culture:      { title: 'Thai Anthems — Thai Study', description: 'Explore Thai national and royal anthems with lyrics in Thai script, romanization, and English translation. Learn about Thai cultural heritage.' },
+  idioms:       { title: 'Thai Idioms — Thai Study', description: 'Discover Thai idioms and proverbs with meanings, literal translations, and illustrated examples. Enrich your Thai with culturally rich expressions.' },
+  festivals:    { title: 'Festivals & Calendar — Thai Study', description: 'Explore major Thai festivals — Songkran, Loy Krathong, Makha Bucha, and more — with dates, traditions, and key vocabulary.' },
+  food:         { title: 'Thai Food — Thai Study', description: 'Learn Thai food vocabulary with names in Thai script, romanization, and descriptions of popular dishes, ingredients, and flavors.' },
+  numbers:      { title: 'Numbers — Thai Study', description: 'Learn Thai numbers from 0 to 1,000,000 with Thai script, romanization, and pronunciation. Essential Thai counting vocabulary.' },
+  clusters:     { title: 'Consonant Clusters — Thai Study', description: 'Complete reference for Thai consonant clusters — two and three consonant combinations with their romanized pronunciation and example words.' },
 };
 
-function pageFromHash() {
-  const hash = window.location.hash.slice(1);
-  return VALID_PAGES.has(hash) ? hash : 'home';
+function pageUrl(page) {
+  return page === 'home' ? `${BASE_URL}/` : `${BASE_URL}/${page}`;
+}
+
+function updatePageMeta(page) {
+  const m = PAGE_META[page] ?? PAGE_META.home;
+  const url = pageUrl(page);
+  document.title = m.title;
+  const set = (sel, attr, val) => { const el = document.querySelector(sel); if (el) el.setAttribute(attr, val); };
+  set('meta[name="description"]', 'content', m.description);
+  set('link[rel="canonical"]', 'href', url);
+  set('meta[property="og:title"]', 'content', m.title);
+  set('meta[property="og:description"]', 'content', m.description);
+  set('meta[property="og:url"]', 'content', url);
+  set('meta[name="twitter:title"]', 'content', m.title);
+  set('meta[name="twitter:description"]', 'content', m.description);
+  set('meta[name="twitter:url"]', 'content', url);
+}
+
+function pageFromPath(pathname) {
+  const slug = pathname.replace(/^\//, '').replace(/\/$/, '') || 'home';
+  return VALID_PAGES.has(slug) ? slug : 'home';
 }
 
 // Pages where the nudge banner should never show
@@ -153,7 +174,9 @@ function StudyBreadcrumb({ activePage, showPage }) {
 
 function App() {
   const { user, signOut } = useAuth();
-  const [activePage, setActivePage] = useState(pageFromHash);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [activePage, setActivePage] = useState(() => pageFromPath(location.pathname));
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [authModalMode, setAuthModalMode] = useState('signup');
   const [searchOpen, setSearchOpen] = useState(false);
@@ -182,34 +205,27 @@ function App() {
       setAuthModalOpen(true);
       return;
     }
-    setActivePage(page);
-    window.location.hash = page === 'home' ? '' : page;
+    navigate(page === 'home' ? '/' : `/${page}`);
   };
 
+  // Sync state and meta with URL changes (back/forward navigation)
   useEffect(() => {
-    const onHashChange = () => setActivePage(pageFromHash());
-    window.addEventListener('hashchange', onHashChange);
-    return () => window.removeEventListener('hashchange', onHashChange);
-  }, []);
-
-  useEffect(() => {
-    document.title = PAGE_TITLES[activePage] ?? PAGE_TITLES.home;
-  }, [activePage]);
+    const page = pageFromPath(location.pathname);
+    setActivePage(page);
+    updatePageMeta(page);
+    window.scrollTo(0, 0);
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+  }, [location.pathname]);
 
   // Track section navigation — skip first render (GA4 handles initial page_view automatically)
   const isFirstNav = useRef(true);
   useEffect(() => {
     if (isFirstNav.current) { isFirstNav.current = false; return; }
     track('page_view', {
-      page_title: PAGE_TITLES[activePage] ?? PAGE_TITLES.home,
+      page_title: PAGE_META[activePage]?.title ?? PAGE_META.home.title,
       page_location: window.location.href,
     });
-  }, [activePage]);
-
-  useEffect(() => {
-    window.scrollTo(0, 0);
-    document.documentElement.scrollTop = 0;
-    document.body.scrollTop = 0;
   }, [activePage]);
 
   useEffect(() => {

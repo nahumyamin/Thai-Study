@@ -126,27 +126,28 @@ export default function Nav({ activePage, activeGroup, showPage, onSearch, theme
     <nav className="bg-zinc-900 text-white sticky top-0 z-50 border-b border-white/10">
       {/* Row 1: brand + group tabs + theme toggle */}
       <div className="flex items-center px-5 border-b border-white/[0.08]">
-        <button
-          onClick={() => handleNav('home')}
-          className="font-serif text-sm text-white/90 py-3 whitespace-nowrap shrink-0 bg-transparent cursor-pointer hover:text-white transition-colors pr-4 mr-2 border-r border-white/15"
+        <a
+          href="/"
+          onClick={(e) => { e.preventDefault(); handleNav('home'); }}
+          className="font-serif text-sm text-white/90 py-3 whitespace-nowrap shrink-0 hover:text-white transition-colors pr-4 mr-2 border-r border-white/15"
         >
           Thai <em className="text-amber-400 not-italic">Study</em>
-        </button>
+        </a>
 
         {/* Desktop group tabs */}
         <div className="hidden sm:flex items-center">
-          <button className={groupTabClass('study')} onClick={() => handleNav(STUDY_PAGES[0].id)}>
+          <a href={`/${STUDY_PAGES[0].id}`} onClick={(e) => { e.preventDefault(); handleNav(STUDY_PAGES[0].id); }} className={groupTabClass('study')}>
             Study
-          </button>
-          <button className={groupTabClass('reference')} onClick={() => handleNav('grammar')}>
+          </a>
+          <a href="/grammar" onClick={(e) => { e.preventDefault(); handleNav('grammar'); }} className={groupTabClass('reference')}>
             Reference
-          </button>
-          <button className={groupTabClass('culture')} onClick={() => handleNav('culture')}>
+          </a>
+          <a href="/culture" onClick={(e) => { e.preventDefault(); handleNav('culture'); }} className={groupTabClass('culture')}>
             Culture
-          </button>
-          <button className={groupTabClass('about')} onClick={() => handleNav('about')}>
+          </a>
+          <a href="/about" onClick={(e) => { e.preventDefault(); handleNav('about'); }} className={groupTabClass('about')}>
             About
-          </button>
+          </a>
         </div>
 
         {/* Search + mobile hamburger */}
@@ -204,12 +205,13 @@ export default function Nav({ activePage, activeGroup, showPage, onSearch, theme
 
                 {profileOpen && (
                   <div className="absolute right-0 top-full mt-2 w-44 rounded-xl border border-white/10 bg-zinc-800 shadow-xl overflow-hidden z-50">
-                    <button
-                      onClick={() => { setProfileOpen(false); handleNav('dashboard'); }}
-                      className="w-full text-left px-4 py-2.5 text-sm text-white/80 hover:bg-white/10 hover:text-white transition-colors cursor-pointer bg-transparent border-none"
+                    <a
+                      href="/dashboard"
+                      onClick={(e) => { e.preventDefault(); setProfileOpen(false); handleNav('dashboard'); }}
+                      className="block w-full text-left px-4 py-2.5 text-sm text-white/80 hover:bg-white/10 hover:text-white transition-colors"
                     >
                       Dashboard
-                    </button>
+                    </a>
                     <div className="h-px bg-white/10" />
                     <button
                       onClick={() => { setProfileOpen(false); onSignOut(); }}
@@ -246,12 +248,13 @@ export default function Nav({ activePage, activeGroup, showPage, onSearch, theme
               <div className="fixed inset-0 z-[200] bg-zinc-900 flex flex-col">
                 {/* Top bar with X */}
                 <div className="flex items-center justify-between px-5 py-3 border-b border-white/10 shrink-0">
-                  <button
-                    onClick={() => handleNav('home')}
-                    className="font-serif text-sm text-white/90 bg-transparent border-none cursor-pointer hover:text-white transition-colors"
+                  <a
+                    href="/"
+                    onClick={(e) => { e.preventDefault(); handleNav('home'); }}
+                    className="font-serif text-sm text-white/90 hover:text-white transition-colors"
                   >
                     Thai <em className="text-amber-400 not-italic">Study</em>
-                  </button>
+                  </a>
                   <button
                     onClick={() => setMenuOpen(false)}
                     className="text-white/60 hover:text-white transition-colors bg-transparent border-none cursor-pointer p-1 text-xl leading-none"
@@ -344,18 +347,19 @@ export default function Nav({ activePage, activeGroup, showPage, onSearch, theme
                     Study
                   </span>
                   {STUDY_PAGES.map(p => (
-                    <button
+                    <a
                       key={p.id}
+                      href={`/${p.id}`}
+                      onClick={(e) => { e.preventDefault(); handleNav(p.id); }}
                       className={cn(
-                        'w-full text-left px-7 py-[0.75rem] text-sm tracking-[0.02em] border-l-[3px] transition-all bg-transparent',
+                        'block w-full text-left px-7 py-[0.75rem] text-sm tracking-[0.02em] border-l-[3px] transition-all',
                         hubForPage(activePage) === p.id
                           ? 'text-white border-amber-400 bg-white/[0.06]'
                           : 'text-white/65 border-transparent'
                       )}
-                      onClick={() => handleNav(p.id)}
                     >
                       {p.label}
-                    </button>
+                    </a>
                   ))}
 
                   <div className="h-px bg-white/[0.08] my-1.5" />
@@ -367,18 +371,19 @@ export default function Nav({ activePage, activeGroup, showPage, onSearch, theme
                     Reference
                   </span>
                   {REFERENCE_PAGES.map(p => (
-                    <button
+                    <a
                       key={p.id}
+                      href={`/${p.id}`}
+                      onClick={(e) => { e.preventDefault(); handleNav(p.id); }}
                       className={cn(
-                        'w-full text-left px-7 py-[0.75rem] text-sm tracking-[0.02em] border-l-[3px] transition-all bg-transparent',
+                        'block w-full text-left px-7 py-[0.75rem] text-sm tracking-[0.02em] border-l-[3px] transition-all',
                         activePage === p.id
                           ? 'text-white border-amber-400 bg-white/[0.06]'
                           : 'text-white/65 border-transparent'
                       )}
-                      onClick={() => handleNav(p.id)}
                     >
                       {p.label}
-                    </button>
+                    </a>
                   ))}
 
                   <div className="h-px bg-white/[0.08] my-1.5" />
@@ -390,32 +395,34 @@ export default function Nav({ activePage, activeGroup, showPage, onSearch, theme
                     Culture
                   </span>
                   {CULTURE_PAGES.map(p => (
-                    <button
+                    <a
                       key={p.id}
+                      href={`/${p.id}`}
+                      onClick={(e) => { e.preventDefault(); handleNav(p.id); }}
                       className={cn(
-                        'w-full text-left px-7 py-[0.75rem] text-sm tracking-[0.02em] border-l-[3px] transition-all bg-transparent',
+                        'block w-full text-left px-7 py-[0.75rem] text-sm tracking-[0.02em] border-l-[3px] transition-all',
                         activePage === p.id
                           ? 'text-white border-amber-400 bg-white/[0.06]'
                           : 'text-white/65 border-transparent'
                       )}
-                      onClick={() => handleNav(p.id)}
                     >
                       {p.label}
-                    </button>
+                    </a>
                   ))}
 
                   <div className="h-px bg-white/[0.08] my-1.5" />
-                  <button
+                  <a
+                    href="/about"
+                    onClick={(e) => { e.preventDefault(); handleNav('about'); }}
                     className={cn(
-                      'w-full text-left px-7 py-[0.75rem] text-sm tracking-[0.02em] border-l-[3px] transition-all bg-transparent',
+                      'block w-full text-left px-7 py-[0.75rem] text-sm tracking-[0.02em] border-l-[3px] transition-all',
                       activePage === 'about'
                         ? 'text-white border-amber-400 bg-white/[0.06]'
                         : 'text-white/65 border-transparent'
                     )}
-                    onClick={() => handleNav('about')}
                   >
                     About
-                  </button>
+                  </a>
 
                   {user && (
                     <>
@@ -439,9 +446,9 @@ export default function Nav({ activePage, activeGroup, showPage, onSearch, theme
       {/* Row 2: sub-tabs (desktop only, hidden on home + about) */}
       <div className={cn('items-center px-5 bg-black/[0.18] overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden', (activePage === 'home' || activeGroup === 'about') ? 'hidden' : 'hidden sm:flex')} aria-hidden={activePage === 'home'}>
         {subPages.map(p => (
-          <button key={p.id} className={subTabClass(p.id)} onClick={() => handleNav(p.id)}>
+          <a key={p.id} href={`/${p.id}`} onClick={(e) => { e.preventDefault(); handleNav(p.id); }} className={subTabClass(p.id)}>
             {p.label}
-          </button>
+          </a>
         ))}
       </div>
     </nav>

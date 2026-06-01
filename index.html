@@ -6,9 +6,10 @@
 
     <!-- Primary meta -->
     <title>Thai Study — Learn Thai Vocabulary, Grammar &amp; Pronunciation</title>
-    <meta name="description" content="Free Thai language learning app with 313 vocabulary flashcards, 50 grammar patterns, reading passages, tones, classifiers, idioms, festivals, and interactive games. Study Thai online at your own pace." />
+    <meta name="description" content="Free Thai language learning app with 329 vocabulary flashcards, 20 grammar patterns, reading passages, tones, classifiers, idioms, festivals, and interactive games. Study Thai online at your own pace." />
     <meta name="keywords" content="learn Thai, Thai vocabulary, Thai grammar, Thai flashcards, Thai language app, speak Thai, Thai pronunciation, Thai tones, Thai study, ภาษาไทย" />
     <meta name="author" content="Random Noise" />
+    <meta name="robots" content="index, follow" />
     <link rel="canonical" href="https://thai-study.com/" />
 
     <!-- Open Graph (Facebook, LinkedIn, WhatsApp) -->
@@ -16,22 +17,26 @@
     <meta property="og:url" content="https://thai-study.com/" />
     <meta property="og:title" content="Thai Study — Learn Thai Vocabulary, Grammar &amp; Pronunciation" />
     <meta property="og:description" content="Free Thai language learning app with flashcards, grammar patterns, reading passages, tones, and interactive games. Study Thai online at your own pace." />
-    <meta property="og:image" content="https://thai-study.com/og-image.svg" />
+    <meta property="og:image" content="https://thai-study.com/og-image.png" />
+    <meta property="og:image:type" content="image/png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Thai Study — Learn Thai word by word. Free flashcards, grammar, quizzes." />
     <meta property="og:site_name" content="Thai Study" />
     <meta property="og:locale" content="en_US" />
 
     <!-- Twitter card -->
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@thaistudy" />
     <meta name="twitter:url" content="https://thai-study.com/" />
     <meta name="twitter:title" content="Thai Study — Learn Thai Vocabulary, Grammar &amp; Pronunciation" />
     <meta name="twitter:description" content="Free Thai language learning app with flashcards, grammar patterns, reading passages, tones, and interactive games." />
-    <meta name="twitter:image" content="https://thai-study.com/og-image.svg" />
+    <meta name="twitter:image" content="https://thai-study.com/og-image.png" />
+    <meta name="twitter:image:alt" content="Thai Study — Learn Thai word by word." />
 
     <!-- Favicon & PWA -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="apple-touch-icon" href="/icon-192.svg" />
+    <link rel="apple-touch-icon" href="/icon-192.png" />
     <link rel="manifest" href="/manifest.json" />
     <meta name="theme-color" content="#18181b" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -57,12 +62,12 @@
       "author": {
         "@type": "Person",
         "name": "Random Noise",
-        "url": "https://buymeacoffee.com/randomnoise"
+        "url": "https://ko-fi.com/thaistudy"
       },
       "keywords": "Thai language, Thai vocabulary, Thai grammar, Thai pronunciation, learn Thai",
       "featureList": [
-        "313 vocabulary flashcards across 18 topics",
-        "50 grammar patterns with examples",
+        "329 vocabulary flashcards across 18 topics",
+        "20 grammar patterns with examples",
         "Reading passages with comprehension",
         "Thai tones and pronunciation guide",
         "Noun classifiers and numbers reference",
@@ -84,11 +89,20 @@
       gtag('config', 'G-XV3TMMTGMR');
     </script>
 
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600&family=DM+Serif+Display:ital@0;1&family=Noto+Serif+Thai:wght@300;400;500&family=Kanit:wght@300;400;500&family=Noto+Sans+Thai:wght@300;400;500&family=Sriracha&family=Athiti:wght@300;400;600&family=Charmonman:wght@400;700&family=Srisakdi&family=Mali:wght@400;600&family=Chonburi&display=swap" rel="stylesheet" />
+    <!-- Fonts: preconnect first, then load -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600&family=DM+Serif+Display:ital@0;1&family=Noto+Serif+Thai:wght@300;400;500&family=Kanit:wght@300;400;500&family=Noto+Sans+Thai:wght@300;400;500&family=Sriracha&family=Athiti:wght@300;400;600&display=swap" rel="stylesheet" />
   </head>
   <body>
     <div id="root"></div>
+    <noscript>
+      <div style="font-family:sans-serif;max-width:600px;margin:4rem auto;padding:0 1.5rem;text-align:center">
+        <h1 style="font-size:1.5rem;margin-bottom:1rem">Thai Study</h1>
+        <p style="color:#555;margin-bottom:1.5rem">Free Thai language learning with flashcards, grammar patterns, reading passages, tones, and interactive games.</p>
+        <p style="color:#888;font-size:0.9rem">Please enable JavaScript to use Thai Study.</p>
+      </div>
+    </noscript>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

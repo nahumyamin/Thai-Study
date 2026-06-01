@@ -1,4 +1,16 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
+
+// Charmonman, Srisakdi, Mali, Chonburi are only needed for this game page
+const GAME_FONTS_URL = 'https://fonts.googleapis.com/css2?family=Charmonman:wght@400;700&family=Srisakdi&family=Mali:wght@400;600&family=Chonburi&display=swap';
+function useLazyFonts(url) {
+  useEffect(() => {
+    if (document.querySelector(`link[href="${url}"]`)) return;
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = url;
+    document.head.appendChild(link);
+  }, [url]);
+}
 import { FONT_GAME_WORDS, FONT_GAME_FONTS, FONT_GAME_INTRO, ROUND_SIZE } from '../data/fontGame.js';
 import { Button } from '@/components/ui/button';
 import ExitButton from '@/components/ExitButton';
@@ -193,6 +205,7 @@ function GameScreen({ questions, onFinish, onExit }) {
 
 // ── Main page ─────────────────────────────────────────────────────
 export default function FontGamePage({ showPage }) {
+  useLazyFonts(GAME_FONTS_URL);
   const [screen, setScreen] = useState('intro'); // intro | game | results
   const [score, setScore]   = useState(0);
   const questions = useMemo(buildRound, [screen === 'game']);

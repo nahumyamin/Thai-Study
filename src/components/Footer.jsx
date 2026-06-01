@@ -76,12 +76,13 @@ export default function Footer({ showPage }) {
               <ul className="flex flex-col gap-2">
                 {section.links.map(link => (
                   <li key={link.page}>
-                    <button
-                      onClick={() => showPage(link.page)}
-                      className="text-sm text-white/55 hover:text-white transition-colors cursor-pointer bg-transparent border-none p-0 text-left"
+                    <a
+                      href={`/${link.page}`}
+                      onClick={(e) => { e.preventDefault(); showPage(link.page); }}
+                      className="text-sm text-white/55 hover:text-white transition-colors"
                     >
                       {link.label}
-                    </button>
+                    </a>
                   </li>
                 ))}
               </ul>
@@ -93,12 +94,13 @@ export default function Footer({ showPage }) {
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pt-8 border-t border-white/[0.08]">
           <div className="flex items-center gap-4">
             <span className="text-xs text-white/25">© {year} Thai Study</span>
-            <button
-              onClick={() => showPage('about')}
-              className="text-xs text-white/35 hover:text-white/70 transition-colors cursor-pointer bg-transparent border-none p-0"
+            <a
+              href="/about"
+              onClick={(e) => { e.preventDefault(); showPage('about'); }}
+              className="text-xs text-white/35 hover:text-white/70 transition-colors"
             >
               About
-            </button>
+            </a>
           </div>
 
           <a
