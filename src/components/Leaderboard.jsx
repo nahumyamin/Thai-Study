@@ -9,8 +9,8 @@ const MEDALS = [
     border: 'border-amber-400/50',
     glow: 'shadow-amber-400/20',
     badge: 'bg-amber-400 text-amber-950',
-    height: 'h-36',
-    order: 'order-2 md:order-2',
+    height: 'h-24 md:h-36',
+    order: 'order-1 md:order-2',
     scale: 'md:-translate-y-4',
   },
   {
@@ -19,8 +19,8 @@ const MEDALS = [
     border: 'border-slate-400/40',
     glow: 'shadow-slate-400/20',
     badge: 'bg-slate-400 text-slate-950',
-    height: 'h-28',
-    order: 'order-1 md:order-1',
+    height: 'h-24 md:h-28',
+    order: 'order-2 md:order-1',
     scale: '',
   },
   {
@@ -46,7 +46,7 @@ const TAUNTS = [
 // ── Empty slot (placeholder when < 3 users) ───────────────────────
 function EmptySlot({ config }) {
   return (
-    <div className={`${config.order} flex flex-col items-center gap-2 flex-1`}>
+    <div className={`${config.order} flex flex-col items-center gap-2 w-full md:flex-1`}>
       <div className={`
         w-full rounded-2xl border bg-gradient-to-b ${config.bg} ${config.border}
         ${config.height} flex flex-col items-center justify-center gap-1
@@ -67,7 +67,7 @@ function PodiumCard({ entry, config, isCurrentUser }) {
   const levelEmoji = LEVEL_EMOJIS[Math.min(entry.level - 1, 5)];
 
   return (
-    <div className={`${config.order} ${config.scale} flex flex-col items-center gap-2 flex-1 transition-transform duration-300`}>
+    <div className={`${config.order} ${config.scale} flex flex-col items-center gap-2 w-full md:flex-1 transition-transform duration-300`}>
       <div className={`
         relative w-full rounded-2xl border bg-gradient-to-b ${config.bg} ${config.border}
         ${config.height} flex flex-col items-center justify-center gap-1 px-3
@@ -159,9 +159,9 @@ export default function Leaderboard({ currentUserId }) {
       <div className="p-5">
         {loading ? (
           /* Skeleton */
-          <div className="flex gap-3 items-end justify-center h-36">
-            {[1,0,2].map(i => (
-              <div key={i} className={`flex-1 rounded-2xl bg-muted/50 animate-pulse ${i===0?'h-36':i===1?'h-24':'h-28'}`} />
+          <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-center md:h-36">
+            {[0,1,2].map(i => (
+              <div key={i} className={`w-full h-24 rounded-2xl bg-muted/50 animate-pulse md:flex-1 ${i===0?'md:h-36':i===2?'md:h-28':''}`} />
             ))}
           </div>
         ) : top3.length === 0 ? (
@@ -172,8 +172,8 @@ export default function Leaderboard({ currentUserId }) {
           </div>
         ) : (
           <>
-            {/* Podium — order: 2nd | 1st | 3rd */}
-            <div className="flex gap-3 items-end justify-center mb-4">
+            {/* Podium — mobile: 1st/2nd/3rd stacked; desktop: 2nd | 1st | 3rd */}
+            <div className="flex flex-col gap-3 mb-4 md:flex-row md:items-end md:justify-center">
               {MEDALS.map(config => {
                 const entry = top3.find(e => Number(e.rank) === config.rank);
                 if (!entry) return <EmptySlot key={config.rank} config={config} />;
