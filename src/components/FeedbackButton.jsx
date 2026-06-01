@@ -100,7 +100,7 @@ export default function FeedbackButton() {
         aria-label="Give feedback"
         className={cn(
           'fixed bottom-6 right-6 z-40 h-12 flex items-center justify-center rounded-full',
-          'bg-primary text-primary-foreground shadow-lg cursor-pointer',
+          'bg-zinc-900 text-white shadow-lg cursor-pointer dark:bg-primary dark:text-primary-foreground',
           'active:scale-95 transition-transform',
           'px-4',
         )}
