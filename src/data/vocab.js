@@ -17,6 +17,7 @@ export const topics = {
   electricity: { label: "ไฟฟ้า", color: "var(--c-electricity)" },
   commerce: { label: "ค้าออนไลน์", color: "var(--c-commerce)" },
   labor: { label: "แรงงาน", color: "var(--c-labor)" },
+  market: { label: "ตลาดนัด", color: "var(--c-market)" },
 };
 
 export const allVocab = [
@@ -277,6 +278,27 @@ export const allVocab = [
   { id: "rong-pha-ya-ban", thai: "โรงพยาบาล", rom: "rong pha ya ban", en: "hospital", topic: "disability", ex: "คนพิการที่ขึ้นทะเบียนแล้วได้รับการรักษาฟรีในโรงพยาบาล" },
   { id: "rai-dai", thai: "รายได้", rom: "rai dai", en: "income, earnings", topic: "disability", ex: "คนพิการหลายคนต้องหารายได้ด้วยตัวเองเพราะหางานทำยาก" },
   { id: "bang-khap", thai: "บังคับ", rom: "bang khap", en: "to force, compel, require by law", topic: "disability", ex: "กฎหมายไทยไม่บังคับให้บริษัทต้องรับคนพิการเข้าทำงาน" },
+
+  { id: "poet-thai-khai-khong", thai: "เปิดท้ายขายของ", rom: "poet thai khai khong", en: "car boot / tailgate sale (selling from the back of a vehicle)", topic: "market", ex: "ตลาดนัดเปิดท้ายขายของเกิดขึ้นครั้งแรกในช่วงเศรษฐกิจไม่ดี" },
+  { id: "ta-lat-nat", thai: "ตลาดนัด", rom: "ta lat nat", en: "periodic market, market fair", topic: "market", ex: "ตลาดนัดเปิดท้ายใช้พื้นที่ว่าง เช่น ที่จอดรถหรือสนามฟุตบอล" },
+  { id: "lom-la-lai", thai: "ล้มละลาย", rom: "lom la lai", en: "to go bankrupt", topic: "market", ex: "เมื่อเกิดปัญหาเศรษฐกิจครั้งใหญ่ ธุรกิจหลายแห่งล้มละลาย" },
+  { id: "tok-ngan", thai: "ตกงาน", rom: "tok ngan", en: "to be unemployed, lose one's job", topic: "market", ex: "คนที่ตกงานเริ่มหารายได้ด้วยการขายของในตลาดนัด" },
+  { id: "long-thun", thai: "ลงทุน", rom: "long thun", en: "to invest, put up capital", topic: "market", ex: "พ่อค้าแม่ค้าที่ตลาดนี้ไม่ต้องลงทุนอะไรมาก" },
+  { id: "kha-chao", thai: "ค่าเช่า", rom: "kha chao", en: "rent (fee)", topic: "market", ex: "ตลาดนัดแบบนี้ไม่มีค่าเช่าหรือเก็บค่าเช่าน้อยมาก" },
+  { id: "rap-phit-chop", thai: "รับผิดชอบ", rom: "rap phit chop", en: "to be responsible for, take responsibility", topic: "market", ex: "เขาหารายได้เพื่อรับผิดชอบค่าใช้จ่ายเล็กๆ น้อยๆ" },
+  { id: "pho-kha-mae-kha", thai: "พ่อค้าแม่ค้า", rom: "pho kha mae kha", en: "vendors, traders, merchants (male & female)", topic: "market", ex: "พ่อค้าแม่ค้าที่ตลาดนัดเอารถมาจอดแล้วเปิดท้ายขายของ" },
+  { id: "khong-mue-song", thai: "ของมือสอง", rom: "khong mue song", en: "second-hand goods, used items", topic: "market", ex: "ของที่ขายในตลาดเปิดท้ายส่วนใหญ่เป็นของมือสอง" },
+  { id: "khong-nok", thai: "ของนอก", rom: "khong nok", en: "imported / foreign goods", topic: "market", ex: "เสื้อผ้ามียี่ห้อบางชิ้นเป็นของนอกที่ลดราคาเกินครึ่ง" },
+  { id: "lot-ra-kha", thai: "ลดราคา", rom: "lot ra kha", en: "to reduce the price, discount", topic: "market", ex: "สินค้าในตลาดเปิดท้ายลดราคาเกินครึ่งจากราคาปกติ" },
+  { id: "jao-khong", thai: "เจ้าของ", rom: "jao khong", en: "owner", topic: "market", ex: "ของที่ขายอาจเป็นของส่วนตัวที่เจ้าของมีเพียงชิ้นเดียว" },
+  { id: "win-thet", thai: "วินเทจ", rom: "win thet", en: "vintage (style)", topic: "market", ex: "ตลาดเปิดท้ายกลายมาเป็นร้านขายของวินเทจในปัจจุบัน" },
+  { id: "kha-ya", thai: "ขยะ", rom: "kha ya", en: "garbage, trash, rubbish", topic: "market", ex: "ขายของเก่าได้เงินดีกว่าเก็บขยะไว้เฉยๆ" },
+  { id: "thang-lueak", thai: "ทางเลือก", rom: "thang lueak", en: "choice, option, alternative", topic: "market", ex: "ถ้าไม่มีทางเลือกมาก ก็ต้องเอาของในบ้านมาขาย" },
+  { id: "pra-yat", thai: "ประหยัด", rom: "pra yat", en: "economical, thrifty; to save (money)", topic: "market", ex: "ขายของแบบเปิดท้ายรถนั้นเร็ว สะดวก และประหยัด" },
+  { id: "khrueang-chai-fai-fa", thai: "เครื่องใช้ไฟฟ้า", rom: "khrueang chai fai fa", en: "electrical appliances", topic: "market", ex: "ของที่เอามาขายมีตั้งแต่เครื่องใช้ไฟฟ้าไปจนถึงแผ่นซีดี" },
+  { id: "ngan-soem", thai: "งานเสริม", rom: "ngan soem", en: "side job, supplementary work", topic: "market", ex: "หลายคนทำงานเสริมนอกจากงานประจำเพื่อหารายได้เพิ่ม" },
+  { id: "kra-sae", thai: "กระแส", rom: "kra sae", en: "trend, current (of popularity or thought)", topic: "market", ex: "กระแสความคิดแบบนี้ทำให้เกิดตลาดนัดเปิดท้ายเป็นครั้งแรก" },
+  { id: "suea-pha", thai: "เสื้อผ้า", rom: "suea pha", en: "clothing, clothes", topic: "market", ex: "รองเท้า กระเป๋า และเสื้อผ้ามือสองขายดีในตลาดเปิดท้าย" },
 
   { id: "phro-phro-wa", thai: "เพราะ / เพราะว่า", rom: "phro / phro wa", en: "because, because of (reason connector)", topic: "grammar" },
   { id: "tae", thai: "แต่", rom: "tae", en: "but, however (contrast)", topic: "grammar" },
