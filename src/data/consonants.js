@@ -23,7 +23,7 @@ export const CONSONANTS = [
   { l: 'ธ', name: 'thong',     sound: 'th',    cls: 'low'  },
   { l: 'ฑ', name: 'montho',    sound: 'th',    cls: 'low'  },
   { l: 'ฒ', name: 'phuu-thao', sound: 'th',    cls: 'low'  },
-  { l: 'ฐ', name: 'thaan',     sound: 'th',    cls: 'low'  },
+  { l: 'ฌ', name: 'choe',      sound: 'ch',    cls: 'low'  },
   // mid class (9)
   { l: 'ก', name: 'gai',       sound: 'g/k',   cls: 'mid'  },
   { l: 'จ', name: 'jaan',      sound: 'j',     cls: 'mid'  },
@@ -53,3 +53,32 @@ export const DIFF = {
   normal: { time: 2500, label: 'Normal' },
   hard:   { time: 1500, label: 'Hard' },
 };
+
+// ── Final consonant (ตัวสะกด) sounds & syllable type ──────────────────
+// When a consonant closes a syllable it collapses to one of eight final
+// sounds. Stop finals (k, t, p) cut the syllable short → a DEAD syllable;
+// sonorant finals (ng, n, m, y, w) let it ring on → a LIVE syllable.
+// The six consonants ฉ ผ ฝ ห อ ฮ are never used as a final (no entry below).
+export const FINAL_SOUND = {
+  // → /k/ (dead)
+  'ก': 'k', 'ข': 'k', 'ฃ': 'k', 'ค': 'k', 'ฅ': 'k', 'ฆ': 'k',
+  // → /t/ (dead)
+  'จ': 't', 'ช': 't', 'ซ': 't', 'ฌ': 't', 'ฎ': 't', 'ฏ': 't', 'ฐ': 't', 'ฑ': 't', 'ฒ': 't',
+  'ด': 't', 'ต': 't', 'ถ': 't', 'ท': 't', 'ธ': 't', 'ศ': 't', 'ษ': 't', 'ส': 't',
+  // → /p/ (dead)
+  'บ': 'p', 'ป': 'p', 'พ': 'p', 'ฟ': 'p', 'ภ': 'p',
+  // → sonorant (live)
+  'ง': 'ng',
+  'ญ': 'n', 'ณ': 'n', 'น': 'n', 'ร': 'n', 'ล': 'n', 'ฬ': 'n',
+  'ม': 'm', 'ย': 'y', 'ว': 'w',
+};
+
+const DEAD_FINALS = new Set(['k', 'p', 't']);
+
+// Returns { final, syllable } for a consonant used as a final, or null for the
+// six consonants (ฉ ผ ฝ ห อ ฮ) that never act as a final.
+export function finalInfo(letter) {
+  const final = FINAL_SOUND[letter];
+  if (!final) return null;
+  return { final, syllable: DEAD_FINALS.has(final) ? 'dead' : 'live' };
+}

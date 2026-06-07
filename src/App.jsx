@@ -16,6 +16,7 @@ import { STUDY_HUBS, toolMeta } from './data/studyHubs.js';
 import ClassifiersPage from './pages/ClassifiersPage.jsx';
 import NumbersPage from './pages/NumbersPage.jsx';
 import ClassRushPage from './pages/ClassRushPage.jsx';
+import ConsonantCardsPage from './pages/ConsonantCardsPage.jsx';
 import ScramblePage from './pages/ScramblePage.jsx';
 import ClassifierDropPage from './pages/ClassifierDropPage.jsx';
 import MistakeHunterPage from './pages/MistakeHunterPage.jsx';
@@ -49,6 +50,7 @@ const GROUP_MAP = {
   review: 'study',
   cloze: 'study',
   rush: 'study',
+  'consonant-cards': 'study',
   scramble: 'study',
   'classifier-drop': 'study',
   'mistake-hunter':  'study',
@@ -84,6 +86,7 @@ const PAGE_META = {
   review:       { title: 'Spaced Review — Thai Study', description: 'Review Thai vocabulary with spaced repetition — focus on the words due today based on your personal memory schedule.' },
   cloze:        { title: 'Fill the Blank — Thai Study', description: 'Practice Thai vocabulary in context by filling in missing words inside real example sentences.' },
   rush:         { title: 'Class Rush — Thai Study', description: 'Sort Thai consonants into their correct classes (high, mid, low) against the clock in this fast-paced flashcard game.' },
+  'consonant-cards': { title: 'Consonant Cards — Thai Study', description: 'Flip flashcards for all 44 Thai consonants to learn each one\'s class, initial sound, and whether it forms a dead or live syllable as a final.' },
   scramble:         { title: 'Scramble — Thai Study', description: 'Reorder scrambled Thai words into grammatically correct sentences. Grammar tips are revealed with every correct answer.' },
   'classifier-drop':{ title: 'Classifier Drop — Thai Study', description: 'Pick the correct Thai noun classifier for each word in this fast 30-question game. Master Thai noun classifiers through repetition.' },
   'mistake-hunter': { title: 'Mistake Hunter — Thai Study', description: 'Find the single grammar mistake hidden in each Thai sentence and sharpen your eye for correct Thai structure.' },
@@ -322,6 +325,7 @@ function App() {
         {activePage === 'about'         && <AboutPage showPage={showPage} />}
         {activePage === 'numbers'       && <NumbersPage />}
         {activePage === 'rush'          && <ClassRushPage showPage={showPage} />}
+        {activePage === 'consonant-cards' && <ConsonantCardsPage />}
         {activePage === 'scramble'          && <ScramblePage showPage={showPage} />}
         {activePage === 'classifier-drop'  && <ClassifierDropPage showPage={showPage} />}
         {activePage === 'mistake-hunter'   && <MistakeHunterPage showPage={showPage} />}
