@@ -12,7 +12,10 @@ import { cn } from '@/lib/utils';
 const vocabMap = new Map();
 allVocab.forEach(w => vocabMap.set(w.thai, w));
 
-function tokenize(text) {
+// Tokenize a paragraph, tagging each token with its absolute character offset
+// into the full passage text (so speech-boundary char indices can be mapped
+// back to the rendered tokens for karaoke-style highlighting).
+function tokenizeWithOffsets(text, base) {
   const tokens = [];
   let i = 0;
   while (i < text.length) {
@@ -20,29 +23,60 @@ function tokenize(text) {
     for (let len = 8; len >= 1; len--) {
       const chunk = text.slice(i, i + len);
       if (vocabMap.has(chunk)) {
-        tokens.push({ text: chunk, def: vocabMap.get(chunk) });
+        tokens.push({ text: chunk, def: vocabMap.get(chunk), start: base + i, end: base + i + len });
         i += len;
         matched = true;
         break;
       }
     }
-    if (!matched) { tokens.push({ text: text[i], def: null }); i++; }
+    if (!matched) { tokens.push({ text: text[i], def: null, start: base + i, end: base + i + 1 }); i++; }
   }
   return tokens;
 }
 
-function PassageText({ text, onWordClick, activeWord }) {
+// Split the passage into paragraphs (on blank lines) while keeping every
+// token's offset absolute within the original string passed to the utterance.
+function buildParagraphs(text) {
+  const paras = [];
+  let cursor = 0;
+  for (const part of text.split(/(\n\n+)/)) {
+    if (part === '') continue;
+    if (/^\n\n+$/.test(part)) { cursor += part.length; continue; }
+    paras.push(tokenizeWithOffsets(part, cursor));
+    cursor += part.length;
+  }
+  return paras;
+}
+
+// End offset of the word starting at `start`: use the engine-provided length
+// when available, otherwise run to the next whitespace (Thai chunks are
+// space-delimited), so the whole spoken chunk highlights.
+function chunkEnd(text, start, len) {
+  if (len > 0) return start + len;
+  let j = start;
+  while (j < text.length && !/\s/.test(text[j])) j++;
+  return Math.max(j, start + 1);
+}
+
+function PassageText({ paragraphs, onWordClick, activeWord, spokenRange }) {
+  const isSpoken = (tok) => spokenRange && tok.start < spokenRange.end && tok.end > spokenRange.start;
   return (
     <div>
-      {text.split(/\n\n+/).map((para, pi, arr) => (
-        <p key={pi} className={pi < arr.length - 1 ? 'mb-4' : ''}>
-          {tokenize(para).map((tok, ti) => {
-            if (!tok.def) return <span key={ti}>{tok.text}</span>;
+      {paragraphs.map((toks, pi) => (
+        <p key={pi} className={pi < paragraphs.length - 1 ? 'mb-4' : ''}>
+          {toks.map((tok, ti) => {
+            const spoken = isSpoken(tok);
+            if (!tok.def) {
+              return <span key={ti} className={spoken ? 'bg-primary/30 rounded-[3px]' : undefined}>{tok.text}</span>;
+            }
             const isActive = activeWord === tok.text;
             return (
               <span
                 key={ti}
-                className={`cursor-pointer rounded-sm transition-colors border-b border-dotted border-primary ${isActive ? 'bg-primary/10' : 'hover:bg-primary/10'}`}
+                className={cn(
+                  'cursor-pointer rounded-sm transition-colors border-b border-dotted border-primary',
+                  spoken ? 'bg-primary/30' : isActive ? 'bg-primary/10' : 'hover:bg-primary/10'
+                )}
                 onClick={(e) => onWordClick(tok, e)}
               >
                 {tok.text}
@@ -102,6 +136,32 @@ function StopIcon() {
   );
 }
 
+function PauseIcon() {
+  return (
+    <svg width="13" height="13" viewBox="0 0 14 14" fill="none">
+      <rect x="2.5" y="2" width="3" height="10" rx="1" fill="currentColor" />
+      <rect x="8.5" y="2" width="3" height="10" rx="1" fill="currentColor" />
+    </svg>
+  );
+}
+
+function PlayIcon() {
+  return (
+    <svg width="13" height="13" viewBox="0 0 14 14" fill="none">
+      <path d="M3.5 2.5L11 7L3.5 11.5V2.5Z" fill="currentColor" />
+    </svg>
+  );
+}
+
+function ResetIcon() {
+  return (
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M3 12a9 9 0 1 0 3-6.7L3 8" />
+      <path d="M3 3v5h5" />
+    </svg>
+  );
+}
+
 // ── Parse title into Thai + English parts ─────────────────────────
 function parseTitle(title) {
   const sep = title.indexOf(' — ');
@@ -150,11 +210,16 @@ export default function ReadingPassagesPage({ showPage }) {
   const [popup, setPopup]             = useState(null);
   const { showRomaji } = useRomaji();
   const [activeWord, setActiveWord]   = useState(null);
+  const [paused, setPaused]           = useState(false);
+  const [spokenRange, setSpokenRange] = useState(null);
   const [fontScale, setFontScale]     = useState(() => {
     const v = parseFloat(localStorage.getItem('passage-font-scale'));
     return v >= FONT_MIN && v <= FONT_MAX ? v : FONT_MIN;
   });
   const popupRef = useRef();
+
+  // Stop any speech if the user leaves the passages page entirely.
+  useEffect(() => () => window.speechSynthesis?.cancel(), []);
 
   useEffect(() => {
     localStorage.setItem('passage-font-scale', String(fontScale));
@@ -167,6 +232,8 @@ export default function ReadingPassagesPage({ showPage }) {
   const stopSpeech = useCallback(() => {
     window.speechSynthesis?.cancel();
     setSpeaking(false);
+    setPaused(false);
+    setSpokenRange(null);
   }, []);
 
   const selectPassage = useCallback((idx) => {
@@ -185,15 +252,28 @@ export default function ReadingPassagesPage({ showPage }) {
 
   const handleSpeak = useCallback(() => {
     if (!('speechSynthesis' in window) || selectedIdx === null) return;
-    stopSpeech();
-    const utt = new SpeechSynthesisUtterance(PASSAGES[selectedIdx].text);
+    const ss = window.speechSynthesis;
+    ss.cancel();
+    const text = PASSAGES[selectedIdx].text;
+    const utt = new SpeechSynthesisUtterance(text);
     utt.lang = 'th-TH';
     utt.rate = 0.82;
-    utt.onstart = () => setSpeaking(true);
-    utt.onend   = () => setSpeaking(false);
-    utt.onerror = () => setSpeaking(false);
-    window.speechSynthesis.speak(utt);
-  }, [selectedIdx, stopSpeech]);
+    utt.onstart = () => { setSpeaking(true); setPaused(false); };
+    utt.onend   = () => { setSpeaking(false); setPaused(false); setSpokenRange(null); };
+    utt.onerror = () => { setSpeaking(false); setPaused(false); setSpokenRange(null); };
+    utt.onboundary = (e) => {
+      if (e.name && e.name !== 'word') return;
+      const start = e.charIndex ?? 0;
+      setSpokenRange({ start, end: chunkEnd(text, start, e.charLength || 0) });
+    };
+    // Chrome drops speak() called in the same tick as cancel(); defer it.
+    setTimeout(() => ss.speak(utt), 60);
+  }, [selectedIdx]);
+
+  const pauseSpeech  = useCallback(() => { window.speechSynthesis?.pause();  setPaused(true);  }, []);
+  const resumeSpeech = useCallback(() => { window.speechSynthesis?.resume(); setPaused(false); }, []);
+  // Reset: restart reading from the beginning.
+  const resetSpeech  = useCallback(() => { handleSpeak(); }, [handleSpeak]);
 
   const handleWordClick = useCallback((tok, e) => {
     const rect = e.target.getBoundingClientRect();
@@ -216,6 +296,11 @@ export default function ReadingPassagesPage({ showPage }) {
     PASSAGES.map((p, i) => ({ p, i }))
       .filter(({ p }) => diffFilter === 'all' || PASSAGE_DIFFICULTY[p.title] === diffFilter),
     [diffFilter]
+  );
+
+  const paragraphs = useMemo(
+    () => (selectedIdx === null ? [] : buildParagraphs(PASSAGES[selectedIdx].text)),
+    [selectedIdx]
   );
 
   const FILTER_TABS = [
@@ -308,9 +393,9 @@ export default function ReadingPassagesPage({ showPage }) {
       </div>
       <Separator className="mb-5" />
 
-      {/* Meta row: difficulty + read-aloud */}
-      <div className="flex items-center gap-3 mb-5 flex-wrap">
-        <DifficultyBadge level={difficulty} />
+      {/* Meta row: difficulty + read-aloud controls */}
+      <div className="flex items-center gap-2 mb-5 flex-wrap">
+        <DifficultyBadge level={difficulty} className="mr-1" />
         {!speaking ? (
           <button
             onClick={handleSpeak}
@@ -320,16 +405,35 @@ export default function ReadingPassagesPage({ showPage }) {
             Read aloud
           </button>
         ) : (
-          <button
-            onClick={stopSpeech}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-primary/50 bg-primary/8 text-primary text-sm transition-colors"
-          >
-            <StopIcon />
-            Stop
-          </button>
+          <>
+            <button
+              onClick={paused ? resumeSpeech : pauseSpeech}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-primary/50 bg-primary/8 text-primary text-sm transition-colors hover:bg-primary/15"
+            >
+              {paused ? <PlayIcon /> : <PauseIcon />}
+              {paused ? 'Resume' : 'Pause'}
+            </button>
+            <button
+              onClick={stopSpeech}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-border bg-card hover:border-primary/40 hover:text-primary text-sm text-muted-foreground transition-colors"
+            >
+              <StopIcon />
+              Stop
+            </button>
+            <button
+              onClick={resetSpeech}
+              title="Restart from the beginning"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-border bg-card hover:border-primary/40 hover:text-primary text-sm text-muted-foreground transition-colors"
+            >
+              <ResetIcon />
+              Reset
+            </button>
+          </>
         )}
         {speaking && (
-          <span className="text-[0.65rem] text-muted-foreground animate-pulse">Reading aloud…</span>
+          <span className="text-[0.65rem] text-muted-foreground animate-pulse">
+            {paused ? 'Paused' : 'Reading aloud…'}
+          </span>
         )}
         <PassageFontControl scale={fontScale} setScale={setFontScale} />
       </div>
@@ -341,9 +445,10 @@ export default function ReadingPassagesPage({ showPage }) {
           style={{ fontSize: `${fontScale}rem` }}
         >
           <PassageText
-            text={passage.text}
+            paragraphs={paragraphs}
             onWordClick={handleWordClick}
             activeWord={activeWord}
+            spokenRange={spokenRange}
           />
         </CardContent>
       </Card>
