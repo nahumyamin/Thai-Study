@@ -2,6 +2,7 @@ import { useState, useMemo } from 'react';
 import { CONSONANTS, finalInfo } from '../data/consonants.js';
 import { track } from '@/lib/analytics.js';
 import ClassBadge from '@/components/ClassBadge.jsx';
+import ConsonantStudyModal from '@/components/ConsonantStudyModal.jsx';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
@@ -104,6 +105,7 @@ function ConsonantCard({ c }) {
 
 export default function ConsonantCardsPage() {
   const [activeClass, setActiveClass] = useState('all');
+  const [studyOpen, setStudyOpen] = useState(false);
 
   const counts = useMemo(() => {
     const c = { all: CONSONANTS.length, low: 0, mid: 0, high: 0 };
@@ -134,6 +136,19 @@ export default function ConsonantCardsPage() {
         Six consonants — ฉ ผ ฝ ห อ ฮ — are never used as a final.
       </p>
 
+      {/* Study mode launcher */}
+      <div className="flex flex-wrap items-center gap-3 mb-6">
+        <Button
+          onClick={() => { setStudyOpen(true); track('study_mode_start', { game: 'consonant_cards', count: filtered.length }); }}
+          className="w-full sm:w-auto"
+        >
+          ▶ Study Mode
+        </Button>
+        <span className="text-xs text-muted-foreground">
+          Flip through {filtered.length} card{filtered.length === 1 ? '' : 's'} and mark what you know.
+        </span>
+      </div>
+
       {/* Class filter */}
       <div className="flex flex-wrap gap-1.5 mb-6">
         {CLASS_FILTERS.map(({ key, label }) => (
@@ -156,6 +171,10 @@ export default function ConsonantCardsPage() {
           <ConsonantCard key={c.l + i} c={c} />
         ))}
       </div>
+
+      {studyOpen && (
+        <ConsonantStudyModal cards={filtered} onClose={() => setStudyOpen(false)} />
+      )}
     </div>
   );
 }
