@@ -228,7 +228,7 @@ export default function ClozePage({ starred, showRomaji = true, showPage }) {
               {missed.map((w, i) => (
                 <div key={i} className="flex items-baseline gap-3 py-2 border-b border-border text-sm">
                   <span className="font-thai-display text-base text-foreground min-w-[6rem]">{w.thai}</span>
-                  <span className="text-muted-foreground">{w.rom} — {w.en}</span>
+                  <span className="text-muted-foreground">{showRomaji ? `${w.rom} — ${w.en}` : w.en}</span>
                 </div>
               ))}
             </div>
@@ -316,7 +316,7 @@ export default function ClozePage({ starred, showRomaji = true, showPage }) {
         <div className="text-center text-sm min-h-[1.5rem] my-3">
           {answered && (typeState === 'correct'
             ? <span className="text-green-700 font-semibold">Correct!</span>
-            : <span className="text-muted-foreground">Answer: <span className="font-thai-display text-foreground">{q.thai}</span> ({q.rom})</span>
+            : <span className="text-muted-foreground">Answer: <span className="font-thai-display text-foreground">{q.thai}</span>{showRomaji && ` (${q.rom})`}</span>
           )}
         </div>
 

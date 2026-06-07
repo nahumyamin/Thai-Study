@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { FESTIVALS, FESTIVALS_INTRO, TYPE_META, MONTHS } from '../data/festivals.js';
 import { Separator } from '@/components/ui/separator';
+import { useRomaji } from '../context/RomajiContext.jsx';
 import { cn } from '@/lib/utils';
 
 // ── Year-at-a-glance timeline ─────────────────────────────────────
@@ -62,11 +63,12 @@ function YearTimeline({ activeFilter, onSelect }) {
 
 // ── Vocabulary row ────────────────────────────────────────────────
 function VocabRow({ v }) {
+  const { showRomaji } = useRomaji();
   return (
     <div className="py-2 border-b border-border/50 last:border-0">
       <div className="flex items-baseline gap-2 flex-wrap">
         <span className="font-thai-display text-lg text-foreground leading-snug">{v.thai}</span>
-        <span className="text-xs italic text-muted-foreground">{v.rom}</span>
+        {showRomaji && <span className="text-xs italic text-muted-foreground">{v.rom}</span>}
       </div>
       <span className="text-sm text-muted-foreground">{v.en}</span>
     </div>

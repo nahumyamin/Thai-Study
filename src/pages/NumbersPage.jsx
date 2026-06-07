@@ -1,8 +1,10 @@
 import { NUMBERS_INTRO, DIGITS, BUILDING_RULES, CONTEXT_CARDS } from '../data/numbers.js';
 import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
+import { useRomaji } from '../context/RomajiContext.jsx';
 
 export default function NumbersPage() {
+  const { showRomaji } = useRomaji();
   return (
     <div className="max-w-[1200px] mx-auto px-5 py-8">
       <h1 className="text-3xl font-serif font-normal mb-1">
@@ -25,7 +27,7 @@ export default function NumbersPage() {
                 </span>
                 <span className="text-xs font-semibold text-muted-foreground">{d.arabic}</span>
                 <span className="text-base text-foreground">{d.word}</span>
-                <span className="text-[0.68rem] italic text-muted-foreground">{d.rom}</span>
+                {showRomaji && <span className="text-[0.68rem] italic text-muted-foreground">{d.rom}</span>}
               </CardContent>
             </Card>
           ))}
@@ -43,7 +45,7 @@ export default function NumbersPage() {
                 {rule.examples.map((ex, j) => (
                   <div key={j} className="flex flex-col">
                     <span className="text-base text-foreground">{ex.thai}</span>
-                    <span className="text-[0.7rem] italic text-muted-foreground">{ex.rom}</span>
+                    {showRomaji && <span className="text-[0.7rem] italic text-muted-foreground">{ex.rom}</span>}
                     <span className="text-[0.78rem] text-muted-foreground">{ex.en}</span>
                   </div>
                 ))}
@@ -62,7 +64,7 @@ export default function NumbersPage() {
                 <div className="font-semibold text-sm text-foreground mb-1">{card.title}</div>
                 <div className="text-sm text-muted-foreground leading-relaxed mb-1">{card.body}</div>
                 <div className="text-base text-foreground mt-1">{card.ex}</div>
-                <div className="text-[0.7rem] italic text-muted-foreground">{card.rom}</div>
+                {showRomaji && <div className="text-[0.7rem] italic text-muted-foreground">{card.rom}</div>}
               </CardContent>
             </Card>
           ))}

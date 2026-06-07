@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { IDIOMS, IDIOMS_INTRO } from '../data/culture.js';
 import { Separator } from '@/components/ui/separator';
+import { useRomaji } from '../context/RomajiContext.jsx';
 import { cn } from '@/lib/utils';
 
 // ── Illustration PNGs ─────────────────────────────────────────────
@@ -79,6 +80,7 @@ function SpeakerBtn({ text }) {
 // ── Idiom card ────────────────────────────────────────────────────
 function IdiomCard({ idiom }) {
   const imgSrc = ILLUSTRATIONS[idiom.thai];
+  const { showRomaji } = useRomaji();
 
   return (
     <div className="rounded-xl border border-border bg-card flex flex-col overflow-hidden">
@@ -96,7 +98,7 @@ function IdiomCard({ idiom }) {
             <div className="font-thai-display text-2xl text-foreground leading-snug mb-0.5">
               {idiom.thai}
             </div>
-            <div className="text-xs italic text-muted-foreground">{idiom.rom}</div>
+            {showRomaji && <div className="text-xs italic text-muted-foreground">{idiom.rom}</div>}
           </div>
           <SpeakerBtn text={idiom.thai} />
         </div>

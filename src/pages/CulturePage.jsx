@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { ANTHEMS } from '../data/culture.js';
 import { Separator } from '@/components/ui/separator';
+import { useRomaji } from '../context/RomajiContext.jsx';
 import { cn } from '@/lib/utils';
 
 function FactRow({ label, value }) {
@@ -15,6 +16,7 @@ function FactRow({ label, value }) {
 }
 
 function AnthemPanel({ anthem }) {
+  const { showRomaji } = useRomaji();
   return (
     <div className="animate-page-in">
       {/* Context */}
@@ -57,9 +59,11 @@ function AnthemPanel({ anthem }) {
                 <div className="font-thai-display text-xl text-foreground leading-relaxed">
                   {line.thai}
                 </div>
-                <div className="text-[0.72rem] italic text-muted-foreground mt-0.5">
-                  {line.rom}
-                </div>
+                {showRomaji && (
+                  <div className="text-[0.72rem] italic text-muted-foreground mt-0.5">
+                    {line.rom}
+                  </div>
+                )}
               </div>
               {/* English side */}
               <div className="px-4 pb-3 pt-1 md:pt-3 flex items-center">

@@ -2,6 +2,7 @@ import { useState, useCallback } from 'react';
 import { CLASSIFIER_QUESTIONS } from '../data/classifierDrop.js';
 import ExitButton from '@/components/ExitButton';
 import { Button } from '@/components/ui/button';
+import { useRomaji } from '../context/RomajiContext.jsx';
 import { cn } from '@/lib/utils';
 
 const ROUND_SIZE = 30;
@@ -84,6 +85,7 @@ function IntroScreen({ onStart, showPage }) {
 
 // ── Main game ────────────────────────────────────────────────────
 export default function ClassifierDropPage({ showPage }) {
+  const { showRomaji } = useRomaji();
   const [questions, setQuestions] = useState([]);
   const [current, setCurrent]     = useState(0);
   const [score, setScore]         = useState(0);
@@ -191,7 +193,7 @@ export default function ClassifierDropPage({ showPage }) {
           Which classifier?
         </div>
         <div className="text-5xl font-medium text-foreground mb-2">{q.noun}</div>
-        <div className="text-sm text-muted-foreground">{q.rom} · {q.en}</div>
+        <div className="text-sm text-muted-foreground">{showRomaji ? `${q.rom} · ${q.en}` : q.en}</div>
       </div>
 
       {/* 2×2 option grid */}

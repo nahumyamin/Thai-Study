@@ -13,6 +13,7 @@ function useLazyFonts(url) {
 }
 import { FONT_GAME_WORDS, FONT_GAME_FONTS, FONT_GAME_INTRO, ROUND_SIZE } from '../data/fontGame.js';
 import { Button } from '@/components/ui/button';
+import { useRomaji } from '../context/RomajiContext.jsx';
 import ExitButton from '@/components/ExitButton';
 import { cn } from '@/lib/utils';
 
@@ -102,6 +103,7 @@ function ResultsScreen({ score, total, onPlayAgain }) {
 
 // ── Game screen ───────────────────────────────────────────────────
 function GameScreen({ questions, onFinish, onExit }) {
+  const { showRomaji } = useRomaji();
   const [current, setCurrent] = useState(0);
   const [picked, setPicked] = useState(null); // null | index
   const [score, setScore] = useState(0);
@@ -162,7 +164,7 @@ function GameScreen({ questions, onFinish, onExit }) {
         <div className="flex items-center justify-center gap-3 mb-5 text-sm text-muted-foreground">
           <span>Standard (Sarabun):</span>
           <span className="text-xl text-foreground font-thai-display">{q.word.thai}</span>
-          <span className="text-muted-foreground">— {q.word.rom}</span>
+          {showRomaji && <span className="text-muted-foreground">— {q.word.rom}</span>}
         </div>
       )}
 

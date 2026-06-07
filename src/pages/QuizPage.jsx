@@ -310,7 +310,7 @@ export default function QuizPage({ starred, showRomaji = true, showPage }) {
               {missed.map((w, i) => (
                 <div key={i} className="flex items-baseline gap-3 py-2 border-b border-border text-sm">
                   <span className="text-base text-foreground min-w-[6rem]">{w.thai}</span>
-                  <span className="text-muted-foreground">{w.rom} — {w.en}</span>
+                  <span className="text-muted-foreground">{showRomaji ? `${w.rom} — ${w.en}` : w.en}</span>
                 </div>
               ))}
             </div>

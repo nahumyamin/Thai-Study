@@ -3,6 +3,7 @@ import {
   Accordion, AccordionItem, AccordionTrigger, AccordionContent,
 } from '@/components/ui/accordion';
 import { Separator } from '@/components/ui/separator';
+import { useRomaji } from '../context/RomajiContext.jsx';
 import { cn } from '@/lib/utils';
 
 // ── Connector chips ───────────────────────────────────────────────
@@ -14,13 +15,14 @@ const CONNECTORS = [
 ];
 
 function ConnectorChips() {
+  const { showRomaji } = useRomaji();
   return (
     <div className="flex flex-wrap gap-2">
       {CONNECTORS.map(c => (
         <div key={c.thai}
           className="flex flex-col items-center gap-0.5 px-4 py-2.5 rounded-xl border border-border bg-muted/40 select-none">
           <span className="text-xl font-thai-display text-foreground leading-tight">{c.thai}</span>
-          <span className="text-[0.6rem] italic text-muted-foreground">{c.rom}</span>
+          {showRomaji && <span className="text-[0.6rem] italic text-muted-foreground">{c.rom}</span>}
           <span className="text-[0.65rem] font-medium text-muted-foreground">{c.en}</span>
         </div>
       ))}

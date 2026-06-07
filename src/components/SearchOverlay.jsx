@@ -3,6 +3,7 @@ import { allVocab, topics } from '../data/vocab.js';
 import { track } from '@/lib/analytics.js';
 import { GRAMMAR_RULES } from '../data/grammar.js';
 import { PASSAGES } from '../data/passages.js';
+import { useRomaji } from '../context/RomajiContext.jsx';
 import { cn } from '@/lib/utils';
 
 const stripTags = (s) => (s || '').replace(/<[^>]*>/g, '');
@@ -58,6 +59,7 @@ export default function SearchOverlay({ open, onClose, showPage }) {
   const [query, setQuery] = useState('');
   const inputRef = useRef(null);
   const results = runSearch(query);
+  const { showRomaji } = useRomaji();
 
   useEffect(() => {
     if (open) {
@@ -144,7 +146,7 @@ export default function SearchOverlay({ open, onClose, showPage }) {
                 >
                   <span className="text-[1rem] text-foreground font-light shrink-0">{w.thai}</span>
                   <span className="text-sm text-muted-foreground truncate flex-1">{w.en}</span>
-                  <span className="text-xs text-muted-foreground/60 italic shrink-0 hidden sm:block">{w.rom}</span>
+                  {showRomaji && <span className="text-xs text-muted-foreground/60 italic shrink-0 hidden sm:block">{w.rom}</span>}
                   <span
                     className="w-1.5 h-1.5 rounded-full shrink-0 self-center"
                     style={{ background: topics[w.topic]?.color || '#888' }}

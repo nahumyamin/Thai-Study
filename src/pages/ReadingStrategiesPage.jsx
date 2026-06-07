@@ -5,6 +5,7 @@ import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { READING_INTRO, READING_SECTIONS } from '../data/reading.js';
 import { WRITING_INTRO, WRITING_SECTIONS } from '../data/writing.js';
+import { useRomaji } from '../context/RomajiContext.jsx';
 
 function SectionAnchor({ id }) {
   return <span id={id} className="block" style={{ scrollMarginTop: '5rem' }} />;
@@ -24,12 +25,13 @@ function TipList({ tips }) {
 }
 
 function SyllableExamples({ examples }) {
+  const { showRomaji } = useRomaji();
   return (
     <div className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-3">
       {examples.map((ex, i) => (
         <div key={i} className="rounded-lg border border-border bg-card p-4 flex flex-col gap-1">
           <div className="text-3xl font-light text-foreground text-center">{ex.thai}</div>
-          <div className="text-sm italic text-primary text-center">{ex.rom}</div>
+          {showRomaji && <div className="text-sm italic text-primary text-center">{ex.rom}</div>}
           <div className="text-xs text-muted-foreground text-center leading-relaxed">{ex.label}</div>
         </div>
       ))}
@@ -38,13 +40,14 @@ function SyllableExamples({ examples }) {
 }
 
 function ParticleTable({ particles }) {
+  const { showRomaji } = useRomaji();
   return (
     <div className="mt-4 overflow-x-auto">
       <table className="w-full border-collapse text-sm border border-border">
         <thead>
           <tr>
             <th className="border border-border px-3 py-2 text-left text-xs font-semibold text-muted-foreground bg-muted/30 w-32">Thai</th>
-            <th className="border border-border px-3 py-2 text-left text-xs font-semibold text-muted-foreground bg-muted/30 w-28">Romanisation</th>
+            {showRomaji && <th className="border border-border px-3 py-2 text-left text-xs font-semibold text-muted-foreground bg-muted/30 w-28">Romanisation</th>}
             <th className="border border-border px-3 py-2 text-left text-xs font-semibold text-muted-foreground bg-muted/30">Use</th>
           </tr>
         </thead>
@@ -52,7 +55,7 @@ function ParticleTable({ particles }) {
           {particles.map((p, i) => (
             <tr key={i} className={i % 2 === 0 ? '' : 'bg-muted/20'}>
               <td className="border border-border px-3 py-2 text-base text-foreground font-light">{p.thai}</td>
-              <td className="border border-border px-3 py-2 text-sm italic text-primary">{p.rom}</td>
+              {showRomaji && <td className="border border-border px-3 py-2 text-sm italic text-primary">{p.rom}</td>}
               <td className="border border-border px-3 py-2 text-sm text-muted-foreground">{p.use}</td>
             </tr>
           ))}

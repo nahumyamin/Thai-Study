@@ -37,6 +37,7 @@ import AuthModal from './components/AuthModal.jsx';
 import FeedbackButton from './components/FeedbackButton.jsx';
 import Footer from './components/Footer.jsx';
 import { useAuth } from './context/AuthContext.jsx';
+import { useRomaji } from './context/RomajiContext.jsx';
 
 const GROUP_MAP = {
   home: null,
@@ -193,9 +194,7 @@ function App() {
       return new Set();
     }
   });
-  const [showRomaji, setShowRomaji] = useState(() =>
-    localStorage.getItem('thai-study-romaji') !== 'false'
-  );
+  const { showRomaji, toggleRomaji } = useRomaji();
 
   const showPage = (page) => {
     if (page === 'login') {
@@ -250,10 +249,6 @@ function App() {
     localStorage.setItem('thai-study-starred', JSON.stringify([...starred]));
   }, [starred]);
 
-  useEffect(() => {
-    localStorage.setItem('thai-study-romaji', showRomaji ? 'true' : 'false');
-  }, [showRomaji]);
-
   const toggleTheme = () => setTheme(t => t === 'light' ? 'dark' : 'light');
 
   const toggleStar = (thai) => {
@@ -277,7 +272,7 @@ function App() {
         theme={theme}
         onToggleTheme={toggleTheme}
         showRomaji={showRomaji}
-        onToggleRomaji={() => setShowRomaji(r => !r)}
+        onToggleRomaji={toggleRomaji}
         user={user}
         onSignOut={async () => { await signOut(); showPage('home'); }}
       />

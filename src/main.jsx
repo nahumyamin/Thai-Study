@@ -4,6 +4,7 @@ import { BrowserRouter } from 'react-router-dom'
 import './index.css'
 import App from './App.jsx'
 import { AuthProvider } from './context/AuthContext.jsx'
+import { RomajiProvider } from './context/RomajiContext.jsx'
 
 // Migrate legacy hash-based URLs (e.g. /#grammar → /grammar)
 ;(function migrateHash() {
@@ -18,7 +19,9 @@ createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter basename={import.meta.env.BASE_URL}>
       <AuthProvider>
-        <App />
+        <RomajiProvider>
+          <App />
+        </RomajiProvider>
       </AuthProvider>
     </BrowserRouter>
   </StrictMode>,

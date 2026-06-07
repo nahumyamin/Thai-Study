@@ -3,6 +3,7 @@ import { PASSAGES, PASSAGE_DIFFICULTY } from '../data/passages.js';
 import { allVocab } from '../data/vocab.js';
 import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
+import { useRomaji } from '../context/RomajiContext.jsx';
 import { cn } from '@/lib/utils';
 
 // ── Vocab tokenizer ───────────────────────────────────────────────
@@ -145,6 +146,7 @@ export default function ReadingPassagesPage({ showPage }) {
   const [diffFilter, setDiffFilter]   = useState('all');
   const [speaking, setSpeaking]       = useState(false);
   const [popup, setPopup]             = useState(null);
+  const { showRomaji } = useRomaji();
   const [activeWord, setActiveWord]   = useState(null);
   const popupRef = useRef();
 
@@ -385,8 +387,7 @@ export default function ReadingPassagesPage({ showPage }) {
           style={{ left: popup.x, top: popup.y }}
         >
           <strong className="block">{popup.word.thai}</strong>
-          <em className="text-xs opacity-70">{popup.word.rom}</em>
-          <br />
+          {showRomaji && <><em className="text-xs opacity-70">{popup.word.rom}</em><br /></>}
           {popup.word.en}
         </div>
       )}

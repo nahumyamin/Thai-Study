@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Separator } from '@/components/ui/separator';
 import ExitButton from '@/components/ExitButton';
+import { useRomaji } from '../context/RomajiContext.jsx';
 import { cn } from '@/lib/utils';
 
 function shuffle(arr) {
@@ -26,12 +27,13 @@ function buildQuestions() {
 
 // ── Mobile month card ─────────────────────────────────────────────
 function MonthCard({ month }) {
+  const { showRomaji } = useRomaji();
   return (
     <Card className="rounded-lg">
       <CardContent className="p-3">
         <div className="text-muted-foreground text-xs mb-1">{month.number}</div>
         <div className="text-2xl font-medium leading-tight">{month.thai}</div>
-        <div className="text-xs italic text-muted-foreground mt-0.5">{month.rom}</div>
+        {showRomaji && <div className="text-xs italic text-muted-foreground mt-0.5">{month.rom}</div>}
         <div className="font-medium mt-2">{month.en}</div>
         <div className="text-xs text-muted-foreground">{month.abbr}</div>
       </CardContent>
@@ -41,6 +43,7 @@ function MonthCard({ month }) {
 
 // ── Desktop reference table ───────────────────────────────────────
 function MonthTable() {
+  const { showRomaji } = useRomaji();
   return (
     <div className="overflow-x-auto">
       <table className="w-full text-base border-collapse">
@@ -49,7 +52,7 @@ function MonthTable() {
             <th className="text-left py-2 px-3 text-muted-foreground font-medium text-sm w-8">#</th>
             <th className="text-left py-2 px-3 text-muted-foreground font-medium text-sm">Thai</th>
             <th className="text-left py-2 px-3 text-muted-foreground font-medium text-sm">Abbr.</th>
-            <th className="text-left py-2 px-3 text-muted-foreground font-medium text-sm">Romanization</th>
+            {showRomaji && <th className="text-left py-2 px-3 text-muted-foreground font-medium text-sm">Romanization</th>}
             <th className="text-left py-2 px-3 text-muted-foreground font-medium text-sm">English</th>
           </tr>
         </thead>
@@ -59,7 +62,7 @@ function MonthTable() {
               <td className="py-3 px-3 text-muted-foreground text-sm">{m.number}</td>
               <td className="py-3 px-3 text-xl font-medium">{m.thai}</td>
               <td className="py-3 px-3 text-muted-foreground">{m.abbr}</td>
-              <td className="py-3 px-3 text-muted-foreground italic">{m.rom}</td>
+              {showRomaji && <td className="py-3 px-3 text-muted-foreground italic">{m.rom}</td>}
               <td className="py-3 px-3 font-medium">{m.en}</td>
             </tr>
           ))}
@@ -71,6 +74,7 @@ function MonthTable() {
 
 // ── Quiz ─────────────────────────────────────────────────────────
 function MonthQuiz() {
+  const { showRomaji } = useRomaji();
   const [mode, setMode] = useState('en-to-thai');
   const [questions, setQuestions] = useState(null);
   const [current, setCurrent] = useState(0);
@@ -187,7 +191,7 @@ function MonthQuiz() {
           <div className="text-4xl font-medium">
             {mode === 'en-to-thai' ? q.month.en : q.month.thai}
           </div>
-          {mode === 'thai-to-en' && (
+          {mode === 'thai-to-en' && showRomaji && (
             <div className="text-muted-foreground italic mt-1">{q.month.rom}</div>
           )}
         </div>
@@ -217,7 +221,7 @@ function MonthQuiz() {
                   {mode === 'en-to-thai' ? choice.thai : choice.en}
                 </span>
                 <span className="text-xs text-muted-foreground italic">
-                  {mode === 'en-to-thai' ? choice.rom : choice.abbr}
+                  {mode === 'en-to-thai' ? (showRomaji ? choice.rom : ' ') : choice.abbr}
                 </span>
               </button>
             );

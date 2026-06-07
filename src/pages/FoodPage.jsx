@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { FOOD, FOOD_INTRO, REGIONS } from '../data/food.js';
 import { Separator } from '@/components/ui/separator';
+import { useRomaji } from '../context/RomajiContext.jsx';
 import { cn } from '@/lib/utils';
 
 // ── Text-to-speech ────────────────────────────────────────────────
@@ -44,11 +45,12 @@ function SpeakerBtn({ text, className = '' }) {
 
 // ── Vocab row ─────────────────────────────────────────────────────
 function VocabRow({ v }) {
+  const { showRomaji } = useRomaji();
   return (
     <div className="py-2 border-b border-border/50 last:border-0">
       <div className="flex items-baseline gap-2 flex-wrap">
         <span className="font-thai-display text-lg text-foreground leading-snug">{v.thai}</span>
-        <span className="text-xs italic text-muted-foreground">{v.rom}</span>
+        {showRomaji && <span className="text-xs italic text-muted-foreground">{v.rom}</span>}
       </div>
       <span className="text-sm text-muted-foreground">{v.en}</span>
     </div>
@@ -58,6 +60,7 @@ function VocabRow({ v }) {
 // ── Food card ─────────────────────────────────────────────────────
 function FoodCard({ dish, isActive, onToggle }) {
   const region = REGIONS[dish.region];
+  const { showRomaji } = useRomaji();
 
   return (
     <div
@@ -86,7 +89,7 @@ function FoodCard({ dish, isActive, onToggle }) {
             <span className="font-thai-display text-lg text-primary leading-snug">{dish.thai}</span>
             <SpeakerBtn text={dish.thai} />
           </div>
-          <div className="text-xs italic text-muted-foreground mt-0.5">{dish.rom}</div>
+          {showRomaji && <div className="text-xs italic text-muted-foreground mt-0.5">{dish.rom}</div>}
         </div>
 
         {/* Chevron */}
@@ -130,7 +133,7 @@ function FoodCard({ dish, isActive, onToggle }) {
                     <div className="min-w-0">
                       <div className="flex items-baseline gap-2 flex-wrap">
                         <span className="font-thai-display text-base text-foreground leading-snug">{ing.thai}</span>
-                        <span className="text-xs italic text-muted-foreground">{ing.rom}</span>
+                        {showRomaji && <span className="text-xs italic text-muted-foreground">{ing.rom}</span>}
                       </div>
                       <span className="text-sm text-muted-foreground">{ing.en}</span>
                     </div>
@@ -164,7 +167,7 @@ function FoodCard({ dish, isActive, onToggle }) {
                   <SpeakerBtn text={o.thai} className="mt-0.5" />
                   <div className="min-w-0">
                     <span className="font-thai-display text-base text-foreground block leading-snug">{o.thai}</span>
-                    <span className="text-[0.75rem] italic text-muted-foreground block">{o.rom}</span>
+                    {showRomaji && <span className="text-[0.75rem] italic text-muted-foreground block">{o.rom}</span>}
                     <span className="text-sm text-muted-foreground block mt-0.5">{o.en}</span>
                   </div>
                 </div>

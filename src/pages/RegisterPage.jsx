@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { REGISTER_CATEGORIES, REGISTER_INTRO, REGISTER_LABELS } from '../data/registers.js';
 import { Separator } from '@/components/ui/separator';
+import { useRomaji } from '../context/RomajiContext.jsx';
 import { cn } from '@/lib/utils';
 
 function speak(text) {
@@ -30,13 +31,14 @@ function SpeakerBtn({ text }) {
 // One register cell
 function RegisterCell({ data, regKey }) {
   const cfg = REGISTER_LABELS[regKey];
+  const { showRomaji } = useRomaji();
   return (
     <div className={cn('rounded-lg border p-3 flex flex-col gap-1.5', cfg.bg, cfg.border)}>
       <div className="flex items-start justify-between gap-1">
         <span className="text-base font-thai-display leading-snug text-foreground">{data.thai}</span>
         <SpeakerBtn text={data.thai} />
       </div>
-      <div className="text-[0.68rem] italic text-muted-foreground">{data.rom}</div>
+      {showRomaji && <div className="text-[0.68rem] italic text-muted-foreground">{data.rom}</div>}
       {data.note && (
         <div className="text-[0.67rem] text-muted-foreground leading-snug border-t border-current/10 pt-1 mt-0.5">
           {data.note}

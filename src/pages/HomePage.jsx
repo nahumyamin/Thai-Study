@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { allVocab, topics } from '../data/vocab.js';
 import { cn } from '@/lib/utils';
 import { useAuth } from '../context/AuthContext.jsx';
+import { useRomaji } from '../context/RomajiContext.jsx';
 import { submitDailyChallenge, getDailyChallenge } from '../lib/progress.js';
 import { supabase } from '../lib/supabase.js';
 import { getLevel } from '../lib/gamification.js';
@@ -79,6 +80,7 @@ function SpeakerIcon() {
 // ── Word chip ──────────────────────────────────────────────────────
 function WordChip({ word }) {
   const topic = topics[word.topic];
+  const { showRomaji } = useRomaji();
   return (
     <div className="flex-1 min-w-0 rounded-lg border border-border bg-card p-4">
       <div className="flex items-center justify-between mb-2">
@@ -99,7 +101,7 @@ function WordChip({ word }) {
           <SpeakerIcon />
         </button>
       </div>
-      <div className="text-xs italic text-muted-foreground mb-1">{word.rom}</div>
+      {showRomaji && <div className="text-xs italic text-muted-foreground mb-1">{word.rom}</div>}
       <div className="text-sm font-medium text-foreground">{word.en}</div>
     </div>
   );

@@ -4,6 +4,7 @@ import { NUMBERS_INTRO, DIGITS, BUILDING_RULES, CONTEXT_CARDS } from '../data/nu
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
+import { useRomaji } from '../context/RomajiContext.jsx';
 import { cn } from '@/lib/utils';
 
 const TABS = [
@@ -13,6 +14,7 @@ const TABS = [
 
 export default function ClassifiersPage({ showPage }) {
   const [tab, setTab] = useState('classifiers');
+  const { showRomaji } = useRomaji();
 
   return (
     <div className="max-w-[1200px] mx-auto px-5 py-8">
@@ -66,7 +68,7 @@ export default function ClassifiersPage({ showPage }) {
                       <tr key={i} className="border-b border-border last:border-b-0">
                         <td className="px-3 py-2 align-top">
                           <span className="text-lg text-foreground block">{item.thai}</span>
-                          <span className="text-xs italic text-muted-foreground">{item.rom}</span>
+                          {showRomaji && <span className="text-xs italic text-muted-foreground">{item.rom}</span>}
                         </td>
                         <td className="px-3 py-2 align-top font-medium text-foreground">{item.en}</td>
                         <td className="px-3 py-2 align-top text-muted-foreground text-[0.83rem] leading-relaxed">{item.nouns}</td>
@@ -106,7 +108,7 @@ export default function ClassifiersPage({ showPage }) {
                     </span>
                     <span className="text-xs font-semibold text-muted-foreground">{d.arabic}</span>
                     <span className="text-base text-foreground">{d.word}</span>
-                    <span className="text-[0.68rem] italic text-muted-foreground">{d.rom}</span>
+                    {showRomaji && <span className="text-[0.68rem] italic text-muted-foreground">{d.rom}</span>}
                   </CardContent>
                 </Card>
               ))}
@@ -124,7 +126,7 @@ export default function ClassifiersPage({ showPage }) {
                     {rule.examples.map((ex, j) => (
                       <div key={j} className="flex flex-col">
                         <span className="text-base text-foreground">{ex.thai}</span>
-                        <span className="text-[0.7rem] italic text-muted-foreground">{ex.rom}</span>
+                        {showRomaji && <span className="text-[0.7rem] italic text-muted-foreground">{ex.rom}</span>}
                         <span className="text-[0.78rem] text-muted-foreground">{ex.en}</span>
                       </div>
                     ))}
@@ -143,7 +145,7 @@ export default function ClassifiersPage({ showPage }) {
                     <div className="font-semibold text-sm text-foreground mb-1">{card.title}</div>
                     <div className="text-sm text-muted-foreground leading-relaxed mb-1">{card.body}</div>
                     <div className="text-base text-foreground mt-1">{card.ex}</div>
-                    <div className="text-[0.7rem] italic text-muted-foreground">{card.rom}</div>
+                    {showRomaji && <div className="text-[0.7rem] italic text-muted-foreground">{card.rom}</div>}
                   </CardContent>
                 </Card>
               ))}

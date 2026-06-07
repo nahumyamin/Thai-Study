@@ -2,20 +2,24 @@ import { useState } from 'react';
 import { GRAMMAR_INTRO, GRAMMAR_RULES, GRAMMAR_CATEGORIES } from '../data/grammar.js';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
+import { useRomaji } from '../context/RomajiContext.jsx';
 import { cn } from '@/lib/utils';
 
 // ── Example block ─────────────────────────────────────────────────
 function GrEx({ ex }) {
+  const { showRomaji } = useRomaji();
   return (
     <div className="border-l-2 border-primary/30 pl-3 py-1">
       <div
         className="text-base text-foreground leading-relaxed mb-0.5 font-thai-display"
         dangerouslySetInnerHTML={{ __html: ex.thai }}
       />
-      <div
-        className="text-xs italic text-muted-foreground leading-relaxed mb-0.5"
-        dangerouslySetInnerHTML={{ __html: ex.rom }}
-      />
+      {showRomaji && (
+        <div
+          className="text-xs italic text-muted-foreground leading-relaxed mb-0.5"
+          dangerouslySetInnerHTML={{ __html: ex.rom }}
+        />
+      )}
       <div
         className="text-sm text-muted-foreground"
         dangerouslySetInnerHTML={{ __html: ex.en }}
