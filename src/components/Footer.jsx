@@ -23,10 +23,11 @@ const SECTIONS = [
   {
     title: 'Reading & Script',
     links: [
-      { label: 'Class Rush',       page: 'rush'     },
-      { label: 'Reading Passages', page: 'passages' },
-      { label: 'Font Recognition', page: 'fonts'    },
-      { label: 'Months',           page: 'months'   },
+      { label: 'Class Rush',       page: 'rush'            },
+      { label: 'Consonant Cards',  page: 'consonant-cards' },
+      { label: 'Reading Passages', page: 'passages'        },
+      { label: 'Font Recognition', page: 'fonts'           },
+      { label: 'Months',           page: 'months'          },
     ],
   },
   {
@@ -35,6 +36,7 @@ const SECTIONS = [
       { label: 'Grammar Patterns',      page: 'grammar'       },
       { label: 'Pronunciation',         page: 'pronunciation' },
       { label: 'Numbers & Classifiers', page: 'classifiers'   },
+      { label: 'Consonant Clusters',    page: 'clusters'      },
       { label: 'Reading Strategies',    page: 'reading'       },
       { label: 'Registers',             page: 'register'      },
       { label: 'Playbooks',             page: 'playbooks'     },
