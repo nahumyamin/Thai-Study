@@ -917,7 +917,7 @@ export default function DashboardPage({ showPage }) {
             >
               <span className="text-[0.65rem]">🍉</span>
               <span>{nickname || 'Set leaderboard nickname'}</span>
-              <span className="opacity-0 group-hover:opacity-60 transition-opacity"><PencilIcon /></span>
+              <span className="opacity-60 sm:opacity-0 sm:group-hover:opacity-60 transition-opacity"><PencilIcon /></span>
             </button>
           )}
         </div>
