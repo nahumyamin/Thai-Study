@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { MISTAKE_SENTENCES } from '../data/mistakeHunter.js';
 import ExitButton from '@/components/ExitButton';
 import { Button } from '@/components/ui/button';
+import { useScrollTopOnChange } from '@/lib/useScrollTopOnChange.js';
 import { cn } from '@/lib/utils';
 
 const ROUND_SIZE = 20;
@@ -112,6 +113,7 @@ export default function MistakeHunterPage({ showPage }) {
   const [tapped, setTapped]       = useState(null); // index tapped, or null
   const [results, setResults]     = useState([]);
   const [phase, setPhase]         = useState('intro'); // 'intro' | 'playing' | 'done'
+  useScrollTopOnChange(phase);
 
   const handleStart = () => {
     setQuestions(buildRound());

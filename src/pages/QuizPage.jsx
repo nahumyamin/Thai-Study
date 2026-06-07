@@ -9,6 +9,7 @@ import { Progress } from '@/components/ui/progress';
 import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import ExitButton from '@/components/ExitButton';
+import { useScrollTopOnChange } from '@/lib/useScrollTopOnChange.js';
 import { cn } from '@/lib/utils';
 
 function shuffle(arr) {
@@ -29,6 +30,7 @@ export default function QuizPage({ starred, showRomaji = true, showPage }) {
   const { user } = useAuth();
   const quizStartTime = useRef(null);
   const [screen, setScreen] = useState('setup');
+  useScrollTopOnChange(screen);
   const [qTopic, setQTopic] = useState('all');
   const [qCount, setQCount] = useState(10);
   const [qMode, setQMode] = useState('mc');

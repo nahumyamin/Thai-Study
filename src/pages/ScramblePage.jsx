@@ -4,6 +4,7 @@ import { track } from '@/lib/analytics.js';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import ExitButton from '@/components/ExitButton';
+import { useScrollTopOnChange } from '@/lib/useScrollTopOnChange.js';
 import { cn } from '@/lib/utils';
 
 function shuffle(arr) {
@@ -350,6 +351,7 @@ function ResultsScreen({ sentences, scores, onPlayAgain }) {
 // ── Main export ───────────────────────────────────────────────────
 export default function ScramblePage({ showPage }) {
   const [phase, setPhase] = useState('setup');
+  useScrollTopOnChange(phase);
   const [count, setCount] = useState(5);
   const [mode, setMode] = useState('drag');
   const [sentences, setSentences] = useState([]);

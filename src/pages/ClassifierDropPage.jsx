@@ -3,6 +3,7 @@ import { CLASSIFIER_QUESTIONS } from '../data/classifierDrop.js';
 import ExitButton from '@/components/ExitButton';
 import { Button } from '@/components/ui/button';
 import { useRomaji } from '../context/RomajiContext.jsx';
+import { useScrollTopOnChange } from '@/lib/useScrollTopOnChange.js';
 import { cn } from '@/lib/utils';
 
 const ROUND_SIZE = 30;
@@ -92,6 +93,7 @@ export default function ClassifierDropPage({ showPage }) {
   const [streak, setStreak]       = useState(0);
   const [choice, setChoice]       = useState(null); // null | { selected, correct, hint }
   const [phase, setPhase]         = useState('intro'); // 'intro' | 'playing' | 'done'
+  useScrollTopOnChange(phase);
 
   const handleStart = () => {
     setQuestions(buildRound());

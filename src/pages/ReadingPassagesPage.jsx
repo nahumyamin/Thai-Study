@@ -4,6 +4,7 @@ import { allVocab } from '../data/vocab.js';
 import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { useRomaji } from '../context/RomajiContext.jsx';
+import { useScrollTopOnChange } from '@/lib/useScrollTopOnChange.js';
 import { cn } from '@/lib/utils';
 
 // ── Vocab tokenizer ───────────────────────────────────────────────
@@ -149,6 +150,10 @@ export default function ReadingPassagesPage({ showPage }) {
   const { showRomaji } = useRomaji();
   const [activeWord, setActiveWord]   = useState(null);
   const popupRef = useRef();
+
+  // Selecting a passage / going back swaps the view without a route change,
+  // so reset scroll to the top of the new view.
+  useScrollTopOnChange(selectedIdx);
 
   const stopSpeech = useCallback(() => {
     window.speechSynthesis?.cancel();

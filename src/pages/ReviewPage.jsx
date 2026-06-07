@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
+import { useScrollTopOnChange } from '@/lib/useScrollTopOnChange.js';
 import { cn } from '@/lib/utils';
 
 const vocabById = new Map(allVocab.map(w => [w.id, w]));
@@ -39,6 +40,7 @@ export default function ReviewPage({ showRomaji = true, showPage }) {
 
   // 'intro' | 'loading' | 'empty' | 'review' | 'done'
   const [screen, setScreen] = useState('intro');
+  useScrollTopOnChange(screen);
   const [queue, setQueue] = useState([]);     // full vocab entries, most-overdue first
   const [idx, setIdx] = useState(0);
   const [revealed, setRevealed] = useState(false);

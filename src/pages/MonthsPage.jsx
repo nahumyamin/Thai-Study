@@ -6,6 +6,7 @@ import { Progress } from '@/components/ui/progress';
 import { Separator } from '@/components/ui/separator';
 import ExitButton from '@/components/ExitButton';
 import { useRomaji } from '../context/RomajiContext.jsx';
+import { useScrollTopOnChange } from '@/lib/useScrollTopOnChange.js';
 import { cn } from '@/lib/utils';
 
 function shuffle(arr) {
@@ -81,6 +82,7 @@ function MonthQuiz() {
   const [selected, setSelected] = useState(null);
   const [score, setScore] = useState(0);
   const [done, setDone] = useState(false);
+  useScrollTopOnChange(questions ? (done ? 'done' : 'quiz') : 'setup');
 
   const start = useCallback(() => {
     setQuestions(buildQuestions());

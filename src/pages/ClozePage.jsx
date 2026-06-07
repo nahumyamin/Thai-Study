@@ -9,6 +9,7 @@ import { Progress } from '@/components/ui/progress';
 import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import ExitButton from '@/components/ExitButton';
+import { useScrollTopOnChange } from '@/lib/useScrollTopOnChange.js';
 import { cn } from '@/lib/utils';
 
 // Only words whose example sentence contains the word verbatim can be "blanked".
@@ -35,6 +36,7 @@ export default function ClozePage({ starred, showRomaji = true, showPage }) {
   const inputRef = useRef();
 
   const [screen, setScreen] = useState('setup');
+  useScrollTopOnChange(screen);
   const [cTopic, setCTopic] = useState('all');
   const [cCount, setCCount] = useState(10);
 

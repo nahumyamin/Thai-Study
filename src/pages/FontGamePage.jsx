@@ -15,6 +15,7 @@ import { FONT_GAME_WORDS, FONT_GAME_FONTS, FONT_GAME_INTRO, ROUND_SIZE } from '.
 import { Button } from '@/components/ui/button';
 import { useRomaji } from '../context/RomajiContext.jsx';
 import ExitButton from '@/components/ExitButton';
+import { useScrollTopOnChange } from '@/lib/useScrollTopOnChange.js';
 import { cn } from '@/lib/utils';
 
 function shuffle(arr) {
@@ -209,6 +210,7 @@ function GameScreen({ questions, onFinish, onExit }) {
 export default function FontGamePage({ showPage }) {
   useLazyFonts(GAME_FONTS_URL);
   const [screen, setScreen] = useState('intro'); // intro | game | results
+  useScrollTopOnChange(screen);
   const [score, setScore]   = useState(0);
   const questions = useMemo(buildRound, [screen === 'game']);
 

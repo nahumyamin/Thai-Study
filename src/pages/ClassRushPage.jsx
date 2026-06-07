@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import ExitButton from '@/components/ExitButton';
+import { useScrollTopOnChange } from '@/lib/useScrollTopOnChange.js';
 import { cn } from '@/lib/utils';
 
 function shuffle(arr) {
@@ -28,6 +29,7 @@ const CLASS_OPTIONS = [
 
 export default function ClassRushPage({ showPage }) {
   const [screen, setScreen] = useState('intro');
+  useScrollTopOnChange(screen);
   const [difficulty, setDifficulty] = useState('normal');
   const [noTimeLimit, setNoTimeLimit] = useState(false);
   const [classes, setClasses] = useState(['low', 'mid', 'high']);
