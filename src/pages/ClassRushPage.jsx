@@ -1,9 +1,8 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { CONSONANTS, DIFF } from '../data/consonants.js';
 import { track } from '@/lib/analytics.js';
 import { Button } from '@/components/ui/button';
-import { Progress } from '@/components/ui/progress';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import ExitButton from '@/components/ExitButton';
 import { cn } from '@/lib/utils';
@@ -21,9 +20,17 @@ const LOW_LETTERS = CONSONANTS.filter(c => c.cls === 'low').map(c => c.l).join('
 const MID_LETTERS = CONSONANTS.filter(c => c.cls === 'mid').map(c => c.l).join(' ');
 const HIGH_LETTERS = CONSONANTS.filter(c => c.cls === 'high').map(c => c.l).join(' ');
 
+const CLASS_OPTIONS = [
+  { key: 'low', label: 'Low' },
+  { key: 'mid', label: 'Mid' },
+  { key: 'high', label: 'High' },
+];
+
 export default function ClassRushPage({ showPage }) {
   const [screen, setScreen] = useState('intro');
   const [difficulty, setDifficulty] = useState('normal');
+  const [noTimeLimit, setNoTimeLimit] = useState(false);
+  const [classes, setClasses] = useState(['low', 'mid', 'high']);
 
   const [score, setScore] = useState(0);
   const [lives, setLives] = useState(3);
@@ -37,52 +44,115 @@ export default function ClassRushPage({ showPage }) {
 
   const timerRef = useRef(null);
   const startTimeRef = useRef(null);
+  // Authoritative game state lives here so timer/answer callbacks never read stale closures.
+  const gameRef = useRef(null);
   const timeoutMs = DIFF[difficulty]?.time || 2500;
 
-  const endGame = useCallback(() => {
+  const clearTimer = () => {
     clearInterval(timerRef.current);
+    timerRef.current = null;
+  };
+
+  const endGame = () => {
+    clearTimer();
     setScreen('results');
-  }, []);
+  };
 
-  const exitToIntro = useCallback(() => {
-    clearInterval(timerRef.current);
+  const exitToIntro = () => {
+    clearTimer();
     setScreen('intro');
-  }, []);
+  };
 
-  const nextLetter = useCallback((newDeck, newIdx, newLives, newScore, newStreak, newCorrect, newMissed) => {
-    clearInterval(timerRef.current);
-    if (newIdx >= newDeck.length || newLives <= 0) {
+  function startTimer() {
+    clearTimer();
+    setTimerPct(100);
+    const g = gameRef.current;
+    if (!g || g.noTimeLimit) return;
+    startTimeRef.current = null;
+    timerRef.current = setInterval(() => {
+      if (startTimeRef.current === null) startTimeRef.current = Date.now();
+      const elapsed = Date.now() - startTimeRef.current;
+      const pct = Math.max(0, 100 - (elapsed / g.timeoutMs) * 100);
+      setTimerPct(pct);
+      if (pct <= 0) {
+        clearTimer();
+        handleTimeout();
+      }
+    }, 50);
+  }
+
+  function goNext() {
+    const g = gameRef.current;
+    g.idx += 1;
+    if (g.idx >= g.deck.length) {
       endGame();
       return;
     }
-    setTimerPct(100);
+    setCurrentIdx(g.idx);
     setLetterState(null);
-    startTimeRef.current = Date.now();
-    timerRef.current = setInterval(() => {
-      const elapsed = Date.now() - startTimeRef.current;
-      const pct = Math.max(0, 100 - (elapsed / timeoutMs) * 100);
-      setTimerPct(pct);
-      if (pct <= 0) {
-        clearInterval(timerRef.current);
-        const newL = newLives - 1;
-        const nm = [...newMissed, newDeck[newIdx]];
-        setLives(newL);
-        setStreak(0);
-        setMissedList(nm);
-        setLetterState('wrong');
-        setTimeout(() => {
-          if (newL <= 0) {
-            endGame();
-          } else {
-            nextLetter(newDeck, newIdx + 1, newL, newScore, 0, newCorrect, nm);
-          }
-        }, 600);
-      }
-    }, 50);
-  }, [timeoutMs, endGame]);
+    startTimer();
+  }
+
+  function handleTimeout() {
+    const g = gameRef.current;
+    if (!g || g.locked) return;
+    g.locked = true;
+    const cur = g.deck[g.idx];
+    g.lives -= 1;
+    g.streak = 0;
+    g.missed = [...g.missed, cur];
+    setLives(g.lives);
+    setStreak(0);
+    setMissedList(g.missed);
+    setLetterState('wrong');
+    setTimeout(() => {
+      g.locked = false;
+      if (g.lives <= 0) endGame();
+      else goNext();
+    }, 600);
+  }
+
+  function handleAnswer(cls) {
+    const g = gameRef.current;
+    if (!g || g.locked) return;
+    const cur = g.deck[g.idx];
+    if (!cur) return;
+    clearTimer();
+    g.locked = true;
+
+    if (cur.cls === cls) {
+      g.streak += 1;
+      g.score += 10 + g.streak * 2;
+      g.correct += 1;
+      setLetterState('correct');
+      setScore(g.score);
+      setStreak(g.streak);
+      setCorrectCount(g.correct);
+      setTimeout(() => {
+        g.locked = false;
+        goNext();
+      }, 400);
+    } else {
+      g.lives -= 1;
+      g.streak = 0;
+      g.missed = [...g.missed, cur];
+      setLetterState('wrong');
+      setLives(g.lives);
+      setStreak(0);
+      setMissedList(g.missed);
+      setTimeout(() => {
+        g.locked = false;
+        if (g.lives <= 0) endGame();
+        else goNext();
+      }, 600);
+    }
+  }
 
   const startGame = () => {
-    const d = shuffle([...CONSONANTS]);
+    const pool = CONSONANTS.filter(c => classes.includes(c.cls));
+    if (pool.length === 0) return;
+    const d = shuffle(pool);
+    gameRef.current = { idx: 0, lives: 3, score: 0, streak: 0, correct: 0, missed: [], deck: d, locked: false, noTimeLimit, timeoutMs };
     setDeck(d);
     setScore(0);
     setLives(3);
@@ -91,142 +161,29 @@ export default function ClassRushPage({ showPage }) {
     setMissedList([]);
     setCurrentIdx(0);
     setLetterState(null);
+    setTimerPct(100);
     setScreen('game');
-    track('game_start', { game: 'class_rush', difficulty });
-    setTimeout(() => {
-      startTimeRef.current = Date.now();
-      timerRef.current = setInterval(() => {
-        const elapsed = Date.now() - startTimeRef.current;
-        const pct = Math.max(0, 100 - (elapsed / timeoutMs) * 100);
-        setTimerPct(pct);
-        if (pct <= 0) {
-          clearInterval(timerRef.current);
-          setLives(prev => {
-            const newL = prev - 1;
-            setStreak(0);
-            setLetterState('wrong');
-            setMissedList(prev2 => {
-              const nm = [...prev2, d[0]];
-              setTimeout(() => {
-                if (newL <= 0) {
-                  endGame();
-                } else {
-                  setCurrentIdx(1);
-                }
-              }, 600);
-              return nm;
-            });
-            return newL;
-          });
-        }
-      }, 50);
-    }, 100);
+    track('game_start', { game: 'class_rush', difficulty, no_time_limit: noTimeLimit, classes: classes.join(',') });
+    setTimeout(() => startTimer(), 100);
   };
 
-  const handleAnswer = (cls) => {
-    clearInterval(timerRef.current);
-    const current = deck[currentIdx];
-    if (!current) return;
-    const isCorrect = current.cls === cls;
-
-    if (isCorrect) {
-      setLetterState('correct');
-      setScore(prev => {
-        const newStreak = streak + 1;
-        setStreak(newStreak);
-        const pts = 10 + newStreak * 2;
-        const ns = prev + pts;
-        setCorrectCount(c => c + 1);
-        setTimeout(() => {
-          const nextIdx = currentIdx + 1;
-          setCurrentIdx(nextIdx);
-          setLetterState(null);
-          if (nextIdx >= deck.length) {
-            endGame();
-          } else {
-            setTimerPct(100);
-            startTimeRef.current = Date.now();
-            timerRef.current = setInterval(() => {
-              const elapsed = Date.now() - startTimeRef.current;
-              const pct = Math.max(0, 100 - (elapsed / timeoutMs) * 100);
-              setTimerPct(pct);
-              if (pct <= 0) {
-                clearInterval(timerRef.current);
-                setLives(l => {
-                  const newL = l - 1;
-                  setStreak(0);
-                  setLetterState('wrong');
-                  setMissedList(m => {
-                    const nm = [...m, deck[nextIdx]];
-                    setTimeout(() => {
-                      if (newL <= 0) {
-                        endGame();
-                      } else {
-                        const ni2 = nextIdx + 1;
-                        setCurrentIdx(ni2);
-                        setLetterState(null);
-                        if (ni2 < deck.length) {
-                          setTimerPct(100);
-                          startTimeRef.current = Date.now();
-                        }
-                      }
-                    }, 600);
-                    return nm;
-                  });
-                  return newL;
-                });
-              }
-            }, 50);
-          }
-        }, 400);
-        return ns;
-      });
-    } else {
-      setLetterState('wrong');
-      setStreak(0);
-      setLives(prev => {
-        const newL = prev - 1;
-        setMissedList(m => {
-          const nm = [...m, current];
-          setTimeout(() => {
-            if (newL <= 0) {
-              endGame();
-            } else {
-              const nextIdx = currentIdx + 1;
-              setCurrentIdx(nextIdx);
-              setLetterState(null);
-              if (nextIdx < deck.length) {
-                setTimerPct(100);
-                startTimeRef.current = Date.now();
-                timerRef.current = setInterval(() => {
-                  const elapsed = Date.now() - startTimeRef.current;
-                  const pct = Math.max(0, 100 - (elapsed / timeoutMs) * 100);
-                  setTimerPct(pct);
-                  if (pct <= 0) {
-                    clearInterval(timerRef.current);
-                  }
-                }, 50);
-              } else {
-                endGame();
-              }
-            }
-          }, 600);
-          return nm;
-        });
-        return newL;
-      });
-    }
+  const toggleClass = (key) => {
+    setClasses(prev =>
+      prev.includes(key)
+        ? (prev.length > 1 ? prev.filter(k => k !== key) : prev)  // keep at least one
+        : [...prev, key]
+    );
   };
 
   useEffect(() => {
     if (screen === 'results') {
-      track('game_complete', { game: 'class_rush', score, correct: correctCount, missed: missedList.length, difficulty });
+      track('game_complete', { game: 'class_rush', score, correct: correctCount, missed: missedList.length, difficulty, no_time_limit: noTimeLimit });
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [screen]);
 
   useEffect(() => {
-    return () => clearInterval(timerRef.current);
+    return () => clearTimer();
   }, []);
 
   const current = deck[currentIdx];
@@ -257,23 +214,72 @@ export default function ClassRushPage({ showPage }) {
             </button>
             {' '}first.
           </p>
+
+          {/* Difficulty */}
           <div className="mb-6">
             <span className="block text-[0.75rem] font-semibold tracking-widest uppercase text-muted-foreground mb-3">
               Difficulty
             </span>
-            <div className="flex flex-wrap gap-1.5">
+            <div className={cn('flex flex-wrap gap-1.5 transition-opacity', noTimeLimit && 'opacity-40 pointer-events-none')}>
               {Object.entries(DIFF).map(([key, val]) => (
                 <Button
                   key={key}
                   size="sm"
                   variant={difficulty === key ? 'default' : 'outline'}
                   onClick={() => setDifficulty(key)}
+                  disabled={noTimeLimit}
                 >
                   {val.label} — {val.time / 1000} sec
                 </Button>
               ))}
             </div>
           </div>
+
+          {/* Timer mode */}
+          <div className="mb-6">
+            <span className="block text-[0.75rem] font-semibold tracking-widest uppercase text-muted-foreground mb-3">
+              Timer
+            </span>
+            <div className="flex flex-wrap gap-1.5">
+              <Button
+                size="sm"
+                variant={!noTimeLimit ? 'default' : 'outline'}
+                onClick={() => setNoTimeLimit(false)}
+              >
+                Timed
+              </Button>
+              <Button
+                size="sm"
+                variant={noTimeLimit ? 'default' : 'outline'}
+                onClick={() => setNoTimeLimit(true)}
+              >
+                No time limit
+              </Button>
+            </div>
+          </div>
+
+          {/* Classes to include */}
+          <div className="mb-6">
+            <span className="block text-[0.75rem] font-semibold tracking-widest uppercase text-muted-foreground mb-3">
+              Classes
+            </span>
+            <div className="flex flex-wrap gap-1.5">
+              {CLASS_OPTIONS.map(({ key, label }) => (
+                <Button
+                  key={key}
+                  size="sm"
+                  variant={classes.includes(key) ? 'default' : 'outline'}
+                  onClick={() => toggleClass(key)}
+                >
+                  {label}
+                </Button>
+              ))}
+            </div>
+            <p className="text-[0.7rem] text-muted-foreground mt-2">
+              Only letters from the selected classes will appear.
+            </p>
+          </div>
+
           <Button className="w-full" onClick={startGame}>Start →</Button>
         </div>
 
@@ -375,13 +381,19 @@ export default function ClassRushPage({ showPage }) {
           </div>
         </div>
 
-        {/* Timer bar */}
-        <div className="h-[5px] bg-border rounded-full overflow-hidden mb-5">
-          <div
-            className={cn('h-full rounded-full transition-[width,background-color] duration-100', timerColor)}
-            style={{ width: `${timerPct}%` }}
-          />
-        </div>
+        {/* Timer bar (hidden in no-time-limit mode) */}
+        {noTimeLimit ? (
+          <div className="mb-5 text-center text-[0.65rem] tracking-widest uppercase text-muted-foreground">
+            No time limit
+          </div>
+        ) : (
+          <div className="h-[5px] bg-border rounded-full overflow-hidden mb-5">
+            <div
+              className={cn('h-full rounded-full transition-[width,background-color] duration-100', timerColor)}
+              style={{ width: `${timerPct}%` }}
+            />
+          </div>
+        )}
 
         {/* Consonant display */}
         <div className="text-center mb-6 min-h-[180px] flex flex-col items-center justify-center gap-1">
