@@ -1,10 +1,11 @@
-import { useState, useRef, useCallback, useMemo } from 'react';
+import { useState, useRef, useCallback, useMemo, useEffect } from 'react';
 import { PASSAGES, PASSAGE_DIFFICULTY } from '../data/passages.js';
 import { allVocab } from '../data/vocab.js';
 import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { useRomaji } from '../context/RomajiContext.jsx';
 import { useScrollTopOnChange } from '@/lib/useScrollTopOnChange.js';
+import PassageFontControl, { FONT_MIN, FONT_MAX } from '@/components/PassageFontControl.jsx';
 import { cn } from '@/lib/utils';
 
 // ── Vocab tokenizer ───────────────────────────────────────────────
@@ -149,7 +150,15 @@ export default function ReadingPassagesPage({ showPage }) {
   const [popup, setPopup]             = useState(null);
   const { showRomaji } = useRomaji();
   const [activeWord, setActiveWord]   = useState(null);
+  const [fontScale, setFontScale]     = useState(() => {
+    const v = parseFloat(localStorage.getItem('passage-font-scale'));
+    return v >= FONT_MIN && v <= FONT_MAX ? v : FONT_MIN;
+  });
   const popupRef = useRef();
+
+  useEffect(() => {
+    localStorage.setItem('passage-font-scale', String(fontScale));
+  }, [fontScale]);
 
   // Selecting a passage / going back swaps the view without a route change,
   // so reset scroll to the top of the new view.
@@ -322,11 +331,15 @@ export default function ReadingPassagesPage({ showPage }) {
         {speaking && (
           <span className="text-[0.65rem] text-muted-foreground animate-pulse">Reading aloud…</span>
         )}
+        <PassageFontControl scale={fontScale} setScale={setFontScale} />
       </div>
 
       {/* Passage text */}
       <Card className="mb-6 rounded-none shadow-none overflow-hidden">
-        <CardContent className="p-6 text-base leading-[2.2] text-foreground [overflow-wrap:break-word] [word-break:break-word] min-w-0">
+        <CardContent
+          className="p-6 leading-[2.2] text-foreground [overflow-wrap:break-word] [word-break:break-word] min-w-0"
+          style={{ fontSize: `${fontScale}rem` }}
+        >
           <PassageText
             text={passage.text}
             onWordClick={handleWordClick}
