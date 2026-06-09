@@ -4,6 +4,7 @@ import { PRONUNCIATION_INTRO, TONES, TONE_TABLE, CORE_VOWELS, COMPOUND_VOWELS, T
 import { CONSONANTS } from '../data/consonants.js';
 import { ToneAnalyzerPanel } from './ToneAnalyzerPage.jsx';
 import { ClustersPanel } from './ConsonantClustersPage.jsx';
+import TonePairsPanel from '../components/TonePairsPanel.jsx';
 import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
@@ -11,6 +12,7 @@ import ClassBadge from '../components/ClassBadge.jsx';
 
 const TABS = [
   { id: 'overview',  label: 'Overview' },
+  { id: 'tonepairs', label: 'Tone Pairs' },
   { id: 'clusters',  label: 'Clusters' },
   { id: 'analyzer',  label: 'Tone Analyzer' },
 ];
@@ -30,13 +32,13 @@ export default function PronunciationPage({ showPage }) {
       <Separator className="mb-4" />
 
       {/* Tab bar */}
-      <div className="flex gap-1 mb-8 border-b border-border">
+      <div className="flex gap-1 mb-8 border-b border-border overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden -mx-5 px-5 sm:mx-0 sm:px-0">
         {TABS.map(t => (
           <button
             key={t.id}
             onClick={() => setTab(t.id)}
             className={cn(
-              'px-4 py-2 text-sm font-medium border-b-2 -mb-px transition-colors',
+              'px-3 sm:px-4 py-2 text-sm font-medium border-b-2 -mb-px transition-colors whitespace-nowrap shrink-0',
               tab === t.id
                 ? 'border-primary text-foreground'
                 : 'border-transparent text-muted-foreground hover:text-foreground'
@@ -48,6 +50,8 @@ export default function PronunciationPage({ showPage }) {
       </div>
 
       {tab === 'analyzer' && <ToneAnalyzerPanel />}
+
+      {tab === 'tonepairs' && <TonePairsPanel />}
 
       {tab === 'clusters' && <ClustersPanel />}
 
