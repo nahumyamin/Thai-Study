@@ -20,7 +20,7 @@ function tokenizeWithOffsets(text, base) {
   let i = 0;
   while (i < text.length) {
     let matched = false;
-    for (let len = 8; len >= 1; len--) {
+    for (let len = 16; len >= 1; len--) {
       const chunk = text.slice(i, i + len);
       if (vocabMap.has(chunk)) {
         tokens.push({ text: chunk, def: vocabMap.get(chunk), start: base + i, end: base + i + len });
