@@ -111,9 +111,12 @@
 @utility animate-tile-3 { animation: tile-3 3.8s ease-in-out infinite 1.4s; }
 
 /* Page transition */
+/* The final keyframe must be `transform: none` — a retained transform (even
+   translateY(0)) makes the page wrapper the containing block for fixed
+   descendants, breaking position:fixed popovers. */
 @keyframes page-in {
   from { opacity: 0; transform: translateY(6px); }
-  to   { opacity: 1; transform: translateY(0); }
+  to   { opacity: 1; transform: none; }
 }
 @utility animate-page-in {
   animation: page-in 0.18s ease-out both;

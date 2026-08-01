@@ -1,4 +1,5 @@
-import { useState, useRef, useCallback, useMemo, useEffect } from 'react';
+import { useState, useRef, useCallback, useMemo, useEffect, useLayoutEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { PASSAGES, PASSAGE_DIFFICULTY } from '../data/passages.js';
 import { allVocab } from '../data/vocab.js';
 import { Card, CardContent } from '@/components/ui/card';
@@ -73,6 +74,7 @@ function PassageText({ paragraphs, onWordClick, activeWord, spokenRange }) {
             return (
               <span
                 key={ti}
+                data-word
                 className={cn(
                   'cursor-pointer rounded-sm transition-colors border-b border-dotted border-primary',
                   spoken ? 'bg-primary/30' : isActive ? 'bg-primary/10' : 'hover:bg-primary/10'
@@ -277,13 +279,25 @@ export default function ReadingPassagesPage({ showPage }) {
 
   const handleWordClick = useCallback((tok, e) => {
     const rect = e.target.getBoundingClientRect();
-    const popupWidth = 220;
-    const x = Math.max(8, Math.min(rect.left, window.innerWidth - popupWidth - 8));
     setActiveWord(tok.text);
-    setPopup({ word: tok.def, x, y: rect.bottom + 8 });
+    setPopup({ word: tok.def, anchor: { left: rect.left, top: rect.top, bottom: rect.bottom } });
   }, []);
 
   const closePopup = () => { setPopup(null); setActiveWord(null); };
+
+  // Position the popup after it renders: below the tapped word when there is
+  // room, flipped above it otherwise, and always clamped inside the viewport.
+  const [popupPos, setPopupPos] = useState(null);
+  useLayoutEffect(() => {
+    if (!popup || !popupRef.current) { setPopupPos(null); return; }
+    const { width, height } = popupRef.current.getBoundingClientRect();
+    const margin = 8;
+    const x = Math.max(margin, Math.min(popup.anchor.left, window.innerWidth - width - margin));
+    let y = popup.anchor.bottom + margin;
+    if (y + height > window.innerHeight - margin) y = popup.anchor.top - height - margin;
+    y = Math.max(margin, Math.min(y, window.innerHeight - height - margin));
+    setPopupPos({ x, y });
+  }, [popup, showRomaji]);
 
   // Counts per difficulty for filter tabs
   const counts = useMemo(() => {
@@ -502,17 +516,23 @@ export default function ReadingPassagesPage({ showPage }) {
         ) : <div />}
       </div>
 
-      {/* Word popup */}
-      {popup && (
+      {/* Word popup — portaled to <body> so ancestor transforms can't break
+          its fixed positioning, and hidden until measured/clamped. */}
+      {popup && createPortal(
         <div
           ref={popupRef}
-          className="fixed z-50 bg-popover text-popover-foreground shadow-md rounded p-2 text-sm pointer-events-none max-w-[220px]"
-          style={{ left: popup.x, top: popup.y }}
+          className="fixed z-50 bg-zinc-900 text-zinc-50 border border-zinc-700 shadow-lg rounded-md p-2.5 text-sm pointer-events-none max-w-[220px]"
+          style={{
+            left: popupPos?.x ?? 0,
+            top: popupPos?.y ?? 0,
+            visibility: popupPos ? 'visible' : 'hidden',
+          }}
         >
           <strong className="block">{popup.word.thai}</strong>
-          {showRomaji && <><em className="text-xs opacity-70">{popup.word.rom}</em><br /></>}
+          {showRomaji && <><em className="text-xs text-zinc-400">{popup.word.rom}</em><br /></>}
           {popup.word.en}
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );
