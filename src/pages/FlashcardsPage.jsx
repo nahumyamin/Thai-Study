@@ -22,7 +22,7 @@ export default function FlashcardsPage({ starred, toggleStar, showRomaji = true,
   const [search, setSearch] = useState('');
   const [activeTopic, setActiveTopic] = useState('all');
   const [showStarred, setShowStarred] = useState(false);
-  const [order, setOrder] = useState(allVocab);
+  const [order, setOrder] = useState(() => shuffle(allVocab));
   const [studyOpen, setStudyOpen] = useState(false);
   const [studyIndex, setStudyIndex] = useState(0);
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
