@@ -2,6 +2,8 @@ import { useState, useRef, useCallback, useMemo, useEffect, useLayoutEffect } fr
 import { createPortal } from 'react-dom';
 import { PASSAGES, PASSAGE_DIFFICULTY } from '../data/passages.js';
 import { PASSAGE_TRANSLATIONS } from '../data/passageTranslations.js';
+import { POS_CATEGORIES, POS_LEXICON } from '../data/posLexicon.js';
+import { segmentParagraph } from '@/lib/segmentThai.js';
 import { allVocab } from '../data/vocab.js';
 import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
@@ -13,27 +15,26 @@ import { cn } from '@/lib/utils';
 // ── Vocab tokenizer ───────────────────────────────────────────────
 const vocabMap = new Map();
 allVocab.forEach(w => vocabMap.set(w.thai, w));
+const vocabSet = new Set(vocabMap.keys());
 
-// Tokenize a paragraph, tagging each token with its absolute character offset
-// into the full passage text (so speech-boundary char indices can be mapped
-// back to the rendered tokens for karaoke-style highlighting).
+const POS_COLOR = Object.fromEntries(POS_CATEGORIES.map(c => [c.id, c.color]));
+const THAI_RE = /[฀-๿]/;
+
+// Tokenize a paragraph into words (shared segmentation in lib/segmentThai),
+// tagging each token with its study-vocab definition, part of speech, and
+// absolute character offset into the full passage text (so speech-boundary
+// char indices can be mapped back to the rendered tokens for karaoke-style
+// highlighting).
 function tokenizeWithOffsets(text, base) {
-  const tokens = [];
-  let i = 0;
-  while (i < text.length) {
-    let matched = false;
-    for (let len = 16; len >= 1; len--) {
-      const chunk = text.slice(i, i + len);
-      if (vocabMap.has(chunk)) {
-        tokens.push({ text: chunk, def: vocabMap.get(chunk), start: base + i, end: base + i + len });
-        i += len;
-        matched = true;
-        break;
-      }
-    }
-    if (!matched) { tokens.push({ text: text[i], def: null, start: base + i, end: base + i + 1 }); i++; }
-  }
-  return tokens;
+  return segmentParagraph(text, vocabSet).map(t => ({
+    text: t.text,
+    def: vocabMap.get(t.text) || null,
+    start: base + t.start,
+    end: base + t.end,
+    pos: t.isWordLike
+      ? (POS_LEXICON[t.text] ?? (THAI_RE.test(t.text) ? 'other' : null))
+      : null,
+  }));
 }
 
 // Split the passage into paragraphs (on blank lines) while keeping every
@@ -101,8 +102,30 @@ function PassageTable({ table, showTranslation }) {
   );
 }
 
-function PassageText({ paragraphs, onWordClick, activeWord, spokenRange, translations, showTranslation, table }) {
+// Legend for grammar-highlight mode: one chip per part-of-speech color.
+function GrammarLegend() {
+  return (
+    <div className="flex flex-wrap gap-x-4 gap-y-1.5 mb-5 px-4 py-3 rounded-lg border border-border bg-muted/30">
+      {POS_CATEGORIES.map(c => (
+        <span key={c.id} className="flex items-center gap-1.5 text-xs text-muted-foreground">
+          <span
+            className="inline-block w-3 h-3 rounded-sm shrink-0"
+            style={{ backgroundColor: c.color + '59', boxShadow: `inset 0 0 0 1px ${c.color}` }}
+          />
+          <span className="font-medium text-foreground">{c.label}</span>
+          <span className="font-thai-display">{c.th}</span>
+        </span>
+      ))}
+    </div>
+  );
+}
+
+function PassageText({ paragraphs, onWordClick, activeWord, spokenRange, translations, showTranslation, table, showGrammar }) {
   const isSpoken = (tok) => spokenRange && tok.start < spokenRange.end && tok.end > spokenRange.start;
+  // 20%-alpha tint of the category color; skipped while the word is being
+  // spoken so the read-aloud highlight stays visible on top.
+  const tintStyle = (tok, spoken) =>
+    showGrammar && tok.pos && !spoken ? { backgroundColor: POS_COLOR[tok.pos] + '33' } : undefined;
   return (
     <div>
       {paragraphs.map((toks, pi) => (
@@ -111,13 +134,18 @@ function PassageText({ paragraphs, onWordClick, activeWord, spokenRange, transla
             {toks.map((tok, ti) => {
               const spoken = isSpoken(tok);
               if (!tok.def) {
-                return <span key={ti} className={spoken ? 'bg-primary/30 rounded-[3px]' : undefined}>{tok.text}</span>;
+                return (
+                  <span key={ti} style={tintStyle(tok, spoken)} className={spoken ? 'bg-primary/30 rounded-[3px]' : undefined}>
+                    {tok.text}
+                  </span>
+                );
               }
               const isActive = activeWord === tok.text;
               return (
                 <span
                   key={ti}
                   data-word
+                  style={tintStyle(tok, spoken)}
                   className={cn(
                     'cursor-pointer rounded-sm transition-colors border-b border-dotted border-primary',
                     spoken ? 'bg-primary/30' : isActive ? 'bg-primary/10' : 'hover:bg-primary/10'
@@ -216,6 +244,18 @@ function ResetIcon() {
   );
 }
 
+function GrammarIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 22a1 1 0 0 1-1-1v-3H7a1 1 0 0 1-1-1V7a5 5 0 0 1 10 0v10a1 1 0 0 1-1 1h-2v3a1 1 0 0 1-1 1z" opacity="0" />
+      <rect x="3" y="4" width="7" height="6" rx="1.5" />
+      <rect x="14" y="4" width="7" height="6" rx="1.5" fill="currentColor" fillOpacity="0.25" />
+      <rect x="3" y="14" width="7" height="6" rx="1.5" fill="currentColor" fillOpacity="0.25" />
+      <rect x="14" y="14" width="7" height="6" rx="1.5" />
+    </svg>
+  );
+}
+
 function TranslateIcon() {
   return (
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -286,6 +326,9 @@ export default function ReadingPassagesPage({ showPage }) {
   const [showTranslation, setShowTranslation] = useState(
     () => localStorage.getItem('passage-show-translation') === '1'
   );
+  const [showGrammar, setShowGrammar] = useState(
+    () => localStorage.getItem('passage-show-grammar') === '1'
+  );
   const popupRef = useRef();
 
   // Stop any speech if the user leaves the passages page entirely.
@@ -298,6 +341,10 @@ export default function ReadingPassagesPage({ showPage }) {
   useEffect(() => {
     localStorage.setItem('passage-show-translation', showTranslation ? '1' : '0');
   }, [showTranslation]);
+
+  useEffect(() => {
+    localStorage.setItem('passage-show-grammar', showGrammar ? '1' : '0');
+  }, [showGrammar]);
 
   // Selecting a passage / going back swaps the view without a route change,
   // so reset scroll to the top of the new view.
@@ -532,6 +579,19 @@ export default function ReadingPassagesPage({ showPage }) {
             Translate
           </button>
         )}
+        <button
+          onClick={() => setShowGrammar(s => !s)}
+          title={showGrammar ? 'Hide grammar highlighting' : 'Color each word by its grammatical function'}
+          className={cn(
+            'flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-sm transition-colors',
+            showGrammar
+              ? 'border-primary/50 bg-primary/8 text-primary hover:bg-primary/15'
+              : 'border-border bg-card text-muted-foreground hover:border-primary/40 hover:text-primary'
+          )}
+        >
+          <GrammarIcon />
+          Grammar
+        </button>
         {speaking && (
           <span className="text-[0.65rem] text-muted-foreground animate-pulse">
             {paused ? 'Paused' : 'Reading aloud…'}
@@ -539,6 +599,8 @@ export default function ReadingPassagesPage({ showPage }) {
         )}
         <PassageFontControl scale={fontScale} setScale={setFontScale} />
       </div>
+
+      {showGrammar && <GrammarLegend />}
 
       {/* Passage text */}
       <Card className="mb-6 rounded-none shadow-none overflow-hidden">
@@ -554,6 +616,7 @@ export default function ReadingPassagesPage({ showPage }) {
             translations={translations}
             showTranslation={showTranslation}
             table={passage.table}
+            showGrammar={showGrammar}
           />
         </CardContent>
       </Card>
