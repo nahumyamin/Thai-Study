@@ -29,6 +29,7 @@ export const topics = {
   pets: { label: "สัตว์เลี้ยง", color: "var(--c-pets)" },
   mekong: { label: "แม่น้ำโขง", color: "var(--c-mekong)" },
   laundry: { label: "ซักรีด", color: "var(--c-laundry)" },
+  mortgage: { label: "ผ่อนบ้าน", color: "var(--c-mortgage)" },
 };
 
 export const allVocab = [
@@ -769,4 +770,24 @@ export const allVocab = [
   { id: "thao-kae", thai: "เถ้าแก่", rom: "thao kae", en: "boss, proprietor, business owner", topic: "laundry", ex: "คิดฝันถึงวันที่จะได้เป็นเถ้าแก่ร้านเวดดิ้ง" },
   { id: "khit-fan", thai: "คิดฝัน", rom: "khit fan", en: "to dream, fantasize", topic: "laundry", ex: "เด่นกับพรคิดฝันไปไกล" },
   { id: "lam-bak", thai: "ลำบาก", rom: "lam bak", en: "difficult, hard; to struggle", topic: "laundry", ex: "จะได้สบาย ไม่ต้องลำบากเหมือนที่เป็นมาเกือบสามสิบปี" },
+  { id: "sap-sin", thai: "ทรัพย์สิน", rom: "sap sin", en: "assets, property", topic: "mortgage", ex: "ทรัพย์สินที่เราจะต้องมีโอกาสได้พิจารณาซื้อก็คือ \"บ้าน\"" },
+  { id: "sin-cheua", thai: "สินเชื่อ", rom: "sin cheua", en: "loan, credit", topic: "mortgage", ex: "การใช้บริการสินเชื่อเพื่อที่อยู่อาศัยของธนาคาร" },
+  { id: "thi-yu-a-sai", thai: "ที่อยู่อาศัย", rom: "thi yu a sai", en: "residence, housing", topic: "mortgage", ex: "สินเชื่อเพื่อที่อยู่อาศัยเป็นทางเลือกที่ได้รับความนิยม" },
+  { id: "ku", thai: "กู้", rom: "ku", en: "to take out a loan, borrow (from a bank)", topic: "mortgage", ex: "จะเป็นการกู้ระยะยาว 30 ปี" },
+  { id: "phon-cham-ra", thai: "ผ่อนชำระ", rom: "phon cham ra", en: "to pay in installments", topic: "mortgage", ex: "เราจะทำการผ่อนชำระกับธนาคารทุกๆ เดือน" },
+  { id: "ngoen-ton", thai: "เงินต้น", rom: "ngoen ton", en: "principal (of a loan)", topic: "mortgage", ex: "เราจะจ่ายดอกเบี้ยมากกว่าเงินต้นที่เรายืมมา" },
+  { id: "nguat", thai: "งวด", rom: "nguat", en: "installment, payment period", topic: "mortgage", ex: "เวลาที่เราผ่อนจ่ายให้กับธนาคารไปในแต่ละงวด" },
+  { id: "pha-ra", thai: "ภาระ", rom: "pha ra", en: "burden, obligation", topic: "mortgage", ex: "เราจะมีภาระดอกเบี้ยเท่ากับ 5,000 บาท" },
+  { id: "pen-ni", thai: "เป็นหนี้", rom: "pen ni", en: "to be in debt, owe", topic: "mortgage", ex: "ถ้าเราเป็นหนี้ธนาคารอยู่ 1,000,000 บาท" },
+  { id: "yot-ni", thai: "ยอดหนี้", rom: "yot ni", en: "outstanding debt, debt balance", topic: "mortgage", ex: "ทำให้ยอดหนี้รวมลดไปอย่างช้าๆ" },
+  { id: "po", thai: "โปะ", rom: "po", en: "to pay extra on top of the regular installment", topic: "mortgage", ex: "การโปะคือการชำระคืนให้มากกว่าเงินงวดปกติ" },
+  { id: "hak", thai: "หัก", rom: "hak", en: "to deduct, subtract", topic: "mortgage", ex: "เงินที่โปะเพิ่มเข้าไปจะไปหักเงินต้น 100%" },
+  { id: "pit-ni", thai: "ปิดหนี้", rom: "pit ni", en: "to pay off a debt completely", topic: "mortgage", ex: "ทำให้เราปิดหนี้ได้เร็วมากขึ้น" },
+  { id: "ri-fai-naen", thai: "รีไฟแนนซ์", rom: "ri fai naen", en: "to refinance (a loan)", topic: "mortgage", ex: "การทำรีไฟแนนซ์ช่วยทำให้ภาระดอกเบี้ยลดลง" },
+  { id: "cha-lia", thai: "เฉลี่ย", rom: "cha lia", en: "average", topic: "mortgage", ex: "เราต้องดู \"ดอกเบี้ยเฉลี่ย\" ตลอดช่วงเวลา" },
+  { id: "lak-kan", thai: "หลักการ", rom: "lak kan", en: "principle, concept", topic: "mortgage", ex: "หลักการก็คือ เมื่อหมดช่วงโปรแล้วให้ไปติดต่อธนาคารอื่น" },
+  { id: "dit-kheun", thai: "ดีดขึ้น", rom: "dit kheun", en: "to jump up, spike (e.g. interest rates)", topic: "mortgage", ex: "ดอกเบี้ยจะดีดขึ้นไปอยู่แถวๆ 5-6%" },
+  { id: "sa-wat-di-kan", thai: "สวัสดิการ", rom: "sa wat di kan", en: "welfare, employee benefits", topic: "mortgage", ex: "ที่ทำงานบางแห่งมีสวัสดิการร่วมกับธนาคารเรื่องการกู้ซื้อบ้าน" },
+  { id: "a-nu-mat", thai: "อนุมัติ", rom: "a nu mat", en: "to approve, authorize", topic: "mortgage", ex: "อาจจะช่วยให้อนุมัติง่าย อนุมัติเร็ว" },
+  { id: "fai-buk-khon", thai: "ฝ่ายบุคคล", rom: "fai buk khon", en: "human resources department", topic: "mortgage", ex: "ลองปรึกษาฝ่ายบุคคลที่บริษัทดูก่อน" },
 ];
