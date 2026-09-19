@@ -1,6 +1,7 @@
 import { useState, useRef, useCallback, useMemo, useEffect, useLayoutEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { PASSAGES, PASSAGE_DIFFICULTY } from '../data/passages.js';
+import { PASSAGE_TRANSLATIONS } from '../data/passageTranslations.js';
 import { allVocab } from '../data/vocab.js';
 import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
@@ -59,33 +60,84 @@ function chunkEnd(text, start, len) {
   return Math.max(j, start + 1);
 }
 
-function PassageText({ paragraphs, onWordClick, activeWord, spokenRange }) {
+// In-passage data table (e.g. the loan-repayment comparison). Cells hold Thai
+// text plus an optional footnote and English translation. Sizes are in `em`
+// so the table follows the passage font-size control.
+function PassageTable({ table, showTranslation }) {
+  return (
+    <div className="my-5 overflow-x-auto">
+      <table className="w-full border-collapse leading-normal text-[0.85em]">
+        <thead>
+          <tr>
+            {table.headers.map((h, i) => (
+              <th key={i} className="border border-border bg-muted/60 px-3 py-2 text-left font-semibold">
+                {h.th}
+                {showTranslation && h.en && (
+                  <span className="block font-normal text-muted-foreground text-[0.85em]">{h.en}</span>
+                )}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {table.rows.map((row, ri) => (
+            <tr key={ri}>
+              {row.map((cell, ci) => (
+                <td key={ci} className="border border-border px-3 py-2 align-top">
+                  {cell.th}
+                  {cell.note && (
+                    <span className="block text-[0.8em] text-muted-foreground">{cell.note}</span>
+                  )}
+                  {showTranslation && cell.en && (
+                    <span className="block text-muted-foreground text-[0.85em]">{cell.en}</span>
+                  )}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+function PassageText({ paragraphs, onWordClick, activeWord, spokenRange, translations, showTranslation, table }) {
   const isSpoken = (tok) => spokenRange && tok.start < spokenRange.end && tok.end > spokenRange.start;
   return (
     <div>
       {paragraphs.map((toks, pi) => (
-        <p key={pi} className={pi < paragraphs.length - 1 ? 'mb-4' : ''}>
-          {toks.map((tok, ti) => {
-            const spoken = isSpoken(tok);
-            if (!tok.def) {
-              return <span key={ti} className={spoken ? 'bg-primary/30 rounded-[3px]' : undefined}>{tok.text}</span>;
-            }
-            const isActive = activeWord === tok.text;
-            return (
-              <span
-                key={ti}
-                data-word
-                className={cn(
-                  'cursor-pointer rounded-sm transition-colors border-b border-dotted border-primary',
-                  spoken ? 'bg-primary/30' : isActive ? 'bg-primary/10' : 'hover:bg-primary/10'
-                )}
-                onClick={(e) => onWordClick(tok, e)}
-              >
-                {tok.text}
-              </span>
-            );
-          })}
-        </p>
+        <div key={pi} className={pi < paragraphs.length - 1 ? 'mb-4' : ''}>
+          <p>
+            {toks.map((tok, ti) => {
+              const spoken = isSpoken(tok);
+              if (!tok.def) {
+                return <span key={ti} className={spoken ? 'bg-primary/30 rounded-[3px]' : undefined}>{tok.text}</span>;
+              }
+              const isActive = activeWord === tok.text;
+              return (
+                <span
+                  key={ti}
+                  data-word
+                  className={cn(
+                    'cursor-pointer rounded-sm transition-colors border-b border-dotted border-primary',
+                    spoken ? 'bg-primary/30' : isActive ? 'bg-primary/10' : 'hover:bg-primary/10'
+                  )}
+                  onClick={(e) => onWordClick(tok, e)}
+                >
+                  {tok.text}
+                </span>
+              );
+            })}
+          </p>
+          {showTranslation && translations?.[pi] && (
+            <p className="text-muted-foreground/75 text-[0.8em] leading-[1.75]">
+              {translations[pi]}
+            </p>
+          )}
+          {table && table.afterParagraph === pi + 1 && (
+            <PassageTable table={table} showTranslation={showTranslation} />
+          )}
+        </div>
       ))}
     </div>
   );
@@ -164,6 +216,19 @@ function ResetIcon() {
   );
 }
 
+function TranslateIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="m5 8 6 6" />
+      <path d="m4 14 6-6 2-3" />
+      <path d="M2 5h12" />
+      <path d="M7 2h1" />
+      <path d="m22 22-5-10-5 10" />
+      <path d="M14 18h6" />
+    </svg>
+  );
+}
+
 // ── Parse title into Thai + English parts ─────────────────────────
 function parseTitle(title) {
   const sep = title.indexOf(' — ');
@@ -218,6 +283,9 @@ export default function ReadingPassagesPage({ showPage }) {
     const v = parseFloat(localStorage.getItem('passage-font-scale'));
     return v >= FONT_MIN && v <= FONT_MAX ? v : FONT_MIN;
   });
+  const [showTranslation, setShowTranslation] = useState(
+    () => localStorage.getItem('passage-show-translation') === '1'
+  );
   const popupRef = useRef();
 
   // Stop any speech if the user leaves the passages page entirely.
@@ -226,6 +294,10 @@ export default function ReadingPassagesPage({ showPage }) {
   useEffect(() => {
     localStorage.setItem('passage-font-scale', String(fontScale));
   }, [fontScale]);
+
+  useEffect(() => {
+    localStorage.setItem('passage-show-translation', showTranslation ? '1' : '0');
+  }, [showTranslation]);
 
   // Selecting a passage / going back swaps the view without a route change,
   // so reset scroll to the top of the new view.
@@ -380,9 +452,10 @@ export default function ReadingPassagesPage({ showPage }) {
   }
 
   // ── Reading view ──────────────────────────────────────────────
-  const passage    = PASSAGES[selectedIdx];
-  const difficulty = PASSAGE_DIFFICULTY[passage.title] || 'intermediate';
+  const passage      = PASSAGES[selectedIdx];
+  const difficulty   = PASSAGE_DIFFICULTY[passage.title] || 'intermediate';
   const { thai, en } = parseTitle(passage.title);
+  const translations = PASSAGE_TRANSLATIONS[passage.title];
 
   return (
     <div
@@ -444,6 +517,21 @@ export default function ReadingPassagesPage({ showPage }) {
             </button>
           </>
         )}
+        {translations && (
+          <button
+            onClick={() => setShowTranslation(s => !s)}
+            title={showTranslation ? 'Hide English translation' : 'Show English translation below each line'}
+            className={cn(
+              'flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-sm transition-colors',
+              showTranslation
+                ? 'border-primary/50 bg-primary/8 text-primary hover:bg-primary/15'
+                : 'border-border bg-card text-muted-foreground hover:border-primary/40 hover:text-primary'
+            )}
+          >
+            <TranslateIcon />
+            Translate
+          </button>
+        )}
         {speaking && (
           <span className="text-[0.65rem] text-muted-foreground animate-pulse">
             {paused ? 'Paused' : 'Reading aloud…'}
@@ -463,6 +551,9 @@ export default function ReadingPassagesPage({ showPage }) {
             onWordClick={handleWordClick}
             activeWord={activeWord}
             spokenRange={spokenRange}
+            translations={translations}
+            showTranslation={showTranslation}
+            table={passage.table}
           />
         </CardContent>
       </Card>
